@@ -46,7 +46,7 @@ namespace MinimalExample
 		{
 			base.ClientJoined( client );
 
-			var player = new TSSPLayer();
+			var player = new TSSPlayer();
 			client.Pawn = player;
 
 			player.Respawn();
