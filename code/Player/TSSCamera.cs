@@ -28,12 +28,21 @@ public partial class TSSCamera : Camera
 	float yawTar;
 	public bool IntroComplete;
 	public float TimeSinceState;
+
+	//Credit Panels (Definitely a better way to do this but this is just for the intro)
+	private CreditPanel JoshWilson;
+	private CreditPanel Presents;
+	private CreditPanel Assoc;
+	private CreditPanel Dawdle;
+	private CreditPanel Mungus;
+	private CreditPanel TSS;
+
 	public override void Activated()
 	{
 		base.Activated();
 		CamState = CameraState.Intro;
 		IntroComplete = false;
-		
+		JoshWilson = null;
 		
 	}
 
@@ -84,8 +93,24 @@ public partial class TSSCamera : Camera
 		
 		var pawn = Local.Pawn as TSSPlayer;
 		var center = pawn.Position + Vector3.Up * CamHeight;
+		//CreditPanel credit = null;
 		if ( Progress < 0.25f )
 		{
+			//credit ??= new CreditPanel();
+			//credit.Position = pawn.Position;
+			//credit.Rotation = Rotation.From( 0, 90, 0 );
+
+			JoshWilson ??= new CreditPanel("Josh Wilson",3200,3200);
+			JoshWilson.Position = pawn.Position + Vector3.Up * 10f + pawn.Rotation.Forward * -20f;
+			JoshWilson.Rotation = Rotation.From( 0, 90, 0 );
+			JoshWilson.Opacity = ((Progress - 0.01f) / 0.05f).Clamp( 0, 1f );
+
+			Presents ??= new CreditPanel( "Presents", 3200, 3200 );
+			Presents.Position = pawn.Position + Vector3.Up * -50f + pawn.Rotation.Forward * 9f;
+			Presents.Rotation = Rotation.From( 0, 90, 0 );
+			Presents.Opacity = ((Progress - 0.1f) / 0.05f).Clamp( 0, 1f );
+
+
 			CamDistance = 125f - 50f * (Progress / 0.25f);
 			CamHeight = 45f;
 			center = pawn.Position + Vector3.Up * CamHeight;
@@ -97,6 +122,29 @@ public partial class TSSCamera : Camera
 
 		if ( Progress >= 0.25f && Progress < 0.5f)
 		{
+			JoshWilson?.Delete();
+			JoshWilson = null;
+			Presents?.Delete();
+			Presents = null;
+
+			Assoc ??= new CreditPanel( "In Association With", 3200, 1600);
+			Assoc.Rotation = Rotation.From( 0, 35, 0 );
+			Assoc.Position = pawn.Position + Assoc.Rotation.Forward * 12f;
+			Assoc.Opacity = 1f;
+			Assoc.FontSize = 100f;
+
+			Dawdle ??= new CreditPanel( "Dawdle", 3200, 400 );
+			Dawdle.Rotation = Rotation.From( 0, 55, 0 );
+			Dawdle.Position = pawn.Position + pawn.Rotation.Right * -50f + Vector3.Up * -3f;
+			Dawdle.Opacity = 1f;
+			Dawdle.FontSize = 200f;
+
+			Mungus ??= new CreditPanel( "Mungus", 3200, 400 );
+			Mungus.Rotation = Rotation.From( 0, -55 + 180, 0 );
+			Mungus.Position = pawn.Position + pawn.Rotation.Right * 50f + Vector3.Up * -3f;
+			Mungus.Opacity = 1f;
+			Mungus.FontSize = 200f;
+
 			float p = (Progress - 0.25f)/ 0.24f;
 			p = p.Clamp( 0, 1f );
 			CamDistance = 150f;
@@ -113,6 +161,13 @@ public partial class TSSCamera : Camera
 
 		if ( Progress >= 0.5f && Progress < 0.75f )
 		{
+			Assoc?.Delete();
+			Assoc = null;
+			Dawdle ?.Delete();
+			Dawdle = null;
+			Mungus?.Delete();
+			Mungus = null;
+
 			float p = (Progress - 0.5f) / 0.25f;
 			p = p.Clamp( 0, 1f );
 			CamDistance = 50f;
@@ -129,7 +184,14 @@ public partial class TSSCamera : Camera
 			p = p.Clamp( 0, 1f );
 			CamDistance = 50f + 50f * p;
 			CamHeight = 64f - 19f * p;
-			
+
+			TSS ??= new CreditPanel( "Terry\nSquat\nSimulator", 3200, 3200 );
+			TSS.Position = pawn.Position + Vector3.Up * -10f + pawn.Rotation.Forward * -20f;
+			TSS.Rotation = Rotation.From( 0, 90, 0 );
+			TSS.Opacity = p * 2f;
+			TSS.TextScale = pawn.Scale;
+
+
 			center = pawn.Position + Vector3.Up * CamHeight;
 			Rotation = Rotation.LookAt( (center - Position), Vector3.Up );
 			Position = center + pawn.Rotation.Forward * CamDistance;
@@ -141,6 +203,8 @@ public partial class TSSCamera : Camera
 			CamState = CameraState.Static;
 			Progress = 0f;
 			TimeSinceState = 0f;
+			TSS?.Delete();
+			TSS = null;
 		}
 		
 	}
