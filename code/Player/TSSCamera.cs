@@ -36,6 +36,10 @@ public partial class TSSCamera : Camera
 	private CreditPanel Dawdle;
 	private CreditPanel Mungus;
 	private CreditPanel TSS;
+	private CreditPanel Up;
+	private CreditPanel Down;
+	public TimeSince TimeSinceStart;
+	
 
 	Material _myPostProcessingMaterial;
 	[Event( "render.postprocess" )]
@@ -58,7 +62,9 @@ public partial class TSSCamera : Camera
 		CamState = CameraState.Intro;
 		IntroComplete = false;
 		JoshWilson = null;
-		
+		TimeSinceStart = 0;
+
+
 	}
 
 	public override void BuildInput( InputBuilder input )
@@ -124,6 +130,13 @@ public partial class TSSCamera : Camera
 			Presents.Position = pawn.Position + Vector3.Up * -50f + pawn.Rotation.Forward * 9f;
 			Presents.Rotation = Rotation.From( 0, 90, 0 );
 			Presents.Opacity = ((Progress - 0.1f) / 0.05f).Clamp( 0, 1f );
+
+			float f = ((TimeSinceStart - 2f) / 5f).Clamp( 0, 1f );
+
+			Up ??= new CreditPanel( Input.GetKeyWithBinding("+iv_forward") + "\n" + Input.GetKeyWithBinding( "+iv_back" ), 200, 200);
+			Up.Position = pawn.Position + Vector3.Up * 35f + pawn.Rotation.Right * -22f + pawn.Rotation.Forward * 12f;
+			Up.Rotation = Rotation.From( 0, 90, 0 );
+			Up.Opacity = (1f - ((Progress - 0.1f) / 0.05f).Clamp( 0, 1f )) * f;
 
 
 			CamDistance = 125f - 50f * (Progress / 0.25f);
