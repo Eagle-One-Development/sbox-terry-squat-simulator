@@ -205,6 +205,7 @@ PS
         float b = Tex2D(g_FrameBuffer, uv).b;
 		
 		
+		float3 f = Tex2D( g_FrameBuffer, uv).rgb;
 		
         float4 tex = float4(r, g, b, 1.0);
         PixelOutput o;
@@ -214,6 +215,8 @@ PS
 
         float2 t = uv * 100 + g_flTime;
         float a = noise4(t);
+		
+		
 
         PixelOutput o;
         o.vColor.rgb = 1 - Tex2D(g_FrameBuffer, uv.xy).rgb; // invert screen color
