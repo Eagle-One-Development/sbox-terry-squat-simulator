@@ -37,8 +37,23 @@ public partial class TSSCamera : Camera
 	private CreditPanel Mungus;
 	private CreditPanel TSS;
 
+	Material _myPostProcessingMaterial;
+	[Event( "render.postprocess" )]
+	public void DoPostProcess()
+	{
+		Log.Info( "HERE, IT WORKS" );
+		if ( _myPostProcessingMaterial != null )
+		{
+			Render.CopyFrameBuffer( false );
+			Render.Material = _myPostProcessingMaterial;
+			Render.DrawScreenQuad();
+			
+		}
+	}
+
 	public override void Activated()
 	{
+		
 		base.Activated();
 		CamState = CameraState.Intro;
 		IntroComplete = false;
@@ -186,7 +201,7 @@ public partial class TSSCamera : Camera
 			CamHeight = 64f - 19f * p;
 
 			TSS ??= new CreditPanel( "Terry\nSquat\nSimulator", 3200, 3200 );
-			TSS.Position = pawn.Position + Vector3.Up * -10f + pawn.Rotation.Forward * 100f;
+			TSS.Position = pawn.Position + Vector3.Up * -26f + pawn.Rotation.Forward * 20f;
 			TSS.Rotation = Rotation.From( 0, 90, 0 );
 			TSS.Opacity = p * 2f;
 			TSS.TextScale = pawn.Scale;

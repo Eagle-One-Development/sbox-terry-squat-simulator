@@ -66,6 +66,20 @@ public override void Respawn()
 		base.Respawn();
 	}
 
+	public void CreatePoint()
+	{
+		if ( IsClient )
+		{
+			var p = new ExercisePointPanel( 1 );
+			Vector3 pos = Position + Vector3.Up * 48f;
+			Vector3 dir = ((Camera as TSSCamera).Position - pos).Normal;
+			Rotation dirRand = Rotation.From( Rand.Float(-45f,45f),Rand.Float(-45f,45f),Rand.Float(-45f,45f) );
+			p.Position =  pos + (dir * dirRand) * 28f;
+			p.InitialPosition = p.Position;
+			p.TextScale = 1.5f;
+		}
+	}
+
 	/// <summary>
 	/// Called every tick, clientside and serverside.
 	/// </summary>
@@ -85,6 +99,10 @@ public override void Respawn()
 			return;
 		}
 
+		if ( Input.Pressed( InputButton.Reload ) )
+		{
+			
+		}
 		
 		switch ( MyExercise )
 		{
@@ -142,8 +160,9 @@ public override void Respawn()
 		{
 			if ( squat == 0 )
 			{
-				
+
 				ExercisePoints++;
+				CreatePoint();
 				SetScale( 1.2f );
 				TimeSinceSquat = 0;
 				Log.Info( $"SQUAT: {ExercisePoints}" );

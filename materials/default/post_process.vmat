@@ -1,0 +1,14 @@
+// THIS FILE IS AUTO-GENERATED
+
+Layer0
+{
+	shader "pp_test.vfx"
+
+	//---- Feature ----
+	g_vColorOffsetIntensity "0.390"
+	g_vEdgeFuzz "1.154"
+	g_vNoiseIntensity "0.000"
+	g_vNoiseQuality "1.000"
+	g_vOffsetIntensity "0.007"
+	g_vRange "0.090"
+}

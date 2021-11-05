@@ -20,6 +20,23 @@ namespace MinimalExample
 	/// </summary>
 	public partial class TSSGame : Sandbox.Game
 	{
+
+		Material _pp;
+		public void LoadPP()
+		{
+			_pp = Material.Load( "materials/default/post_process.vmat" );
+		}
+		[Event( "render.postprocess" )]
+		public void PP()
+		{
+			if ( _pp != null )
+			{
+				Render.CopyFrameBuffer( false );
+				Render.Material = _pp;
+				Render.DrawScreenQuad();
+			}
+		}
+
 		public TSSGame()
 		{
 			if ( IsServer )
@@ -36,7 +53,10 @@ namespace MinimalExample
 			if ( IsClient )
 			{
 				Log.Info( "My Gamemode Has Created Clientside!" );
+				
 			}
+
+			LoadPP();
 		}
 
 		/// <summary>
