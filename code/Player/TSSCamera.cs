@@ -186,7 +186,7 @@ public partial class TSSCamera : Camera
 			CamHeight = 64f - 19f * p;
 
 			TSS ??= new CreditPanel( "Terry\nSquat\nSimulator", 3200, 3200 );
-			TSS.Position = pawn.Position + Vector3.Up * -10f + pawn.Rotation.Forward * -20f;
+			TSS.Position = pawn.Position + Vector3.Up * -10f + pawn.Rotation.Forward * 100f;
 			TSS.Rotation = Rotation.From( 0, 90, 0 );
 			TSS.Opacity = p * 2f;
 			TSS.TextScale = pawn.Scale;
