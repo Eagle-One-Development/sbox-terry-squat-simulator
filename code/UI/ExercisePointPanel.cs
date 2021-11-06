@@ -13,7 +13,31 @@ public class ExercisePointPanel : WorldPanel
 	public float Life;
 	public bool Fall;
 	public Vector3 InitialPosition;
-	public ExercisePointPanel( int points )
+
+		public string[] quips = new[]
+		{
+				"INSANE!",
+				"KEEP IT UP!", 
+				"NICE WORK!", 
+				"AMAZING!", 
+				"GREAT!", 
+				"OUT OF THIS WORLD!", 
+				"WOW!", 
+				"AWESOME!", 
+				"FANTASTIC!", 
+				"LEGENDARY!", 
+				"NICE!", 
+				"OUTSTANDING!", 
+				"EXCELLENT!", 
+				"YOU ROCK!", 
+				"YOU ARE AMAZING!", 
+				"PERFECT!", 
+				"SUPER!", 
+				"MUSIC!", 
+				"GOOD JOB!",
+		};
+
+	public ExercisePointPanel( int points, int totalPoints )
 	{
 		Opacity = 1f;
 		Fall = false;
@@ -25,8 +49,7 @@ public class ExercisePointPanel : WorldPanel
 		PanelBounds = new Rect( -(width / 2), -height, width, height );
 		TextScale = 1f;
 		string sign = (points > 0) ? "+" : " - ";
-		string s = $"{sign}{points}";
-
+		string s = ((totalPoints + 1) % 25 == 0) ? quips[Rand.Int( 0, quips.Length - 1 )] : $"{sign}{points}";
 		l = Add.Label( s, "title" );
 
 		InitialPosition = Position;
@@ -54,9 +77,11 @@ public class ExercisePointPanel : WorldPanel
 
 
 		Style.Dirty();
-		l.Style.FontSize = Length.Pixels( FontSize * TextScale );
+		if (l != null)
+		{
+			l.Style.FontSize = Length.Pixels( FontSize * TextScale );
+		}
 		FontSize = 75f;
-		
 
 		if(Local.Pawn is TSSPlayer player )
 		{

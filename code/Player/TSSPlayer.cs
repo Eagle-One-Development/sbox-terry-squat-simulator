@@ -73,7 +73,7 @@ public partial class TSSPlayer : Player
 	{
 		if ( IsClient )
 		{
-			var p = new ExercisePointPanel( 1 );
+			var p = new ExercisePointPanel( 1, ExercisePoints );
 			Vector3 pos = Position + Vector3.Up * 48f;
 			Vector3 dir = ((Camera as TSSCamera).Position - pos).Normal;
 			Rotation dirRand = Rotation.From( Rand.Float(-45f,45f),Rand.Float(-45f,45f),Rand.Float(-45f,45f) );
@@ -141,7 +141,7 @@ public partial class TSSPlayer : Player
 
  			c.TextScale = cam.SCounter.TextScale.LerpTo( 1.5f * MathX.Clamp( curSpeed + 0.8f, 0, 1), Time.Delta * 2f );
 			float anim = MathF.Sin( aTime );
-			c.Rotation = Rotation.From( 0, 90, anim * curSpeed * 7f );
+			c.Rotation = Rotation.From( 0, 90, anim * curSpeed * 1f * (ExercisePoints / 100f) );
 		}
 	}
 
