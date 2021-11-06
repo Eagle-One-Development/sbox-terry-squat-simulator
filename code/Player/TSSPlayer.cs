@@ -27,11 +27,14 @@ public partial class TSSPlayer : Player
 	public TimeSince TimeSinceSquat { get; set; }
 	[Net, Predicted]
 	public TimeSince TimeSinceUpPressed { get; set; }
-public ModelEntity DumbBell;
-[Net, Predicted]
-public TimeSince TimeSinceDownPressed { get; set; }
+	public ModelEntity DumbBell;
+	[Net, Predicted]
+	public TimeSince TimeSinceDownPressed { get; set; }
+	private TimeSince aTime;
+	public float curSpeed;
+	private float tCurSpeed;
 
-public override void Respawn()
+	public override void Respawn()
 	{
 		SetModel( "models/terry/terry.vmdl" );
 		MyExercise = Exercise.Squat;
@@ -117,9 +120,39 @@ public override void Respawn()
 
 		}
 
+		// Basically curSpeed increases based on how fast the player is squatting etc
+
+		tCurSpeed = tCurSpeed.Clamp( 0, 1 );
+		curSpeed = curSpeed.Clamp( 0, 1 );
+		var mult = MathX.LerpInverse( TimeSinceSquat, 0, 1 );
+		tCurSpeed = tCurSpeed.LerpTo( 0f, Time.Delta * 0.25f * ( mult * 4f));
+		curSpeed = curSpeed.LerpTo( tCurSpeed, Time.Delta * 2f );
+		//Log.Info( "curSpeed: " + curSpeed );
+		//Log.Info( "tCurSpeed: " + tCurSpeed );
+
 		Scale = Scale.LerpTo( 1, Time.Delta * 10f );
 
-		
+		if ( cam.SCounter != null )
+		{
+			var c = cam.SCounter;
+			//c.l?.SetText( "Exercise Points: " + ExercisePoints );
+			c.l?.SetText( ExercisePoints.ToString() );
+			c.Opacity += Time.Delta * curSpeed * 0.4f;
+
+ 			c.TextScale = cam.SCounter.TextScale.LerpTo( 1.5f * MathX.Clamp( curSpeed + 0.8f, 0, 1), Time.Delta * 2f );
+			float anim = MathF.Sin( aTime );
+			c.Rotation = Rotation.From( 0, 90, anim * curSpeed * 7f );
+		}
+	}
+
+	public async void CounterBump(float f )
+	{
+		await GameTask.DelaySeconds( 0.1f );
+		if ( (Camera as TSSCamera).SCounter != null )
+		{
+			var c = (Camera as TSSCamera).SCounter;
+ 			c.TextScale += f * curSpeed;
+		}
 	}
 
 	public async void SetScale(float f )
@@ -162,10 +195,14 @@ public override void Respawn()
 			{
 
 				ExercisePoints++;
+				tCurSpeed += 0.1f;
 				CreatePoint();
 				SetScale( 1.2f );
+ 				CounterBump( 0.5f );
 				TimeSinceSquat = 0;
 				Log.Info( $"SQUAT: {ExercisePoints}" );
+				if (cam.Up != null)
+					cam.Up.TextScale += 0.3f;
 			}
 			squat = 1;
 			TimeSinceUpPressed = 0;
@@ -175,8 +212,9 @@ public override void Respawn()
 		if ( Input.Pressed( InputButton.Back ) && (squat == 1 || squat == -1) && TimeSinceUpPressed > 0.1f)
 		{
 			squat = 0;
-		TimeSinceDownPressed = 0;
-		
+			TimeSinceDownPressed = 0;
+			if ( cam.Down != null )
+				cam.Down.TextScale += 0.3f;
 		}
 
 		

@@ -36,8 +36,8 @@ public partial class TSSCamera : Camera
 	private CreditPanel Dawdle;
 	private CreditPanel Mungus;
 	private CreditPanel TSS;
-	private CreditPanel Up;
-	private CreditPanel Down;
+	public CreditPanel Up;
+	public CreditPanel Down;
 	public TimeSince TimeSinceStart;
 	
 
@@ -54,6 +54,8 @@ public partial class TSSCamera : Camera
 			
 		}
 	}
+
+	public CreditPanel SCounter;
 
 	public override void Activated()
 	{
@@ -107,6 +109,17 @@ public partial class TSSCamera : Camera
 		TimeSinceState += Time.Delta * (1f - f);
 		TimedProgress = TimedProgress.LerpTo( TimeSinceState / 5f, Time.Delta * 8f );
 		TimedProgress = TimedProgress.Clamp( 0f, 1f );
+
+		if ( TSS != null && IntroComplete )
+		{
+			TSS.Opacity -= Time.Delta * pawn.curSpeed * 0.5f;
+
+			if ( TSS.Opacity <= 0f )
+			{
+				TSS?.Delete();
+				TSS = null;
+			}
+		}
 	}
 
 	public void Intro()
@@ -133,11 +146,17 @@ public partial class TSSCamera : Camera
 
 			float f = ((TimeSinceStart - 2f) / 5f).Clamp( 0, 1f );
 
-			Up ??= new CreditPanel( Input.GetKeyWithBinding("+iv_forward") + "\n" + Input.GetKeyWithBinding( "+iv_back" ), 200, 200);
-			Up.Position = pawn.Position + Vector3.Up * 35f + pawn.Rotation.Right * -22f + pawn.Rotation.Forward * 12f;
+			Up ??= new CreditPanel( Input.GetKeyWithBinding("+iv_forward"), 200, 200);
+			Up.Position = pawn.Position + Vector3.Up * 55f + pawn.Rotation.Right * -22f + pawn.Rotation.Forward * 12f;
 			Up.Rotation = Rotation.From( 0, 90, 0 );
 			Up.Opacity = (1f - ((Progress - 0.1f) / 0.05f).Clamp( 0, 1f )) * f;
+			Up.TextScale = Up.TextScale.LerpTo( 1, Time.Delta * 10f );
 
+			Down ??= new CreditPanel( Input.GetKeyWithBinding( "+iv_back" ), 200, 200 );
+			Down.Position = pawn.Position + Vector3.Up * 25f + pawn.Rotation.Right * -22f + pawn.Rotation.Forward * 12f;
+			Down.Rotation = Rotation.From( 0, 90, 0 );
+			Down.Opacity = (1f - ((Progress - 0.1f) / 0.05f).Clamp( 0, 1f )) * f;
+			Down.TextScale = Down.TextScale.LerpTo( 1, Time.Delta * 10f );
 
 			CamDistance = 125f - 50f * (Progress / 0.25f);
 			CamHeight = 45f;
@@ -231,8 +250,13 @@ public partial class TSSCamera : Camera
 			CamState = CameraState.Static;
 			Progress = 0f;
 			TimeSinceState = 0f;
-			TSS?.Delete();
-			TSS = null;
+
+			TSS.Opacity = 1f;
+			SCounter ??= new CreditPanel("Squats: 0", 3200, 3200);
+			SCounter.Position = pawn.Position + Vector3.Up * 30f + pawn.Rotation.Forward * -50f;// + pawn.Rotation.Left * 50f;
+			SCounter.Rotation = Rotation.From( 0, 90, 0 );
+			SCounter.Opacity = 0;
+			SCounter.TextScale = 1;
 		}
 		
 	}
