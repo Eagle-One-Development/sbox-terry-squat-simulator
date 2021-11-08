@@ -17,7 +17,8 @@ public partial class TSSPlayer : Player
 	[Net]
 	public bool IntroComplete { get; set; }
 
-	public Exercise MyExercise;
+	[Net]
+	public Exercise MyExercise { get; set; }
 
 	[Net, Predicted]
 	public int squat { get; set; }
@@ -26,6 +27,8 @@ public partial class TSSPlayer : Player
 	[Net, Predicted]
 	public TimeSince TimeSinceSquat { get; set; }
 	[Net, Predicted]
+	public TimeSince TimeSinceRun { get; set; }
+	[Net, Predicted]
 	public TimeSince TimeSinceUpPressed { get; set; }
 	public ModelEntity DumbBell;
 	[Net, Predicted]
@@ -33,6 +36,8 @@ public partial class TSSPlayer : Player
 	private TimeSince aTime;
 	public float curSpeed;
 	private float tCurSpeed;
+
+	
 
 	public override void Respawn()
 	{
@@ -69,6 +74,13 @@ public partial class TSSPlayer : Player
 		base.Respawn();
 	}
 
+	public void ChangeExercise( Exercise state, Vector3 pos, Rotation rot)
+	{
+		Position = pos;
+		Rotation = rot;
+		MyExercise = state;
+	}
+
 	public void CreatePoint()
 	{
 		if ( IsClient )
@@ -97,21 +109,34 @@ public partial class TSSPlayer : Player
 		SimulateActiveChild( cl, ActiveChild );
 		TSSCamera cam = (Camera as TSSCamera);
 
-		if(cam == null )
+		if ( cam == null )
 		{
 			return;
 		}
 
-		if ( Input.Pressed( InputButton.Reload ) )
-		{
-			
-		}
-		
+
 		switch ( MyExercise )
 		{
 			case Exercise.Squat:
-				Squatting(cam);
-			break;
+				Squatting( cam );
+				break;
+			case Exercise.Run:
+				Running( cam );
+				break;
+		}
+
+		
+
+		//Switch to the run state once we reach 200 exercie points
+		//TODO: Move this kind of behavior to some kind of scripting system.
+		if ( ExercisePoints == 200 && IsServer)
+		{
+			var ent = Entity.All.OfType<RunSpawn>().First();
+			ChangeExercise( Exercise.Run, ent.Transform.Position, ent.Transform.Rotation );
+			ExercisePoints++;
+			DumbBell?.Delete();
+			DumbBell = null;
+			return;
 		}
 
 		if ( DumbBell != null )
@@ -119,12 +144,30 @@ public partial class TSSPlayer : Player
 			DumbBell.LocalPosition = Vector3.Zero + DumbBell.Transform.Rotation.Right * 15.5f;
 
 		}
+		else
+		{
+			//Create a new dumbbell if we're squatting.
+			if(MyExercise== Exercise.Squat )
+			{
+				if ( IsServer )
+				{
+					DumbBell = new ModelEntity( "models/dumbbll/dumbbell.vmdl" );
+					DumbBell.SetParent( this, "head" );
+					DumbBell.Rotation = this.Rotation * Rotation.From( 0, 0, 90 );
+				}
+			}
+		}
 
 		// Basically curSpeed increases based on how fast the player is squatting etc
 
 		tCurSpeed = tCurSpeed.Clamp( 0, 1 );
 		curSpeed = curSpeed.Clamp( 0, 1 );
 		var mult = MathX.LerpInverse( TimeSinceSquat, 0, 1 );
+		if(MyExercise == Exercise.Run )
+		{
+			mult = MathX.LerpInverse( TimeSinceRun, 0, 1 );
+		}
+
 		tCurSpeed = tCurSpeed.LerpTo( 0f, Time.Delta * 0.25f * ( mult * 4f));
 		curSpeed = curSpeed.LerpTo( tCurSpeed, Time.Delta * 2f );
 		//Log.Info( "curSpeed: " + curSpeed );
@@ -159,6 +202,53 @@ public partial class TSSPlayer : Player
 	{
 		await GameTask.DelaySeconds( 0.1f );
 		Scale = f;
+	}
+
+	public void Running(TSSCamera cam )
+	{
+		SetAnimInt( "squat", -1 );
+		SetAnimFloat("move_x", MathX.LerpTo( 0, 350f, (curSpeed * 4f).Clamp(0,1f)) );
+		
+		
+	
+
+		if ( TimeSinceRun < 3f && squat != -1)
+		{
+			cam.Progress += Time.Delta * 0.35f;
+		}
+
+		if ( Input.Pressed( InputButton.Right ) && Input.Pressed( InputButton.Left ) )
+		{
+			return;
+		}
+
+		if ( Input.Pressed( InputButton.Right ) && (squat == 0 || squat == -1) && TimeSinceDownPressed > 0.1f )
+		{
+			if ( squat == 0 )
+			{
+				tCurSpeed += 0.1f;
+				CreatePoint();
+				SetScale( 1.2f );
+				CounterBump( 0.5f );
+				TimeSinceSquat = 0;
+				
+				if ( cam.Up != null )
+					cam.Up.TextScale += 0.3f;
+			}
+			squat = 1;
+			TimeSinceUpPressed = 0;
+		}
+
+		if ( Input.Pressed( InputButton.Left ) && (squat == 1 || squat == -1) && TimeSinceUpPressed > 0.1f )
+		{
+			squat = 0;
+			TimeSinceDownPressed = 0;
+			if ( cam.Down != null )
+				cam.Down.TextScale += 0.3f;
+		}
+
+
+
 	}
 
 	public void Squatting(TSSCamera cam)

@@ -65,6 +65,7 @@ public partial class TSSCamera : Camera
 		IntroComplete = false;
 		JoshWilson = null;
 		TimeSinceStart = 0;
+		Log.Info( "WAIT WHAT" );
 
 
 	}
@@ -118,6 +119,16 @@ public partial class TSSCamera : Camera
 			{
 				TSS?.Delete();
 				TSS = null;
+			}
+		}
+
+		//For now make the score face in the forward direction of the player
+		if ( Local.Pawn is TSSPlayer t )
+		{
+			if ( SCounter != null )
+			{
+				SCounter.Rotation = t.Rotation;
+				SCounter.Position = pawn.Position + Vector3.Up * 30f + pawn.Rotation.Forward * -50f;
 			}
 		}
 	}

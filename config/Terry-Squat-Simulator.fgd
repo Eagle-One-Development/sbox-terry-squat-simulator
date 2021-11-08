@@ -14,6 +14,23 @@
 ]
 
 //
+// RunSpawn
+//
+@PointClass base(BaseProperties_Terry_Squat_Simulator) editormodel( "models/editor/playerstart.vmdl" ) 
+metadata
+{
+	entity_tool_name = "Run Spawn"
+	entity_tool_group = "Terry Squat Simulator"
+	entity_tool_tip = "Spawn point for running on the treadmill at the gym"
+}
+= tss_run_spawn : ""
+[
+	enable_shadows(boolean) { group = "Rendering" } : "Shadow Casting" : 1 : "Whether this entity should cast shadows or not"
+
+	input SetColor(string) : "Sets the color of this entity. Format is '255 255 255 255'."
+]
+
+//
 // SquatSpawn
 //
 @PointClass base(BaseProperties_Terry_Squat_Simulator) editormodel( "models/editor/playerstart.vmdl" ) 

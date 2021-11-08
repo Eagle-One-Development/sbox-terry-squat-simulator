@@ -37,6 +37,17 @@ namespace MinimalExample
 			}
 		}
 
+		[ServerCmd( "set_ep" )]
+		public static void SetPoints( int p )
+		{
+			if(ConsoleSystem.Caller.Pawn is TSSPlayer player ) {
+
+				player.ExercisePoints += p;
+
+			}
+			
+		}
+
 		public TSSGame()
 		{
 			if ( IsServer )
