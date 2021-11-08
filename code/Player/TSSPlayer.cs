@@ -25,7 +25,7 @@ public partial class TSSPlayer : Player
 	[Net, Predicted]
 	private int lastSquat { get; set; }
 	[Net, Predicted]
-	public TimeSince TimeSinceSquat { get; set; }
+	public TimeSince TimeSinceExerciseStopped { get; set; }
 	[Net, Predicted]
 	public TimeSince TimeSinceRun { get; set; }
 	[Net, Predicted]
@@ -36,6 +36,11 @@ public partial class TSSPlayer : Player
 	private TimeSince aTime;
 	public float curSpeed;
 	private float tCurSpeed;
+
+	[Net, Predicted]
+	public TimeSince TimeSincePunch { get; set; }
+	[Net]
+	public float TimeToNextPunch { get; set; }
 
 	
 
@@ -48,7 +53,7 @@ public partial class TSSPlayer : Player
 		
 		squat = 0;
 		lastSquat = -1;
-		TimeSinceSquat = 4f;
+		TimeSinceExerciseStopped = 4f;
 		//
 		// Use StandardPlayerAnimator  (you can make your own PlayerAnimator for 100% control)
 		//
@@ -58,7 +63,8 @@ public partial class TSSPlayer : Player
 		// Use ThirdPersonCamera (you can make your own Camera for 100% control)
 		//
 		Camera = new TSSCamera();
-		
+
+		TimeToNextPunch = 3f;
 
 		EnableAllCollisions = true;
 		EnableDrawing = true;
@@ -68,8 +74,8 @@ public partial class TSSPlayer : Player
 		DumbBell = new ModelEntity( "models/dumbbll/dumbbell.vmdl" );
 		DumbBell.SetParent( this, "head" );
 		DumbBell.Rotation = this.Rotation * Rotation.From( 0, 0, 90 );
-		
 
+		
 
 		base.Respawn();
 	}
@@ -81,17 +87,44 @@ public partial class TSSPlayer : Player
 		MyExercise = state;
 	}
 
-	public void CreatePoint()
+	public void CreatePoint(int i)
 	{
 		if ( IsClient )
 		{
-			var p = new ExercisePointPanel( 1, ExercisePoints );
+			var p = new ExercisePointPanel( i, ExercisePoints );
 			Vector3 pos = Position + Vector3.Up * 48f;
 			Vector3 dir = ((Camera as TSSCamera).Position - pos).Normal;
 			Rotation dirRand = Rotation.From( Rand.Float(-45f,45f),Rand.Float(-45f,45f),Rand.Float(-45f,45f) );
 			p.Position =  pos + (dir * dirRand) * 28f;
 			p.InitialPosition = p.Position;
 			p.TextScale = 1.5f;
+		}
+	}
+
+	public void ExerciseTimeline()
+	{
+		//Switch to the punch state once we reach 200 exercie points
+		//TODO: Move this kind of behavior to some kind of scripting system.
+		if ( ExercisePoints == 200 && IsServer )
+		{
+			var ent = Entity.All.OfType<RunSpawn>().First();
+			ChangeExercise( Exercise.Run, ent.Transform.Position, ent.Transform.Rotation );
+			ExercisePoints++;
+			DumbBell?.Delete();
+			DumbBell = null;
+			return;
+		}
+
+		//Switch to the punch state once we reach 200 exercie points
+		//TODO: Move this kind of behavior to some kind of scripting system.
+		if ( ExercisePoints == 300 && IsServer )
+		{
+			var ent = Entity.All.OfType<PunchSpawn>().First();
+			ChangeExercise( Exercise.Punch, ent.Transform.Position, ent.Transform.Rotation );
+			ExercisePoints++;
+			DumbBell?.Delete();
+			DumbBell = null;
+			return;
 		}
 	}
 
@@ -123,21 +156,14 @@ public partial class TSSPlayer : Player
 			case Exercise.Run:
 				Running( cam );
 				break;
+			case Exercise.Punch:
+				Punching( cam );
+				break;
 		}
 
-		
 
-		//Switch to the run state once we reach 200 exercie points
-		//TODO: Move this kind of behavior to some kind of scripting system.
-		if ( ExercisePoints == 200 && IsServer)
-		{
-			var ent = Entity.All.OfType<RunSpawn>().First();
-			ChangeExercise( Exercise.Run, ent.Transform.Position, ent.Transform.Rotation );
-			ExercisePoints++;
-			DumbBell?.Delete();
-			DumbBell = null;
-			return;
-		}
+
+		ExerciseTimeline();
 
 		if ( DumbBell != null )
 		{
@@ -162,7 +188,7 @@ public partial class TSSPlayer : Player
 
 		tCurSpeed = tCurSpeed.Clamp( 0, 1 );
 		curSpeed = curSpeed.Clamp( 0, 1 );
-		var mult = MathX.LerpInverse( TimeSinceSquat, 0, 1 );
+		var mult = MathX.LerpInverse( TimeSinceExerciseStopped, 0, 1 );
 		if(MyExercise == Exercise.Run )
 		{
 			mult = MathX.LerpInverse( TimeSinceRun, 0, 1 );
@@ -227,11 +253,11 @@ public partial class TSSPlayer : Player
 			if ( squat == 0 )
 			{
 				tCurSpeed += 0.1f;
-				CreatePoint();
+				CreatePoint(1);
 				SetScale( 1.2f );
 				CounterBump( 0.5f );
-				TimeSinceSquat = 0;
-				
+				TimeSinceExerciseStopped = 0;
+				ExercisePoints++;
 				if ( cam.Up != null )
 					cam.Up.TextScale += 0.3f;
 			}
@@ -251,14 +277,38 @@ public partial class TSSPlayer : Player
 
 	}
 
+	public void Punching( TSSCamera cam )
+	{
+		SetAnimInt( "punch", squat );
+		SetAnimInt( "squat", -1 );
+
+		if(TimeSincePunch > TimeToNextPunch )
+		{
+			TimeSincePunch = 0;
+			if ( IsServer )
+			{
+				var pt = new PunchQT();
+				pt.Player = this;
+			}
+			
+		}
+
+
+		
+
+
+
+	}
+
+
 	public void Squatting(TSSCamera cam)
 	{
 		 
 		SetAnimInt( "squat", squat );
 
-	if ( TimeSinceSquat < 3f && squat != -1 && !IntroComplete )
+	if ( TimeSinceExerciseStopped < 3f && squat != -1 && !IntroComplete )
 	{
-		float f = (TimeSinceSquat - 1f) / 3f;
+		float f = (TimeSinceExerciseStopped - 1f) / 3f;
 		f = MathF.Pow( f.Clamp( 0, 1f ), 3f );
 		cam.Progress += Time.Delta * 0.025f * (1 - f);
 
@@ -269,7 +319,7 @@ public partial class TSSPlayer : Player
 		}
 	}
 
-	if ( TimeSinceSquat < 3f && squat != -1 && IntroComplete )
+	if ( TimeSinceExerciseStopped < 3f && squat != -1 && IntroComplete )
 	{
 		cam.Progress += Time.Delta * 0.35f;
 	}
@@ -286,10 +336,10 @@ public partial class TSSPlayer : Player
 
 				ExercisePoints++;
 				tCurSpeed += 0.1f;
-				CreatePoint();
+				CreatePoint(1);
 				SetScale( 1.2f );
  				CounterBump( 0.5f );
-				TimeSinceSquat = 0;
+				TimeSinceExerciseStopped = 0;
 				Log.Info( $"SQUAT: {ExercisePoints}" );
 				if (cam.Up != null)
 					cam.Up.TextScale += 0.3f;

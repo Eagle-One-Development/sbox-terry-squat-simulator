@@ -14,6 +14,23 @@
 ]
 
 //
+// PunchSpawn
+//
+@PointClass base(BaseProperties_Terry_Squat_Simulator) editormodel( "models/editor/playerstart.vmdl" ) 
+metadata
+{
+	entity_tool_name = "Punch Spawn"
+	entity_tool_group = "Terry Squat Simulator"
+	entity_tool_tip = "Spawn point for punching something at the gym"
+}
+= tss_punch_spawn : ""
+[
+	enable_shadows(boolean) { group = "Rendering" } : "Shadow Casting" : 1 : "Whether this entity should cast shadows or not"
+
+	input SetColor(string) : "Sets the color of this entity. Format is '255 255 255 255'."
+]
+
+//
 // RunSpawn
 //
 @PointClass base(BaseProperties_Terry_Squat_Simulator) editormodel( "models/editor/playerstart.vmdl" ) 

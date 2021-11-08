@@ -3,21 +3,22 @@
 //
 // You don't need to put things in a namespace, but it doesn't hurt.
 //
-namespace MinimalExample
+
+/// <summary>
+/// This is the HUD entity. It creates a RootPanel clientside, which can be accessed
+/// via RootPanel on this entity, or Local.Hud.
+/// </summary>
+public partial class TSSHud : Sandbox.HudEntity<RootPanel>
 {
-	/// <summary>
-	/// This is the HUD entity. It creates a RootPanel clientside, which can be accessed
-	/// via RootPanel on this entity, or Local.Hud.
-	/// </summary>
-	public partial class MinimalHudEntity : Sandbox.HudEntity<RootPanel>
+	public static TSSHud Instance;
+
+	public TSSHud()
 	{
-		public MinimalHudEntity()
+		if ( IsClient )
 		{
-			if ( IsClient )
-			{
-				
-			}
+			Instance = this;
 		}
 	}
-
 }
+
+

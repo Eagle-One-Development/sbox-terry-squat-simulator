@@ -39,6 +39,8 @@ public partial class TSSCamera : Camera
 	public CreditPanel Up;
 	public CreditPanel Down;
 	public TimeSince TimeSinceStart;
+
+	public bool Active;
 	
 
 	Material _myPostProcessingMaterial;
@@ -61,11 +63,15 @@ public partial class TSSCamera : Camera
 	{
 		
 		base.Activated();
-		CamState = CameraState.Intro;
-		IntroComplete = false;
-		JoshWilson = null;
-		TimeSinceStart = 0;
-		Log.Info( "WAIT WHAT" );
+		if ( !Active )
+		{
+			CamState = CameraState.Intro;
+			IntroComplete = false;
+			JoshWilson = null;
+			TimeSinceStart = 0;
+			Log.Info( "WAIT WHAT" );
+			Active = true;
+		}
 
 
 	}
@@ -105,7 +111,7 @@ public partial class TSSCamera : Camera
 		}
 
 		Progress = Math.Clamp( Progress, 0f, 1f );
-		float f = (pawn.TimeSinceSquat - 1f) / 3f;
+		float f = (pawn.TimeSinceExerciseStopped - 1f) / 3f;
 		f = MathF.Pow(f.Clamp( 0, 1f ),3f);
 		TimeSinceState += Time.Delta * (1f - f);
 		TimedProgress = TimedProgress.LerpTo( TimeSinceState / 5f, Time.Delta * 8f );
