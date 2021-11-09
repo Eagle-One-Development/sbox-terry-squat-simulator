@@ -16,6 +16,7 @@ public class PunchQTPanel : Panel
 	public bool Finished;
 	public Label Key;
 	public TimeSince TimeSinceSpawned;
+	public bool Failed;
 	public PunchQTPanel(PunchQT p, Vector2 p2)
 	{
 		Parent = TSSHud.Instance.RootPanel;
@@ -50,6 +51,10 @@ public class PunchQTPanel : Panel
 			Key.Style.Opacity = 0f;
 			Style.Opacity = f;
 			Measure.Style.Opacity = 0f;
+			if ( Failed )
+			{
+				Back.Style.BackgroundColor = Color.Red;
+			}
 		}
 
 		Key.Style.Dirty();

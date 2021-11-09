@@ -65,7 +65,7 @@ public partial class TSSPlayer : Player
 		//
 		Camera = new TSSCamera();
 
-		TimeToNextPunch = 3f;
+		TimeToNextPunch = 1.1f;
 
 		EnableAllCollisions = true;
 		EnableDrawing = true;
@@ -127,6 +127,11 @@ public partial class TSSPlayer : Player
 			DumbBell?.Delete();
 			DumbBell = null;
 			return;
+		}
+
+		if(ExercisePoints > 50 )
+		{
+			SetAnimBool( "Angry", TimeSinceExerciseStopped < 2f );
 		}
 	}
 
@@ -327,7 +332,8 @@ public partial class TSSPlayer : Player
 			{
 				var pt = new PunchQT();
 				pt.Player = this;
-				pt.TargetTime = 2f;
+				pt.TargetTime = 1f;
+				pt.MyTime = 1f;
 				pt.Type = Rand.Int( 0, 3 );
 			}
 

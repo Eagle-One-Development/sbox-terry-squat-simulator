@@ -110,6 +110,24 @@ public partial class PunchQT : Entity
 			}
 		}
 
+		if(MyTime > 0.15f )
+		{
+			if ( Input.Pressed(InputButton.Forward) || Input.Pressed( InputButton.Back ) || Input.Pressed( InputButton.Right ) || Input.Pressed( InputButton.Left ) )
+			{
+
+				if ( IsClient )
+				{
+					Panel.Finished = true;
+					Panel.Failed = true;
+				}
+				if ( IsServer )
+				{
+					Delete();
+				}
+				return;
+			}
+		}
+
 		if ( Panel != null )
 		{
 			//DebugOverlay.ScreenText( new Vector2( Screen.Width / 2 + Panel.Pos.x, Screen.Height / 2 + Panel.Pos.y - 200f ), MyTime.ToString(), 0 );
