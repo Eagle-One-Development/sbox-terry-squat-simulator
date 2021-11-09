@@ -19,38 +19,55 @@ public partial class PunchQT : Entity
 	[Net]
 	public TSSPlayer Player { get; set; }
 
+	
+
 	public PunchQTPanel Panel;
+
+	
+
 
 	public override void Spawn()
 	{
 		base.Spawn();
-		MyTime = TargetTime;
+		MyTime = 1f;
 		Transmit = TransmitType.Always;
-		Log.Info( "I SPAWNED" );
+
+		//Log.Info( "I SPAWNED" );
 	}
 
 	public override void ClientSpawn()
 	{
 		base.ClientSpawn();
-		Log.Info( "I'm ON THE CLIENT, MA" );
+		//Log.Info( "I'm ON THE CLIENT, MA" );
 
 		Panel = new PunchQTPanel( this, new Vector2( Rand.Float(-200f, 200f ), Rand.Float( -200f, 200f) ) );
+		switch(Type)
+		{
+			case 0:
+			Panel.Key.Text = "W";
+				break;
+			case 1:
+				Panel.Key.Text = "S";
+				break;
+			case 2:
+				Panel.Key.Text = "A";
+				break;
+			case 3:
+				Panel.Key.Text = "D";
+				break;
+		}
 	}
 
 	[Event.Tick]
 	public void Sim()
 	{
-		
-		
-
-		bool b = false;
-
-		if(Player == null )
+		if (Player == null )
 		{
 			return;
 		}
 
-		if(Type == 0 )
+		bool b = false;
+		if (Type == 0 )
 		{
 			b = Input.Pressed( InputButton.Forward );
 		}
@@ -62,30 +79,50 @@ public partial class PunchQT : Entity
 		{
 			b = Input.Pressed( InputButton.Left );
 		}
-		if ( Type == 0 )
+		if ( Type == 3 )
 		{
 			b = Input.Pressed( InputButton.Right );
 		}
 
-		MyTime -= Time.Delta * 0.1f;
+		if(IsServer && Input.Pressed( InputButton.Reload ) )
+		{
+			Log.Info( "SERVER SIDED INPUT" );
+		}
 
-		if(MyTime > -0.1f && MyTime < 0.1f )
+		MyTime -= Time.Delta;
+
+		if(MyTime > -0.15f && MyTime < 0.15f )
 		{
 			if ( b )
 			{
-				Player.CreatePoint(1);
-				Player.ExercisePoints++;
-				Delete();
+				Log.Info( IsServer );
+				ConsoleSystem.Run( "Punch" );
+				
+				if ( IsClient )
+				{
+					Panel.Finished = true;
+				}
+				
+				if ( IsServer )
+				{
+					Delete();
+				}
 			}
 		}
 
-		DebugOverlay.Text( Position, MyTime.ToString() );
+		if ( Panel != null )
+		{
+			//DebugOverlay.ScreenText( new Vector2( Screen.Width / 2 + Panel.Pos.x, Screen.Height / 2 + Panel.Pos.y - 200f ), MyTime.ToString(), 0 );
+		}
 
 		if(MyTime < -0.1f )
 		{
 			if ( IsClient )
 			{
-				Panel?.Delete( true );
+				if ( !Panel.Finished )
+				{
+					Panel?.Delete( true );
+				}
 			}
 			if ( IsServer )
 			{

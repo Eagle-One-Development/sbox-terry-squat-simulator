@@ -48,6 +48,19 @@ namespace MinimalExample
 			
 		}
 
+		[ServerCmd( "punch" )]
+		public static void Punch( )
+		{
+			if ( ConsoleSystem.Caller.Pawn is TSSPlayer player )
+			{
+
+				
+				player.Punch();
+
+			}
+
+		}
+
 		public TSSGame()
 		{
 			if ( IsServer )

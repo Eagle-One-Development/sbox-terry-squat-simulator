@@ -43,6 +43,7 @@ public partial class TSSPlayer : Player
 	public float TimeToNextPunch { get; set; }
 
 	
+	
 
 	public override void Respawn()
 	{
@@ -87,6 +88,7 @@ public partial class TSSPlayer : Player
 		MyExercise = state;
 	}
 
+	[ClientRpc]
 	public void CreatePoint(int i)
 	{
 		if ( IsClient )
@@ -142,10 +144,8 @@ public partial class TSSPlayer : Player
 		SimulateActiveChild( cl, ActiveChild );
 		TSSCamera cam = (Camera as TSSCamera);
 
-		if ( cam == null )
-		{
-			return;
-		}
+		
+		
 
 
 		switch ( MyExercise )
@@ -200,6 +200,7 @@ public partial class TSSPlayer : Player
 		//Log.Info( "tCurSpeed: " + tCurSpeed );
 
 		Scale = Scale.LerpTo( 1, Time.Delta * 10f );
+		//Log.Info( Scale );
 
 		if ( cam.SCounter != null )
 		{
@@ -234,9 +235,13 @@ public partial class TSSPlayer : Player
 	{
 		SetAnimInt( "squat", -1 );
 		SetAnimFloat("move_x", MathX.LerpTo( 0, 350f, (curSpeed * 4f).Clamp(0,1f)) );
-		
-		
-	
+
+		if ( cam == null )
+		{
+
+			return;
+		}
+
 
 		if ( TimeSinceRun < 3f && squat != -1)
 		{
@@ -277,19 +282,55 @@ public partial class TSSPlayer : Player
 
 	}
 
+	public void Punch()
+	{
+		ExercisePoints++;
+		tCurSpeed += 0.1f;
+		CreatePoint( 1 );
+		Scale = 1.2f;
+		CounterBump( 0.5f );
+		TimeSinceExerciseStopped = 0;
+
+		
+
+		Log.Info( "SORRY WHAT?" );
+
+		if(squat == 0 )
+		{
+			squat = 1;
+			return;
+		}
+
+		if(squat == 1 )
+		{
+			squat = 0;
+			return;
+		}
+	}
+
 	public void Punching( TSSCamera cam )
 	{
+
+		if ( cam == null )
+		{
+			return;
+		}
+
 		SetAnimInt( "punch", squat );
 		SetAnimInt( "squat", -1 );
 
 		if(TimeSincePunch > TimeToNextPunch )
 		{
 			TimeSincePunch = 0;
+
 			if ( IsServer )
 			{
 				var pt = new PunchQT();
 				pt.Player = this;
+				pt.TargetTime = 2f;
+				pt.Type = Rand.Int( 0, 3 );
 			}
+
 			
 		}
 
@@ -303,6 +344,11 @@ public partial class TSSPlayer : Player
 
 	public void Squatting(TSSCamera cam)
 	{
+
+		if(cam == null )
+		{
+			return;
+		}
 		 
 		SetAnimInt( "squat", squat );
 
