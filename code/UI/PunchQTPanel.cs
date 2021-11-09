@@ -34,7 +34,7 @@ public class PunchQTPanel : Panel
 	public override void Tick()
 	{
 		base.Tick();
-		float f = (1f - MathF.Pow( (TimeSinceSpawned / 0.5f).Clamp( 0, 1f ), 3.0f ));
+		float f = (1f - MathF.Pow( (TimeSinceSpawned / 0.3f).Clamp( 0, 1f ), 3.0f ));
 		PanelTransform pt = new PanelTransform();
 		pt.AddTranslateX( Length.Pixels( (Screen.Width / 2) + Pos.x) );
 		pt.AddTranslateY( Length.Pixels( (Screen.Height / 2) + Pos.y ) );
