@@ -20,6 +20,9 @@ public partial class TSSPlayer : Player
 	[Net]
 	public Exercise MyExercise { get; set; }
 
+	[Net]
+	public static TSSPlayer Instance { get; set; }
+
 	[Net, Predicted]
 	public int squat { get; set; }
 	[Net, Predicted]
@@ -42,8 +45,16 @@ public partial class TSSPlayer : Player
 	[Net]
 	public float TimeToNextPunch { get; set; }
 
-	
-	
+
+	public override void CreateHull()
+	{
+		CollisionGroup = CollisionGroup.Player;
+		AddCollisionLayer( CollisionLayer.Player );
+		SetupPhysicsFromAABB( PhysicsMotionType.Keyframed, new Vector3( -8, -8, 0 ), new Vector3( 8, 8, 72 ) );
+
+		MoveType = MoveType.MOVETYPE_WALK;
+		EnableHitboxes = true;
+	}
 
 	public override void Respawn()
 	{
@@ -76,7 +87,7 @@ public partial class TSSPlayer : Player
 		DumbBell.SetParent( this, "head" );
 		DumbBell.Rotation = this.Rotation * Rotation.From( 0, 0, 90 );
 
-		
+		Instance = this;
 
 		base.Respawn();
 	}
@@ -86,6 +97,36 @@ public partial class TSSPlayer : Player
 		Position = pos;
 		Rotation = rot;
 		MyExercise = state;
+	}
+
+	public void ClickFood()
+	{
+		if ( Input.Pressed( InputButton.Attack1 ) )
+		{
+			TraceResult tr2 = Trace.Ray(Input.Cursor, 1000f ).HitLayer(CollisionLayer.All, true).Run();
+
+			//DebugOverlay.Line( tr2.StartPos, tr2.EndPos, 10f, false );
+			//DebugOverlay.Sphere( tr2.EndPos, 10f, Color.Red, false, 10f );
+
+			if ( tr2.Hit )
+			{
+				Log.Info( tr2.Entity.GetType().ToString() );
+				if ( tr2.Entity is Food food )
+				{
+					if ( IsServer )
+					{
+						food.RemoveFood();
+					}
+				}
+			}
+		}
+	}
+
+
+	public override void StartTouch( Entity other )
+	{
+		base.StartTouch( other );
+		Log.Info( other );
 	}
 
 	[ClientRpc]
@@ -102,6 +143,7 @@ public partial class TSSPlayer : Player
 			p.TextScale = 1.5f;
 		}
 	}
+
 
 	public void ExerciseTimeline()
 	{
@@ -126,6 +168,7 @@ public partial class TSSPlayer : Player
 			ExercisePoints++;
 			DumbBell?.Delete();
 			DumbBell = null;
+
 			return;
 		}
 
@@ -149,9 +192,21 @@ public partial class TSSPlayer : Player
 		SimulateActiveChild( cl, ActiveChild );
 		TSSCamera cam = (Camera as TSSCamera);
 
+		if ( Input.Pressed( InputButton.Reload ) && IsServer)
+		{
+			Vector3 position = Transform.Position + Vector3.Up * 64f;
+			position += Rotation.Forward * Rand.Float( 30f, 50f );
+			position += Vector3.Up * Rand.Float( -40f, 20f );
 
-		
+			float f = Rand.FromArray(new[] { -1f, 1f });
 
+			position += Rotation.Right * f * 20f;
+			position += Rotation.Right * f * Rand.Float( 0f, 40f );
+			var food = new Food();
+			food.Position = position;
+		}
+
+		ClickFood();
 
 		switch ( MyExercise )
 		{

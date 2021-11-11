@@ -17,6 +17,7 @@ public partial class TSSHud : Sandbox.HudEntity<RootPanel>
 		if ( IsClient )
 		{
 			Instance = this;
+			RootPanel.AddChild<UIPanel>();
 		}
 	}
 }
