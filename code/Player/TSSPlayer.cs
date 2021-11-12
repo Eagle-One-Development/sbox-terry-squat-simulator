@@ -1,6 +1,7 @@
 ﻿using Sandbox;
 using System;
 using System.Linq;
+using MinimalExample;
 
 
 public enum Exercise
@@ -44,6 +45,9 @@ public partial class TSSPlayer : Player
 	public TimeSince TimeSincePunch { get; set; }
 	[Net]
 	public float TimeToNextPunch { get; set; }
+
+	[Net]
+	public bool MusicStarted { get; set; }
 
 
 	public override void CreateHull()
@@ -122,6 +126,11 @@ public partial class TSSPlayer : Player
 		}
 	}
 
+	public async void PlayMusic()
+	{
+		await GameTask.Delay( 1000 );
+		TSSGame.CurrentGame.StartMusic();
+	}
 
 	public override void StartTouch( Entity other )
 	{
@@ -129,19 +138,69 @@ public partial class TSSPlayer : Player
 		Log.Info( other );
 	}
 
-	[ClientRpc]
-	public void CreatePoint(int i)
+
+	public void GivePoints( int i, bool fall = false )
 	{
+		SetScale( 1.2f );
+		CounterBump( 0.5f );
+		ExercisePoints += i;
+		TimeSinceExerciseStopped = 0;
+		tCurSpeed += 0.1f;
+		CreatePoint( 1, true, 5 );
+	}
+
+	public void GivePointsAtPosition( int i,Vector3 pos, bool fall = false )
+	{
+		SetScale( 1.2f );
+		CounterBump( 0.5f );
+		ExercisePoints += i;
+		TimeSinceExerciseStopped = 0;
+		tCurSpeed += 0.1f;
+		CreatePointAtPosition( 1, pos, fall, i );
+	}
+
+
+	[ClientRpc]
+	public void CreatePoint( int i, bool fall = false, int count = 1)
+	{
+
+		Log.Info( "HEY");
 		if ( IsClient )
 		{
-			var p = new ExercisePointPanel( i, ExercisePoints );
-			Vector3 pos = Position + Vector3.Up * 48f;
-			Vector3 dir = ((Camera as TSSCamera).Position - pos).Normal;
-			Rotation dirRand = Rotation.From( Rand.Float(-45f,45f),Rand.Float(-45f,45f),Rand.Float(-45f,45f) );
-			p.Position =  pos + (dir * dirRand) * 28f;
-			p.InitialPosition = p.Position;
-			p.TextScale = 1.5f;
+			for ( int j = 0; j < count; j++ )
+			{
+				var p = new ExercisePointPanel( i, ExercisePoints );
+				Vector3 pos = Position + Vector3.Up * 48f;
+
+				Vector3 dir = ((Camera as TSSCamera).Position - pos).Normal;
+				Rotation dirRand = Rotation.From( Rand.Float( -45f, 45f ), Rand.Float( -45f, 45f ), Rand.Float( -45f, 45f ) );
+				p.Position = pos + (dir * dirRand) * 28f;
+
+				p.InitialPosition = p.Position;
+				p.TextScale = 1.5f;
+				p.Fall = fall;
+			}
 		}
+		
+	}
+
+	[ClientRpc]
+	public void CreatePointAtPosition( int i, Vector3 pos,bool fall = false, int count = 1 )
+	{
+
+		Log.Info( "HEY" );
+		if ( IsClient )
+		{
+			for ( int j = 0; j < count; j++ )
+			{
+				var p = new ExercisePointPanel( i, ExercisePoints );
+				p.Position = pos;
+				p.InitialPosition = p.Position;
+				p.TextScale = 1.5f;
+				p.Fall = fall;
+			}
+		}
+
 	}
 
 
@@ -184,6 +243,12 @@ public partial class TSSPlayer : Player
 	public override void Simulate( Client cl )
 	{
 		base.Simulate( cl );
+
+		if ( !MusicStarted )
+		{
+			PlayMusic();
+			MusicStarted = true;
+		}
 
 		//
 		// If you have active children (like a weapon etc) you should call this to 

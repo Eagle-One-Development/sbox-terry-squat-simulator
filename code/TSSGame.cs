@@ -61,6 +61,8 @@ namespace MinimalExample
 
 		}
 
+		public static TSSGame CurrentGame;
+
 		public TSSGame()
 		{
 			if ( IsServer )
@@ -80,6 +82,7 @@ namespace MinimalExample
 				
 			}
 
+			CurrentGame = this;
 			LoadPP();
 		}
 

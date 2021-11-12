@@ -13,6 +13,7 @@ public class ExercisePointPanel : WorldPanel
 	public float Life;
 	public bool Fall;
 	public Vector3 InitialPosition;
+	public Vector3 Velocity;
 
 		public string[] quips = new[]
 		{
@@ -54,6 +55,8 @@ public class ExercisePointPanel : WorldPanel
 
 		InitialPosition = Position;
 
+		Velocity = Vector3.Up * Rand.Float( 40f, 50f ) + Vector3.Forward * Rand.Float( -30f, 30f ) + Vector3.Right * Rand.Float( -30f, 30f );
+
 		StyleSheet.Load( "/ui/ExercisePointPanel.scss" );
 	}
 
@@ -73,6 +76,13 @@ public class ExercisePointPanel : WorldPanel
 		{
 			Position = InitialPosition + Vector3.Up * 20f * MathF.Pow(TimeSinceAlive / Life, 2.0f);
 			TextScale = TextScale.LerpTo( 1f, Time.Delta * 4f );
+		}
+		else
+		{
+			TextScale = TextScale.LerpTo( 1f, Time.Delta * 4f );
+			Position = InitialPosition;
+			InitialPosition += Velocity * Time.Delta;
+			Velocity += Vector3.Down * 150f * Time.Delta;
 		}
 
 

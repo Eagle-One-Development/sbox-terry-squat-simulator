@@ -48,7 +48,16 @@ public partial class Food : ModelEntity {
 		PickupTrigger.Position = Position;
 		PickupTrigger.EnableAllCollisions = true;
 		PickupTrigger.SetupPhysicsFromSphere( PhysicsMotionType.Keyframed, Vector3.Zero + Vector3.Up * 2.5f, 5f );
+		CreatePanel();
+	}
 
+	public FoodPanel FoodPan;
+
+	[ClientRpc]
+	public virtual void CreatePanel()
+	{
+		FoodPan = new FoodPanel( new Vector2( 300, 150 ), Color.White, "FOOD" );
+		
 	}
 
 	public override void Touch( Entity other )
@@ -83,13 +92,14 @@ public partial class Food : ModelEntity {
 
 	public virtual void Consume()
 	{
-
+		Player.GivePointsAtPosition( 5, Position, true );
 	}
 
 	[ClientRpc]
 	public void RemoveModel()
 	{
 		FoodModel.Delete();
+		FoodPan.Delete( true );
 	}
 
 	public void RemoveFood()
@@ -121,7 +131,7 @@ public partial class Food : ModelEntity {
 		FoodModel.Position = Vector3.Lerp( FoodModel.Position, Transform.Position, Time.Delta * 20f );
 		FoodModel.Rotation = FoodModel.Rotation.RotateAroundAxis( Vector3.Up, Time.Delta * RotationSpeed );
 		FoodModel.Transform = new Transform(FoodModel.Position,FoodModel.Rotation, Out( TimeSinceSpawned / 0.5f ));
-		
+		FoodPan.Position = this.Position;
 	}
 
 	public float Out( float k )

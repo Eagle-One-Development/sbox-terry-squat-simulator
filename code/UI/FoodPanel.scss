@@ -1,3 +1,22 @@
-﻿FoodPanel{
+﻿FoodPanel {
+    
+    justify-content: center;
+    align-items: center;
 
+
+    .text {
+        position: absolute;
+        overflow: visible;
+        font-size: 100px;
+        justify-content: center;
+        align-content: center;
+        font-family: VCR_OSD_MONO;
+        color: #fff;
+        top: 100%;
+
+        &.top{
+            top: -100%;
+            
+        }
+    }
 }
