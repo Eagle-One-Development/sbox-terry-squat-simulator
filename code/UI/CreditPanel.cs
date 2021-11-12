@@ -8,6 +8,8 @@ public class CreditPanel : WorldPanel
 	public float FontSize;
 	public Label l;
 	public float TextScale;
+	public bool Bop;
+	private float Bump;
 	public CreditPanel(string s, int x, int y)
 	{
 		Opacity = 1f;
@@ -17,18 +19,28 @@ public class CreditPanel : WorldPanel
 		PanelBounds = new Rect( -(width/2), -height, width, height);
 		TextScale = 1f;
 		l = Add.Label( s, "title" );
-
+		Bump = 1f;
 		StyleSheet.Load( "/ui/CreditPanel.scss" );
+	}
+
+	[Event("OtherBeat")]
+	public void BopToTheBeat()
+	{
+		if ( Bop )
+		{
+			Bump = 1.2f;
+		}
 	}
 
 	public override void Tick()
 	{
 		base.Tick();
 		Style.Opacity = Opacity;
-		
+
+		Bump = Bump.LerpTo( 1f, Time.Delta * 8f );
 		
 		Style.Dirty();
-		l.Style.FontSize = Length.Pixels( FontSize * TextScale);
+		l.Style.FontSize = Length.Pixels( FontSize * TextScale * Bump);
 		
 	}
 }

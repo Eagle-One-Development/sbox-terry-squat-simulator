@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Sandbox;
-
+using MinimalExample;
 public enum CameraState
 {
 	Static = 0,
@@ -144,6 +144,12 @@ public partial class TSSCamera : Camera
 		
 		var pawn = Local.Pawn as TSSPlayer;
 		var center = pawn.Position + Vector3.Up * CamHeight;
+
+		if(Progress > 0.01f )
+		{
+			TSSGame.CurrentGame.SetTarVolume( 6 );
+		}
+
 		//CreditPanel credit = null;
 		if ( Progress < 0.25f )
 		{
@@ -155,11 +161,13 @@ public partial class TSSCamera : Camera
 			JoshWilson.Position = pawn.Position + Vector3.Up * 10f + pawn.Rotation.Forward * -20f;
 			JoshWilson.Rotation = Rotation.From( 0, 90, 0 );
 			JoshWilson.Opacity = ((Progress - 0.01f) / 0.05f).Clamp( 0, 1f );
+			JoshWilson.Bop = true;
 
 			Presents ??= new CreditPanel( "Presents", 3200, 3200 );
 			Presents.Position = pawn.Position + Vector3.Up * -50f + pawn.Rotation.Forward * 9f;
 			Presents.Rotation = Rotation.From( 0, 90, 0 );
 			Presents.Opacity = ((Progress - 0.1f) / 0.05f).Clamp( 0, 1f );
+			Presents.Bop = true;
 
 			float f = ((TimeSinceStart - 2f) / 5f).Clamp( 0, 1f );
 
@@ -195,6 +203,7 @@ public partial class TSSCamera : Camera
 			Assoc.Rotation = Rotation.From( 0, 35, 0 );
 			Assoc.Position = pawn.Position + Assoc.Rotation.Forward * 12f;
 			Assoc.Opacity = 1f;
+			Assoc.Bop = true;
 			Assoc.FontSize = 100f;
 
 			Dawdle ??= new CreditPanel( "Dawdle", 3200, 400 );
@@ -219,6 +228,8 @@ public partial class TSSCamera : Camera
 			Position = center + Rotation.FromYaw(yaw).Forward * CamDistance;
 			Rotation = Rotation.LookAt( center - Position, Vector3.Up );
 
+			TSSGame.CurrentGame.SetTarVolume( 0 );
+
 		}
 
 		
@@ -240,6 +251,8 @@ public partial class TSSCamera : Camera
 			center = pawn.Position + Vector3.Up * CamHeight;
 			Position = center + pawn.Rotation.Forward * CamDistance;
 			Rotation = Rotation.LookAt( (center - Position), Vector3.Up );
+
+			TSSGame.CurrentGame.SetTarVolume( 5 );
 		}
 
 		if ( Progress >= 0.75f && Progress <= 1f )
@@ -253,7 +266,9 @@ public partial class TSSCamera : Camera
 			TSS.Position = pawn.Position + Vector3.Up * -26f + pawn.Rotation.Forward * 20f;
 			TSS.Rotation = Rotation.From( 0, 90, 0 );
 			TSS.Opacity = p * 2f;
-			TSS.TextScale = pawn.Scale;
+			TSS.Bop = true;
+
+			TSSGame.CurrentGame.SetTarVolume( 4 );
 
 
 			center = pawn.Position + Vector3.Up * CamHeight;
