@@ -25,7 +25,7 @@ namespace MinimalExample
 
 		public void FrameBeats()
 		{
-			SongPosInBeats = RealTimeSinceSongStart / SecondsPerBeat;
+			SongPosInBeats = Music[0].ElapsedTime / SecondsPerBeat;
 			if(Beats < SongPosInBeats )
 			{
 				Beats++;
@@ -45,6 +45,13 @@ namespace MinimalExample
 					Log.Info( $"BEAT TO THE BOP: {Beats}\nCurrent Time:{RealTimeSinceSongStart}" );
 					Log.Info( "1 Minute!" );
 				}
+
+				if ( Music[0].Finished )
+				{
+					Log.Info( "FINISHED LOOP" );
+				}
+
+				DebugOverlay.ScreenText( new Vector2( 200, 200 ), $"Music 0: {Music[0].ElapsedTime}\nMusic 1: {Music[1].ElapsedTime}", 0.41f );
 			}
 		}
 

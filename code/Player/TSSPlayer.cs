@@ -49,6 +49,17 @@ public partial class TSSPlayer : Player
 	[Net]
 	public bool MusicStarted { get; set; }
 
+	void Dress()
+	{
+		var _pants = new ModelEntity( "models/clothes/fitness/shorts_fitness.vmdl", this );
+		var _shirt = new ModelEntity( "models/clothes/fitness/shirt_fitness.vmdl", this );
+		var _shoes = new ModelEntity( "models/clothes/fitness/shoes_sneakers.vmdl", this );
+		var _wrist = new ModelEntity( "models/clothes/fitness/sweatband_wrists.vmdl", this );
+		var _headBand = new ModelEntity( "models/clothes/fitness/sweatband_head.vmdl", this );
+
+		var _hair = new ModelEntity( "models/clothes/fitness/hair_head.vmdl", this );
+		var _bodyHair = new ModelEntity( "models/clothes/fitness/hair_body.vmdl", this );
+	}
 
 	public override void CreateHull()
 	{
@@ -90,6 +101,8 @@ public partial class TSSPlayer : Player
 		DumbBell = new ModelEntity( "models/dumbbll/dumbbell.vmdl" );
 		DumbBell.SetParent( this, "head" );
 		DumbBell.Rotation = this.Rotation * Rotation.From( 0, 0, 90 );
+
+		Dress();
 
 		Instance = this;
 
