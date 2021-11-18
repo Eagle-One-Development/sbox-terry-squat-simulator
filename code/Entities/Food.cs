@@ -65,7 +65,7 @@ public partial class Food : ModelEntity {
 		base.Touch( other );
 
 
-		Log.Info( other );
+		
 
 		if(other is TSSPlayer player && TimeSinceSpawned > 0.5f)
 		{

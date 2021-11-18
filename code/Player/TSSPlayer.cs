@@ -49,6 +49,8 @@ public partial class TSSPlayer : Player
 	[Net]
 	public bool MusicStarted { get; set; }
 
+	public ModelEntity SodaCan;
+
 	void Dress()
 	{
 		var _pants = new ModelEntity( "models/clothes/fitness/shorts_fitness.vmdl", this );
@@ -105,6 +107,14 @@ public partial class TSSPlayer : Player
 		Dress();
 
 		Instance = this;
+
+
+		SodaCan = new ModelEntity();
+		SodaCan.SetModel( "models/soda/soda.vmdl" );
+		SodaCan.SetParent( this, "Soda" );
+		SodaCan.LocalPosition = Vector3.Zero;
+		SodaCan.LocalRotation = Rotation.Identity;
+		
 
 		base.Respawn();
 	}
@@ -272,16 +282,17 @@ public partial class TSSPlayer : Player
 
 		if ( Input.Pressed( InputButton.Reload ) && IsServer)
 		{
-			Vector3 position = Transform.Position + Vector3.Up * 64f;
-			position += Rotation.Forward * Rand.Float( 30f, 50f );
-			position += Vector3.Up * Rand.Float( -40f, 20f );
-
-			float f = Rand.FromArray(new[] { -1f, 1f });
-
-			position += Rotation.Right * f * 20f;
-			position += Rotation.Right * f * Rand.Float( 0f, 40f );
-			var food = new Food();
-			food.Position = position;
+			//Vector3 position = Transform.Position + Vector3.Up * 64f;
+			//position += Rotation.Forward * Rand.Float( 30f, 50f );
+			//position += Vector3.Up * Rand.Float( -40f, 20f );
+			//
+			//float f = Rand.FromArray(new[] { -1f, 1f });
+			//
+			//position += Rotation.Right * f * 20f;
+			//position += Rotation.Right * f * Rand.Float( 0f, 40f );
+			//var food = new Food();
+			//food.Position = position;
+			SetAnimBool( "Drink", true );
 		}
 
 		ClickFood();
