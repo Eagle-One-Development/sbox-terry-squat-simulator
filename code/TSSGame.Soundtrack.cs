@@ -51,7 +51,7 @@ namespace MinimalExample
 					Log.Info( "FINISHED LOOP" );
 				}
 
-				DebugOverlay.ScreenText( new Vector2( 200, 200 ), $"Music 0: {Music[0].ElapsedTime}\nMusic 1: {Music[1].ElapsedTime}", 0.41f );
+				//DebugOverlay.ScreenText( new Vector2( 200, 200 ), $"Music 0: {Music[0].ElapsedTime}\nMusic 1: {Music[1].ElapsedTime}", 0.41f );
 			}
 		}
 

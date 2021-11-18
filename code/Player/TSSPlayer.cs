@@ -259,7 +259,7 @@ public partial class TSSPlayer : Player
 		SimulateActiveChild( cl, ActiveChild );
 		TSSCamera cam = (Camera as TSSCamera);
 
-		if ( Input.Pressed( InputButton.Reload ) && IsServer)
+		if ( Input.Pressed( InputButton.Reload ) && IsClient)
 		{
 			//Vector3 position = Transform.Position + Vector3.Up * 64f;
 			//position += Rotation.Forward * Rand.Float( 30f, 50f );
@@ -271,7 +271,10 @@ public partial class TSSPlayer : Player
 			//position += Rotation.Right * f * Rand.Float( 0f, 40f );
 			//var food = new Food();
 			//food.Position = position;
-			
+			var pt = new YogaQT();
+			pt.Player = this;
+
+
 		}
 
 
