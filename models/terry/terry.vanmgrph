@@ -6656,7 +6656,7 @@
 				m_children = 
 				[
 					{
-						m_id = 1368301222
+						m_id = 1695375272
 					},
 					{
 						m_id = 2008467836
@@ -11060,7 +11060,7 @@
 			{
 				_class = "CSequenceAnimNode"
 				m_sName = "Unnamed"
-				m_vecPosition = [ 3376.0, -304.0 ]
+				m_vecPosition = [ 3344.0, -240.0 ]
 				m_nNodeID = 
 				{
 					m_id = 754080165
@@ -13698,7 +13698,7 @@
 			{
 				_class = "CStateMachineAnimNode"
 				m_sName = "IDLE STATES - menu_exit_panic"
-				m_vecPosition = [ 2912.0, -272.0 ]
+				m_vecPosition = [ 2880.0, -192.0 ]
 				m_nNodeID = 
 				{
 					m_id = 893934444
@@ -19345,7 +19345,7 @@
 			{
 				_class = "CStateMachineAnimNode"
 				m_sName = "Unnamed"
-				m_vecPosition = [ 3360.0, -464.0 ]
+				m_vecPosition = [ 3328.0, -512.0 ]
 				m_nNodeID = 
 				{
 					m_id = 1368301222
@@ -23520,7 +23520,7 @@
 			{
 				_class = "CStateMachineAnimNode"
 				m_sName = "Unnamed"
-				m_vecPosition = [ 3584.0, -432.0 ]
+				m_vecPosition = [ 3552.0, -400.0 ]
 				m_nNodeID = 
 				{
 					m_id = 1695375272
@@ -23556,7 +23556,7 @@
 								{
 									m_id = 1322567288
 								}
-								m_bReset = false
+								m_bReset = true
 								m_resetCycleOption = "Beginning"
 								m_flFixedCycleValue = 0.0
 								m_blendCurve = 
@@ -23573,16 +23573,16 @@
 						m_name = "None"
 						m_childNodeID = 
 						{
-							m_id = 4294967295
+							m_id = 1368301222
 						}
 						m_stateID = 
 						{
 							m_id = 2094858461
 						}
-						m_position = [ 48.0, -128.0 ]
+						m_position = [ 48.0, -160.0 ]
 						m_bIsStartState = true
 						m_bIsEndtState = false
-						m_bIsPassthrough = false
+						m_bIsPassthrough = true
 						m_bIsRootMotionExclusive = false
 						m_bAlwaysEvaluate = false
 					},
@@ -23601,7 +23601,7 @@
 										m_bIsFinished = true
 									},
 								]
-								m_blendDuration = 0.0
+								m_blendDuration = 0.2
 								m_destState = 
 								{
 									m_id = 2094858461
@@ -23629,7 +23629,7 @@
 						{
 							m_id = 1322567288
 						}
-						m_position = [ 48.0, 32.0 ]
+						m_position = [ 48.0, 16.0 ]
 						m_bIsStartState = false
 						m_bIsEndtState = false
 						m_bIsPassthrough = false

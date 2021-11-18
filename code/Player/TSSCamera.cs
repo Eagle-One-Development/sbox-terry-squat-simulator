@@ -110,6 +110,13 @@ public partial class TSSCamera : Camera
 			break;
 		}
 
+		if ( pawn.GetAnimBool( "Drink" ) && pawn.TimeSinceSoda > 0.05f)
+		{
+			var trans = pawn.GetBoneTransform( "Camera" );
+			Position = trans.Position;
+			Rotation = trans.Rotation * Rotation.From(90,0,-90);
+		}
+
 		Progress = Math.Clamp( Progress, 0f, 1f );
 		float f = (pawn.TimeSinceExerciseStopped - 1f) / 3f;
 		f = MathF.Pow(f.Clamp( 0, 1f ),3f);
