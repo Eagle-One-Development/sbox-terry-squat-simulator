@@ -112,6 +112,46 @@ public partial class TSSPlayer : Player
 
 	}
 
+	[ServerCmd("yoga_pose")]
+	public static void SetPose(int i)
+	{
+		Log.Info( "YOGA!" );
+		TSSPlayer.Instance.SetAnimInt( "YogaPoses", i );
+		TSSPlayer.Instance.SetClientPose( i );
+	}
+
+	[ClientRpc]
+	public void SetClientPose(int i )
+	{
+		SetAnimInt( "YogaPoses", i );
+	}
+	
+
+	public void Yogaing(TSSCamera cam )
+	{
+		if ( cam == null )
+		{
+			return;
+		}
+		
+		
+		SetAnimBool( "b_grounded", false );
+
+		if ( TimeSinceYoga > 3.05f )
+		{
+			TimeSinceYoga = 0;
+
+			if ( IsClient )
+			{
+				var pt = new YogaQT();
+				pt.Player = this;
+
+			}
+
+
+		}
+	}
+
 	/// <summary>
 	/// The squatting exercise
 	/// </summary>

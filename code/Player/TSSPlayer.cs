@@ -8,7 +8,8 @@ public enum Exercise
 {
 	Squat = 0,
 	Run = 1,
-	Punch = 2
+	Punch = 2,
+	Yoga = 3
 }
 public partial class TSSPlayer : Player
 {
@@ -45,6 +46,8 @@ public partial class TSSPlayer : Player
 	public TimeSince TimeSincePunch { get; set; }
 	[Net]
 	public float TimeToNextPunch { get; set; }
+
+	public TimeSince TimeSinceYoga { get; set; }
 
 	[Net]
 	public bool MusicStarted { get; set; }
@@ -216,7 +219,20 @@ public partial class TSSPlayer : Player
 			return;
 		}
 
-		if(ExercisePoints > 50 )
+		//Switch to the punch state once we reach 200 exercie points
+		//TODO: Move this kind of behavior to some kind of scripting system.
+		if ( ExercisePoints == 400 && IsServer )
+		{
+			var ent = Entity.All.OfType<SquatSpawn>().First();
+			ChangeExercise( Exercise.Yoga, ent.Transform.Position, ent.Transform.Rotation );
+			ExercisePoints++;
+			DumbBell?.Delete();
+			DumbBell = null;
+
+			return;
+		}
+
+		if (ExercisePoints > 50 )
 		{
 			SetAnimBool( "Angry", TimeSinceExerciseStopped < 2f );
 		}
@@ -273,10 +289,13 @@ public partial class TSSPlayer : Player
 			//food.Position = position;
 			var pt = new YogaQT();
 			pt.Player = this;
+			
 
 
 		}
 
+
+		
 
 		if(TimeSinceSoda > 1.7f )
 		{
@@ -304,6 +323,9 @@ public partial class TSSPlayer : Player
 				break;
 			case Exercise.Punch:
 				Punching( cam );
+				break;
+			case Exercise.Yoga:
+				Yogaing( cam );
 				break;
 		}
 

@@ -16,16 +16,18 @@ namespace MinimalExample
 		public float[] tarVolumes;
 		public RealTimeSince RealTimeSinceSongStart;
 
+		public double SongStartTime;
+
 		//This is going to require more explanation. It's basically a way of tracking when a "beat" in a song happens, we can use this for some basic effects
 		#region Beats
 		public int Beats;
-		public float SongPosInBeats;
-		public float SecondsPerBeat;
+		public double SongPosInBeats;
+		public double SecondsPerBeat;
 		#endregion
 
 		public void FrameBeats()
 		{
-			SongPosInBeats = Music[0].ElapsedTime / SecondsPerBeat;
+			SongPosInBeats = (Time.Sound - SongStartTime) / SecondsPerBeat;
 			if(Beats < SongPosInBeats )
 			{
 				Beats++;
@@ -51,7 +53,6 @@ namespace MinimalExample
 					Log.Info( "FINISHED LOOP" );
 				}
 
-				//DebugOverlay.ScreenText( new Vector2( 200, 200 ), $"Music 0: {Music[0].ElapsedTime}\nMusic 1: {Music[1].ElapsedTime}", 0.41f );
 			}
 		}
 
@@ -72,7 +73,7 @@ namespace MinimalExample
 				Music[i].SetVolume( 0f );
 			}
 			SecondsPerBeat = 60f / 140f;
-			RealTimeSinceSongStart = 0;
+			SongStartTime = Time.Sound;
 			//Sound.FromScreen( "music_tens07" );
 		}
 

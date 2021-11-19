@@ -44,16 +44,16 @@ public partial class PunchQT : Entity
 		switch(Type)
 		{
 			case 0:
-			Panel.Key.Text = Input.GetKeyWithBinding("+iv_forward");
+			Panel.Key.Text = Input.GetKeyWithBinding("+iv_forward").ToUpper();
 				break;
 			case 1:
-				Panel.Key.Text = Input.GetKeyWithBinding( "+iv_back" );
+				Panel.Key.Text = Input.GetKeyWithBinding( "+iv_back" ).ToUpper();
 				break;
 			case 2:
-				Panel.Key.Text = Input.GetKeyWithBinding( "+iv_left" );
+				Panel.Key.Text = Input.GetKeyWithBinding( "+iv_left" ).ToUpper();
 				break;
 			case 3:
-				Panel.Key.Text = Input.GetKeyWithBinding( "+iv_right" );
+				Panel.Key.Text = Input.GetKeyWithBinding( "+iv_right" ).ToUpper();
 				break;
 		}
 	}

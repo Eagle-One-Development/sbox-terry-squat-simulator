@@ -794,6 +794,29 @@
 				m_bPredicted = false
 				m_bDefaultValue = false
 			},
+			{
+				_class = "CEnumAnimParameter"
+				m_name = "YogaPoses"
+				m_id = 
+				{
+					m_id = 389702832
+				}
+				m_previewButton = "ANIMPARAM_BUTTON_NONE"
+				m_bNetwork = false
+				m_bUseMostRecentValue = false
+				m_bAutoReset = false
+				m_bPredicted = false
+				m_defaultValue = 0
+				m_enumOptions = 
+				[
+					"-1",
+					"0",
+					"1",
+					"2",
+					"3",
+					"4",
+				]
+			},
 		]
 	}
 	m_pTagManager = 
@@ -1194,6 +1217,7 @@
 				m_sNote = ""
 				m_sequenceName = "bindPose"
 				m_nFrameIndex = 0
+				m_tagSpans = [  ]
 			}
 		},
 		{
@@ -1214,6 +1238,7 @@
 				m_sNote = ""
 				m_sequenceName = "SMG_2H_Pose_Crouching_01"
 				m_nFrameIndex = 0
+				m_tagSpans = [  ]
 			}
 		},
 		{
@@ -1306,6 +1331,7 @@
 				m_sNote = ""
 				m_sequenceName = "bindPose_delta"
 				m_nFrameIndex = 0
+				m_tagSpans = [  ]
 			}
 		},
 		{
@@ -1326,6 +1352,7 @@
 				m_sNote = ""
 				m_sequenceName = "Pistol_RH_Pose_Moving_01"
 				m_nFrameIndex = 0
+				m_tagSpans = [  ]
 			}
 		},
 		{
@@ -1443,6 +1470,7 @@
 				m_sNote = ""
 				m_sequenceName = "Expressions_Attacking"
 				m_nFrameIndex = 3
+				m_tagSpans = [  ]
 			}
 		},
 		{
@@ -1525,6 +1553,7 @@
 				m_sNote = ""
 				m_sequenceName = "bindPose_delta"
 				m_nFrameIndex = 0
+				m_tagSpans = [  ]
 			}
 		},
 		{
@@ -2028,6 +2057,7 @@
 				m_sNote = ""
 				m_sequenceName = "bindPose_delta"
 				m_nFrameIndex = 0
+				m_tagSpans = [  ]
 			}
 		},
 		{
@@ -2385,6 +2415,7 @@
 				m_sNote = ""
 				m_sequenceName = "CrouchIdlePose_LowCeiling"
 				m_nFrameIndex = 0
+				m_tagSpans = [  ]
 			}
 		},
 		{
@@ -2405,6 +2436,7 @@
 				m_sNote = ""
 				m_sequenceName = "HoldItem_2H_Pose_CrouchingLow_02"
 				m_nFrameIndex = 0
+				m_tagSpans = [  ]
 			}
 		},
 		{
@@ -3559,6 +3591,7 @@
 				m_sNote = ""
 				m_sequenceName = "bindPose_delta"
 				m_nFrameIndex = 0
+				m_tagSpans = [  ]
 			}
 		},
 		{
@@ -3988,7 +4021,7 @@
 			{
 				_class = "CSolveIKChainAnimNode"
 				m_sName = "Global Feet IK"
-				m_vecPosition = [ 6496.0, -288.0 ]
+				m_vecPosition = [ 6544.0, -272.0 ]
 				m_nNodeID = 
 				{
 					m_id = 197056323
@@ -4185,6 +4218,7 @@
 				m_sNote = ""
 				m_sequenceName = "HoldItem_LH_Pose_CrouchingLow_01"
 				m_nFrameIndex = 0
+				m_tagSpans = [  ]
 			}
 		},
 		{
@@ -4560,6 +4594,7 @@
 				m_sNote = ""
 				m_sequenceName = "HoldItem_LH_Pose_Crouching_01"
 				m_nFrameIndex = 0
+				m_tagSpans = [  ]
 			}
 		},
 		{
@@ -4602,6 +4637,7 @@
 				m_sNote = ""
 				m_sequenceName = "SMG_2H_Pose_Standing_01"
 				m_nFrameIndex = 0
+				m_tagSpans = [  ]
 			}
 		},
 		{
@@ -4698,6 +4734,7 @@
 				m_sNote = ""
 				m_sequenceName = "bindPose_delta"
 				m_nFrameIndex = 0
+				m_tagSpans = [  ]
 			}
 		},
 		{
@@ -4998,6 +5035,7 @@
 				m_sNote = ""
 				m_sequenceName = "HoldItem_2H_Pose_Standing_03"
 				m_nFrameIndex = 0
+				m_tagSpans = [  ]
 			}
 		},
 		{
@@ -5018,6 +5056,7 @@
 				m_sNote = ""
 				m_sequenceName = "Airborne_Up"
 				m_nFrameIndex = 0
+				m_tagSpans = [  ]
 			}
 		},
 		{
@@ -5340,6 +5379,7 @@
 				m_sNote = ""
 				m_sequenceName = "Shotgun_2H_Pose_CrouchingLow_01"
 				m_nFrameIndex = 0
+				m_tagSpans = [  ]
 			}
 		},
 		{
@@ -5360,6 +5400,7 @@
 				m_sNote = ""
 				m_sequenceName = "CrouchIdlePose_Default"
 				m_nFrameIndex = 0
+				m_tagSpans = [  ]
 			}
 		},
 		{
@@ -5531,6 +5572,7 @@
 				m_sNote = ""
 				m_sequenceName = "Pistol_2H_Pose_Standing_01"
 				m_nFrameIndex = 0
+				m_tagSpans = [  ]
 			}
 		},
 		{
@@ -5863,6 +5905,7 @@
 				m_sNote = ""
 				m_sequenceName = "HoldItem_2H_Pose_Crouching_03"
 				m_nFrameIndex = 0
+				m_tagSpans = [  ]
 			}
 		},
 		{
@@ -6646,7 +6689,7 @@
 			{
 				_class = "CSelectorAnimNode"
 				m_sName = "Unnamed"
-				m_vecPosition = [ 3856.0, -560.0 ]
+				m_vecPosition = [ 3888.0, -624.0 ]
 				m_nNodeID = 
 				{
 					m_id = 391619027
@@ -6656,7 +6699,7 @@
 				m_children = 
 				[
 					{
-						m_id = 1695375272
+						m_id = 882250916
 					},
 					{
 						m_id = 2008467836
@@ -6888,6 +6931,7 @@
 				m_sNote = ""
 				m_sequenceName = "Expressions_Panic"
 				m_nFrameIndex = 0
+				m_tagSpans = [  ]
 			}
 		},
 		{
@@ -6971,6 +7015,7 @@
 				m_sNote = ""
 				m_sequenceName = "Shotgun_2H_Pose_Standing_01"
 				m_nFrameIndex = 0
+				m_tagSpans = [  ]
 			}
 		},
 		{
@@ -7374,6 +7419,7 @@
 				m_sNote = ""
 				m_sequenceName = "CrouchIdlePose_Low"
 				m_nFrameIndex = 0
+				m_tagSpans = [  ]
 			}
 		},
 		{
@@ -7442,6 +7488,7 @@
 				m_sNote = ""
 				m_sequenceName = "bindPose_delta"
 				m_nFrameIndex = 0
+				m_tagSpans = [  ]
 			}
 		},
 		{
@@ -7502,6 +7549,7 @@
 				m_sNote = ""
 				m_sequenceName = "Pistol_2H_Pose_Standing_01"
 				m_nFrameIndex = 0
+				m_tagSpans = [  ]
 			}
 		},
 		{
@@ -8555,6 +8603,7 @@
 				m_sNote = ""
 				m_sequenceName = "Pistol_RH_Pose_Standing_01"
 				m_nFrameIndex = 0
+				m_tagSpans = [  ]
 			}
 		},
 		{
@@ -8857,6 +8906,28 @@
 		{
 			key = 
 			{
+				m_id = 539246187
+			}
+			value = 
+			{
+				_class = "CSequenceAnimNode"
+				m_sName = "Unnamed"
+				m_vecPosition = [ 3520.0, -240.0 ]
+				m_nNodeID = 
+				{
+					m_id = 539246187
+				}
+				m_networkMode = "ServerAuthoritative"
+				m_sNote = ""
+				m_tagSpans = [  ]
+				m_sequenceName = "Yoga4"
+				m_playbackSpeed = 1.0
+				m_bLoop = false
+			}
+		},
+		{
+			key = 
+			{
 				m_id = 540547917
 			}
 			value = 
@@ -9025,6 +9096,7 @@
 				m_sNote = ""
 				m_sequenceName = "IdlePose_Default"
 				m_nFrameIndex = 0
+				m_tagSpans = [  ]
 			}
 		},
 		{
@@ -9275,6 +9347,7 @@
 				m_sNote = ""
 				m_sequenceName = "IdlePose_03"
 				m_nFrameIndex = 0
+				m_tagSpans = [  ]
 			}
 		},
 		{
@@ -9811,6 +9884,7 @@
 				m_sNote = ""
 				m_sequenceName = "bindPose"
 				m_nFrameIndex = 0
+				m_tagSpans = [  ]
 			}
 		},
 		{
@@ -9997,6 +10071,7 @@
 				m_sNote = ""
 				m_sequenceName = "bindPose_delta"
 				m_nFrameIndex = 0
+				m_tagSpans = [  ]
 			}
 		},
 		{
@@ -10038,6 +10113,7 @@
 				m_sNote = ""
 				m_sequenceName = "HoldItem_2H_Pose_CrouchingLow_04"
 				m_nFrameIndex = 0
+				m_tagSpans = [  ]
 			}
 		},
 		{
@@ -10058,6 +10134,7 @@
 				m_sNote = ""
 				m_sequenceName = "IdlePose_02"
 				m_nFrameIndex = 0
+				m_tagSpans = [  ]
 			}
 		},
 		{
@@ -10078,6 +10155,7 @@
 				m_sNote = ""
 				m_sequenceName = "Pistol_2H_Pose_Standing_Idle_01"
 				m_nFrameIndex = 0
+				m_tagSpans = [  ]
 			}
 		},
 		{
@@ -10332,6 +10410,7 @@
 				m_sNote = ""
 				m_sequenceName = "Pistol_2H_Pose_Standing_01"
 				m_nFrameIndex = 0
+				m_tagSpans = [  ]
 			}
 		},
 		{
@@ -11155,6 +11234,7 @@
 				m_sNote = ""
 				m_sequenceName = "IdlePose_01"
 				m_nFrameIndex = 0
+				m_tagSpans = [  ]
 			}
 		},
 		{
@@ -11344,6 +11424,7 @@
 				m_sNote = ""
 				m_sequenceName = "Pistol_2H_Pose_Crouching_01"
 				m_nFrameIndex = 0
+				m_tagSpans = [  ]
 			}
 		},
 		{
@@ -11619,6 +11700,7 @@
 				m_sNote = ""
 				m_sequenceName = "SMG_2H_Pose_Standing_Idle_01"
 				m_nFrameIndex = 0
+				m_tagSpans = [  ]
 			}
 		},
 		{
@@ -12786,6 +12868,7 @@
 				m_sNote = ""
 				m_sequenceName = "Pistol_RH_Pose_CrouchingLow_01"
 				m_nFrameIndex = 0
+				m_tagSpans = [  ]
 			}
 		},
 		{
@@ -13405,6 +13488,7 @@
 				m_sNote = ""
 				m_sequenceName = "Melee_Punch_Pose_Standing_01"
 				m_nFrameIndex = 0
+				m_tagSpans = [  ]
 			}
 		},
 		{
@@ -13547,6 +13631,106 @@
 				m_footMotionTiming = "Child1"
 				m_bResetChild1 = false
 				m_bResetChild2 = false
+			}
+		},
+		{
+			key = 
+			{
+				m_id = 877025899
+			}
+			value = 
+			{
+				_class = "CSequenceAnimNode"
+				m_sName = "Unnamed"
+				m_vecPosition = [ 3520.0, -432.0 ]
+				m_nNodeID = 
+				{
+					m_id = 877025899
+				}
+				m_networkMode = "ServerAuthoritative"
+				m_sNote = ""
+				m_tagSpans = [  ]
+				m_sequenceName = "Yoga0"
+				m_playbackSpeed = 1.0
+				m_bLoop = false
+			}
+		},
+		{
+			key = 
+			{
+				m_id = 882250916
+			}
+			value = 
+			{
+				_class = "CSelectorAnimNode"
+				m_sName = "Unnamed"
+				m_vecPosition = [ 3728.0, -432.0 ]
+				m_nNodeID = 
+				{
+					m_id = 882250916
+				}
+				m_networkMode = "ServerAuthoritative"
+				m_sNote = ""
+				m_children = 
+				[
+					{
+						m_id = 1695375272
+					},
+					{
+						m_id = 877025899
+					},
+					{
+						m_id = 1267578515
+					},
+					{
+						m_id = 1103084456
+					},
+					{
+						m_id = 1871837766
+					},
+					{
+						m_id = 539246187
+					},
+				]
+				m_tags = 
+				[
+					{
+						m_id = 4294967295
+					},
+					{
+						m_id = 4294967295
+					},
+					{
+						m_id = 4294967295
+					},
+					{
+						m_id = 4294967295
+					},
+					{
+						m_id = 4294967295
+					},
+					{
+						m_id = 4294967295
+					},
+				]
+				m_selectionSource = "SelectionSource_Enum"
+				m_boolParamID = 
+				{
+					m_id = 4294967295
+				}
+				m_enumParamID = 
+				{
+					m_id = 389702832
+				}
+				m_blendDuration = 0.0
+				m_tagBehavior = "SelectorTagBehavior_OffWhenFinished"
+				m_bResetOnChange = true
+				m_bSyncCyclesOnChange = false
+				m_blendCurve = 
+				{
+					m_vControlPoint1 = [ 0.5, 0.0 ]
+					m_vControlPoint2 = [ 0.5, 1.0 ]
+				}
 			}
 		},
 		{
@@ -14063,6 +14247,7 @@
 				m_sNote = ""
 				m_sequenceName = "Shotgun_2H_Pose_Standing_Idle_01"
 				m_nFrameIndex = 0
+				m_tagSpans = [  ]
 			}
 		},
 		{
@@ -14271,6 +14456,7 @@
 				m_sNote = ""
 				m_sequenceName = "IdlePose_Default"
 				m_nFrameIndex = 0
+				m_tagSpans = [  ]
 			}
 		},
 		{
@@ -14697,6 +14883,7 @@
 				m_sNote = ""
 				m_sequenceName = "HoldItem_RH_Pose_Standing_01"
 				m_nFrameIndex = 0
+				m_tagSpans = [  ]
 			}
 		},
 		{
@@ -14813,6 +15000,7 @@
 				m_sNote = ""
 				m_sequenceName = "Expressions_Attacking"
 				m_nFrameIndex = 1
+				m_tagSpans = [  ]
 			}
 		},
 		{
@@ -15220,6 +15408,7 @@
 				m_sNote = ""
 				m_sequenceName = "bindPose_delta"
 				m_nFrameIndex = 0
+				m_tagSpans = [  ]
 			}
 		},
 		{
@@ -15240,6 +15429,7 @@
 				m_sNote = ""
 				m_sequenceName = "HoldItem_2H_Pose_Standing_04"
 				m_nFrameIndex = 0
+				m_tagSpans = [  ]
 			}
 		},
 		{
@@ -15292,6 +15482,7 @@
 				m_sNote = ""
 				m_sequenceName = "bindPose_delta"
 				m_nFrameIndex = 0
+				m_tagSpans = [  ]
 			}
 		},
 		{
@@ -15905,6 +16096,28 @@
 		{
 			key = 
 			{
+				m_id = 1103084456
+			}
+			value = 
+			{
+				_class = "CSequenceAnimNode"
+				m_sName = "Unnamed"
+				m_vecPosition = [ 3520.0, -336.0 ]
+				m_nNodeID = 
+				{
+					m_id = 1103084456
+				}
+				m_networkMode = "ServerAuthoritative"
+				m_sNote = ""
+				m_tagSpans = [  ]
+				m_sequenceName = "Yoga2"
+				m_playbackSpeed = 1.0
+				m_bLoop = false
+			}
+		},
+		{
+			key = 
+			{
 				m_id = 1109484399
 			}
 			value = 
@@ -16013,6 +16226,7 @@
 				m_sNote = ""
 				m_sequenceName = "HoldItem_2H_Pose_Crouching_02"
 				m_nFrameIndex = 0
+				m_tagSpans = [  ]
 			}
 		},
 		{
@@ -16368,6 +16582,7 @@
 				m_sNote = ""
 				m_sequenceName = "Squat_Down"
 				m_nFrameIndex = 0
+				m_tagSpans = [  ]
 			}
 		},
 		{
@@ -17283,6 +17498,7 @@
 				m_sNote = ""
 				m_sequenceName = "HoldItem_2H_Pose_Standing_02"
 				m_nFrameIndex = 0
+				m_tagSpans = [  ]
 			}
 		},
 		{
@@ -17731,6 +17947,7 @@
 				m_sNote = ""
 				m_sequenceName = "IdlePose_Default"
 				m_nFrameIndex = 0
+				m_tagSpans = [  ]
 			}
 		},
 		{
@@ -18054,6 +18271,7 @@
 				m_sNote = ""
 				m_sequenceName = "HoldItem_RH_Pose_CrouchingLow_01"
 				m_nFrameIndex = 0
+				m_tagSpans = [  ]
 			}
 		},
 		{
@@ -18304,6 +18522,7 @@
 				m_sNote = ""
 				m_sequenceName = "IdlePose_Default"
 				m_nFrameIndex = 0
+				m_tagSpans = [  ]
 			}
 		},
 		{
@@ -18424,6 +18643,7 @@
 				m_sNote = ""
 				m_sequenceName = "Airborne_Down_R"
 				m_nFrameIndex = 0
+				m_tagSpans = [  ]
 			}
 		},
 		{
@@ -18553,6 +18773,28 @@
 				]
 				m_bBlockWaningTags = false
 				m_bLockStateWhenWaning = false
+			}
+		},
+		{
+			key = 
+			{
+				m_id = 1267578515
+			}
+			value = 
+			{
+				_class = "CSequenceAnimNode"
+				m_sName = "Unnamed"
+				m_vecPosition = [ 3520.0, -384.0 ]
+				m_nNodeID = 
+				{
+					m_id = 1267578515
+				}
+				m_networkMode = "ServerAuthoritative"
+				m_sNote = ""
+				m_tagSpans = [  ]
+				m_sequenceName = "Yoga1"
+				m_playbackSpeed = 1.0
+				m_bLoop = false
 			}
 		},
 		{
@@ -18883,6 +19125,7 @@
 				m_sNote = ""
 				m_sequenceName = "bindPose_delta"
 				m_nFrameIndex = 0
+				m_tagSpans = [  ]
 			}
 		},
 		{
@@ -19019,6 +19262,7 @@
 				m_sNote = ""
 				m_sequenceName = "bindPose_delta"
 				m_nFrameIndex = 0
+				m_tagSpans = [  ]
 			}
 		},
 		{
@@ -19039,6 +19283,7 @@
 				m_sNote = ""
 				m_sequenceName = "SMG_2H_Pose_CrouchingLow_01"
 				m_nFrameIndex = 0
+				m_tagSpans = [  ]
 			}
 		},
 		{
@@ -19642,6 +19887,7 @@
 				m_sNote = ""
 				m_sequenceName = "HoldItem_2H_Pose_Crouching_04"
 				m_nFrameIndex = 0
+				m_tagSpans = [  ]
 			}
 		},
 		{
@@ -20132,6 +20378,7 @@
 				m_sNote = ""
 				m_sequenceName = "HoldItem_2H_Pose_CrouchingLow_03"
 				m_nFrameIndex = 0
+				m_tagSpans = [  ]
 			}
 		},
 		{
@@ -20697,6 +20944,7 @@
 				m_sNote = ""
 				m_sequenceName = "CrouchIdlePose_Low"
 				m_nFrameIndex = 0
+				m_tagSpans = [  ]
 			}
 		},
 		{
@@ -21051,6 +21299,7 @@
 				m_sNote = ""
 				m_sequenceName = "Expressions_Attacking"
 				m_nFrameIndex = 2
+				m_tagSpans = [  ]
 			}
 		},
 		{
@@ -22844,6 +23093,7 @@
 				m_sNote = ""
 				m_sequenceName = "Pistol_2H_Pose_Moving_01"
 				m_nFrameIndex = 0
+				m_tagSpans = [  ]
 			}
 		},
 		{
@@ -23095,6 +23345,7 @@
 				m_sNote = ""
 				m_sequenceName = "bindPose_delta"
 				m_nFrameIndex = 0
+				m_tagSpans = [  ]
 			}
 		},
 		{
@@ -23520,7 +23771,7 @@
 			{
 				_class = "CStateMachineAnimNode"
 				m_sName = "Unnamed"
-				m_vecPosition = [ 3552.0, -400.0 ]
+				m_vecPosition = [ 3520.0, -528.0 ]
 				m_nNodeID = 
 				{
 					m_id = 1695375272
@@ -23691,6 +23942,7 @@
 				m_sNote = ""
 				m_sequenceName = "bindPose_delta"
 				m_nFrameIndex = 0
+				m_tagSpans = [  ]
 			}
 		},
 		{
@@ -23764,6 +24016,7 @@
 				m_sNote = ""
 				m_sequenceName = "Squat_Up"
 				m_nFrameIndex = 0
+				m_tagSpans = [  ]
 			}
 		},
 		{
@@ -23784,6 +24037,7 @@
 				m_sNote = ""
 				m_sequenceName = "Expressions_Attacking"
 				m_nFrameIndex = 4
+				m_tagSpans = [  ]
 			}
 		},
 		{
@@ -23847,6 +24101,7 @@
 				m_sNote = ""
 				m_sequenceName = "HoldItem_2H_Pose_Standing_01"
 				m_nFrameIndex = 0
+				m_tagSpans = [  ]
 			}
 		},
 		{
@@ -23927,6 +24182,7 @@
 				m_sNote = ""
 				m_sequenceName = "HoldItem_2H_Pose_Crouching_01"
 				m_nFrameIndex = 0
+				m_tagSpans = [  ]
 			}
 		},
 		{
@@ -24016,6 +24272,7 @@
 				m_sNote = ""
 				m_sequenceName = "bindPose_delta"
 				m_nFrameIndex = 0
+				m_tagSpans = [  ]
 			}
 		},
 		{
@@ -24199,6 +24456,7 @@
 				m_sNote = ""
 				m_sequenceName = "Expressions_Attacking"
 				m_nFrameIndex = 0
+				m_tagSpans = [  ]
 			}
 		},
 		{
@@ -24579,6 +24837,7 @@
 				m_sNote = ""
 				m_sequenceName = "bindPose_delta"
 				m_nFrameIndex = 0
+				m_tagSpans = [  ]
 			}
 		},
 		{
@@ -25067,6 +25326,7 @@
 				m_sNote = ""
 				m_sequenceName = "HoldItem_LH_Pose_Standing_01"
 				m_nFrameIndex = 0
+				m_tagSpans = [  ]
 			}
 		},
 		{
@@ -25089,6 +25349,28 @@
 				m_sequenceName = "Shotgun_2H_Reload_01_loop"
 				m_playbackSpeed = 1.0
 				m_bLoop = true
+			}
+		},
+		{
+			key = 
+			{
+				m_id = 1871837766
+			}
+			value = 
+			{
+				_class = "CSequenceAnimNode"
+				m_sName = "Unnamed"
+				m_vecPosition = [ 3520.0, -288.0 ]
+				m_nNodeID = 
+				{
+					m_id = 1871837766
+				}
+				m_networkMode = "ServerAuthoritative"
+				m_sNote = ""
+				m_tagSpans = [  ]
+				m_sequenceName = "Yoga3"
+				m_playbackSpeed = 1.0
+				m_bLoop = false
 			}
 		},
 		{
@@ -25447,6 +25729,7 @@
 				m_sNote = ""
 				m_sequenceName = "Shotgun_2H_Pose_Crouching_01"
 				m_nFrameIndex = 0
+				m_tagSpans = [  ]
 			}
 		},
 		{
@@ -26449,6 +26732,7 @@
 				m_sNote = ""
 				m_sequenceName = "CrouchIdlePose_Default"
 				m_nFrameIndex = 0
+				m_tagSpans = [  ]
 			}
 		},
 		{
@@ -27233,6 +27517,7 @@
 				m_sNote = ""
 				m_sequenceName = "IdlePose_Default"
 				m_nFrameIndex = 0
+				m_tagSpans = [  ]
 			}
 		},
 		{
@@ -27799,6 +28084,7 @@
 				m_sNote = ""
 				m_sequenceName = "Pistol_RH_Pose_Crouching_01"
 				m_nFrameIndex = 0
+				m_tagSpans = [  ]
 			}
 		},
 		{
@@ -28089,6 +28375,7 @@
 				m_sNote = ""
 				m_sequenceName = "Expressions_Voice"
 				m_nFrameIndex = 0
+				m_tagSpans = [  ]
 			}
 		},
 		{
@@ -29022,6 +29309,7 @@
 				m_sNote = ""
 				m_sequenceName = "bindPose"
 				m_nFrameIndex = 0
+				m_tagSpans = [  ]
 			}
 		},
 		{
@@ -29097,6 +29385,7 @@
 				m_sNote = ""
 				m_sequenceName = "CrouchIdlePose_Default"
 				m_nFrameIndex = 0
+				m_tagSpans = [  ]
 			}
 		},
 		{
@@ -29378,6 +29667,7 @@
 				m_sNote = ""
 				m_sequenceName = "bindPose_delta"
 				m_nFrameIndex = 0
+				m_tagSpans = [  ]
 			}
 		},
 		{
@@ -29438,6 +29728,7 @@
 				m_sNote = ""
 				m_sequenceName = "HoldItem_RH_Pose_Crouching_01"
 				m_nFrameIndex = 0
+				m_tagSpans = [  ]
 			}
 		},
 		{
@@ -29781,6 +30072,7 @@
 				m_sNote = ""
 				m_sequenceName = "HoldItem_2H_Pose_CrouchingLow_01"
 				m_nFrameIndex = 0
+				m_tagSpans = [  ]
 			}
 		},
 		{
@@ -29801,6 +30093,7 @@
 				m_sNote = ""
 				m_sequenceName = "Pistol_2H_Pose_CrouchingLow_01"
 				m_nFrameIndex = 0
+				m_tagSpans = [  ]
 			}
 		},
 		{
