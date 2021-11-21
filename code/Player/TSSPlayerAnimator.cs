@@ -1,7 +1,8 @@
-﻿using System;
+﻿using Sandbox;
+using System;
 
-namespace Sandbox
-{
+namespace TSS 
+{ 
 	public class TSSPlayerAnimator : PawnAnimator
 	{
 		TimeSince TimeSinceFootShuffle = 60;

@@ -1,7 +1,7 @@
 ﻿using Sandbox;
 using System.Collections.Generic;
 
-namespace MinimalExample
+namespace TSS
 {
 	public partial class TSSGame : Game
 	{
@@ -14,7 +14,8 @@ namespace MinimalExample
 			if ( !Host.IsClient )
 				return;
 
-			(Current as TSSGame).Queue.Enqueue( message );
+			Current.Queue.Enqueue( message );
+			Log.Info( $"({message.DisplayName} | {message.Username}) - {message.Message}" );
 		}
 
 		/// <summary>

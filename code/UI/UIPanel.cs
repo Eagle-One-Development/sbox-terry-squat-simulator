@@ -7,25 +7,28 @@ using Sandbox.UI;
 using Sandbox;
 using Sandbox.UI.Construct;
 
-public class UIPanel : Panel
+namespace TSS.UI
 {
-	public UIPanel()
+	public class UIPanel : Panel
 	{
-		StyleSheet.Load( "/ui/UIPanel.scss" );
-	}
-
-	public override void Tick()
-	{
-		base.Tick();
-		if(Local.Pawn is TSSPlayer p )
+		public UIPanel()
 		{
-		 if(p.Camera is DevCamera )
+			StyleSheet.Load( "/ui/UIPanel.scss" );
+		}
+
+		public override void Tick()
+		{
+			base.Tick();
+			if ( Local.Pawn is TSSPlayer p )
 			{
-				SetClass( "inactive", true );
-			}
-			else
-			{
-				SetClass( "inactive", false);
+				if ( p.Camera is DevCamera )
+				{
+					SetClass( "inactive", true );
+				}
+				else
+				{
+					SetClass( "inactive", false );
+				}
 			}
 		}
 	}

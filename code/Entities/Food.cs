@@ -4,7 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Sandbox;
-
+using TSS;
+using TSS.UI;
 
 public partial class Food : ModelEntity {
 
