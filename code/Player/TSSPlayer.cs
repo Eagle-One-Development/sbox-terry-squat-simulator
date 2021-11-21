@@ -274,23 +274,26 @@ namespace TSS
 				if ( ExercisePoints == 200 )
 				{
 					ChangeExercise( Exercise.Run );
+					ExercisePoints++;
 					return;
 				}
 				else if ( ExercisePoints == 300 )
 				{
 					ChangeExercise( Exercise.Punch );
+					ExercisePoints++;
 					return;
 				}
 				else if ( ExercisePoints == 400 )
 				{
 					ChangeExercise( Exercise.Yoga );
+					ExercisePoints++;
 					return;
 				}
 			}
 
 			if ( ExercisePoints > 50 )
 			{
-				SetAnimBool( "Angry", TimeSinceExerciseStopped < 2f );
+				SetAnimBool( "Angry", TimeSinceExerciseStopped < 4f );
 			}
 		}
 

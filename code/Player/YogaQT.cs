@@ -32,12 +32,16 @@ namespace TSS
 		public YogaQTPanel Panel;
 		public TimeSince TimeSinceSpawned;
 
+		public int pose;
+
 		public override void Spawn()
 		{
 			base.Spawn();
 			Log.Info( "SPAWN" );
 
-			currentCombo = Rand.FromArray( combos );
+			pose = Rand.Int( 0, 4 );
+
+			currentCombo = combos[pose];
 
 			Panel = new YogaQTPanel( this, new Vector2( Rand.Float( -200f, 200f ), Rand.Float( -200f, 200f ) ), currentCombo );
 			TimeSinceSpawned = 0;
@@ -92,6 +96,8 @@ namespace TSS
 				Log.Info( "FINISHED" );
 				Panel.Finished = true;
 				Panel.TimeSinceFinished = 0;
+				ConsoleSystem.Run( "yoga_pose", pose + 1 );
+				Player.GivePoints( 5 );
 				Delete();
 			}
 
