@@ -21,13 +21,12 @@ namespace TSS.UI
 			Bottom = Add.Label( text, "text" );
 			Top = Add.Label( "+5", "text" );
 			Top.SetClass( "top", true );
-
-
 		}
 
 		public override void Tick()
 		{
 			base.Tick();
+
 			if ( Local.Pawn is TSSPlayer p )
 			{
 				if ( p.Camera is TSSCamera c )

@@ -61,8 +61,10 @@ namespace TSS
 		{
 			Music = new List<Sound>();
 			Music.Clear();
+
 			volumes = new float[8];
 			tarVolumes = new float[8];
+
 			for ( int i = 0; i < 8; i++ )
 			{
 				string str = $"layer{i}";
@@ -74,11 +76,7 @@ namespace TSS
 			}
 			SecondsPerBeat = 60f / 140f;
 			SongStartTime = Time.Sound;
-			//Sound.FromScreen( "music_tens07" );
 		}
-
-
-
 
 		[ClientRpc]
 		public void SetTarVolume( int v )
@@ -93,10 +91,10 @@ namespace TSS
 			{
 				return;
 			}
+
 			for ( int i = 0; i < Music.Count; i++ )
 			{
 				Music[i].SetVolume( volumes[i] );
-				//DebugOverlay.ScreenText( new Vector2( 100, 100 + i * 50 ), $"Volume({i}):{volumes[i]}" );
 			}
 
 			FrameBeats();

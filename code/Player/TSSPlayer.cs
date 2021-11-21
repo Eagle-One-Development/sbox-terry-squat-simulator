@@ -108,6 +108,18 @@ namespace TSS
 			base.Respawn();
 		}
 
+		public override void ClientSpawn()
+		{
+			base.ClientSpawn();
+			PlayMusic();
+		}
+
+		public async void PlayMusic()
+		{
+			await GameTask.Delay( 2000 );
+			TSSGame.Current.StartMusic();
+		}
+
 		void Dress()
 		{
 			_ = new ModelEntity( "models/clothes/fitness/shorts_fitness.vmdl", this );
@@ -119,14 +131,6 @@ namespace TSS
 			_ = new ModelEntity( "models/clothes/fitness/hair_body.vmdl", this );
 		}
 
-		/// <summary>
-		/// For some reason this can't be called in spawn without being delayed, otherwise the music plays for like a 10th of a second then cuts out entirely.
-		/// </summary>
-		public async void PlayMusic()
-		{
-			await GameTask.Delay( 1000 );
-			TSSGame.Current.StartMusic();
-		}
 
 		public override void StartTouch( Entity other )
 		{
@@ -171,11 +175,6 @@ namespace TSS
 		{
 			base.Simulate( cl );
 
-			if ( !MusicStarted )
-			{
-				PlayMusic();
-				MusicStarted = true;
-			}
 			TSSCamera cam = (Camera as TSSCamera);
 
 			if ( TimeSinceSoda > 1.7f )

@@ -155,19 +155,14 @@ namespace TSS
 		{
 
 			var pawn = Local.Pawn as TSSPlayer;
-			var center = pawn.Position + Vector3.Up * CamHeight;
 
 			if ( Progress > 0.01f )
 			{
 				TSSGame.Current.SetTarVolume( 6 );
 			}
 
-			//CreditPanel credit = null;
 			if ( Progress < 0.25f )
 			{
-				//credit ??= new CreditPanel();
-				//credit.Position = pawn.Position;
-				//credit.Rotation = Rotation.From( 0, 90, 0 );
 
 				JoshWilson ??= new CreditPanel( "Josh Wilson", 3200, 3200 );
 				JoshWilson.Position = pawn.Position + Vector3.Up * 10f + pawn.Rotation.Forward * -20f;
@@ -195,9 +190,10 @@ namespace TSS
 				Down.Opacity = (1f - ((Progress - 0.1f) / 0.05f).Clamp( 0, 1f )) * f;
 				Down.TextScale = Down.TextScale.LerpTo( 1, Time.Delta * 10f );
 
+				var center = pawn.Position + Vector3.Up * CamHeight;
+
 				CamDistance = 125f - 50f * (Progress / 0.25f);
 				CamHeight = 45f;
-				center = pawn.Position + Vector3.Up * CamHeight;
 				Position = center + pawn.Rotation.Forward * CamDistance;
 				Rotation = Rotation.LookAt( (center - Position), Vector3.Up );
 				yaw = 30f;
@@ -234,7 +230,7 @@ namespace TSS
 				p = p.Clamp( 0, 1f );
 				CamDistance = 150f;
 				CamHeight = 20f;
-				center = pawn.Position + Vector3.Up * CamHeight;
+				var center = pawn.Position + Vector3.Up * CamHeight;
 
 				yawTar = MathX.LerpTo( 30f, 120f, p );
 				Position = center + Rotation.FromYaw( yaw ).Forward * CamDistance;
@@ -260,7 +256,7 @@ namespace TSS
 				CamDistance = 50f;
 				CamHeight = 32f + 32f * p;
 
-				center = pawn.Position + Vector3.Up * CamHeight;
+				var center = pawn.Position + Vector3.Up * CamHeight;
 				Position = center + pawn.Rotation.Forward * CamDistance;
 				Rotation = Rotation.LookAt( (center - Position), Vector3.Up );
 
@@ -283,7 +279,7 @@ namespace TSS
 				TSSGame.Current.SetTarVolume( 4 );
 
 
-				center = pawn.Position + Vector3.Up * CamHeight;
+				var center = pawn.Position + Vector3.Up * CamHeight;
 				Rotation = Rotation.LookAt( (center - Position), Vector3.Up );
 				Position = center + pawn.Rotation.Forward * CamDistance;
 			}
