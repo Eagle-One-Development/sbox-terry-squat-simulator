@@ -13,7 +13,6 @@ namespace TSS
 		/// <summary>
 		/// A list of the possible combos for the yoga positions
 		/// </summary>
-		[Net]
 		string[] combos { get; set; } = { "0123", "11230", "001122", "21330", "011230" };
 
 		/// <summary>
@@ -26,7 +25,7 @@ namespace TSS
 		/// </summary>
 		public int index { get; set; }
 
-		[Net]
+
 		public TSSPlayer Player { get; set; }
 
 		public YogaQTPanel Panel;
@@ -44,6 +43,7 @@ namespace TSS
 			currentCombo = combos[pose];
 
 			Panel = new YogaQTPanel( this, new Vector2( Rand.Float( -200f, 200f ), Rand.Float( -200f, 200f ) ), currentCombo );
+			Player = Entity.All.OfType<TSSPlayer>().First();
 			TimeSinceSpawned = 0;
 		}
 
@@ -97,11 +97,17 @@ namespace TSS
 				Panel.Finished = true;
 				Panel.TimeSinceFinished = 0;
 				ConsoleSystem.Run( "yoga_pose", pose + 1 );
-				Player.GivePoints( 5 );
 				Delete();
 			}
 
-
+			if ( Player.CurrentExercise != Exercise.Yoga )
+			{
+				if ( IsServer )
+				{
+					Delete();
+				}
+				Panel?.Delete();
+			}
 
 			if ( TimeSinceSpawned > 3f )
 			{

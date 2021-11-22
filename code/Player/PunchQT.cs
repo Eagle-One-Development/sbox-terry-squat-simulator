@@ -32,7 +32,7 @@ namespace TSS
 		public override void Spawn()
 		{
 			base.Spawn();
-			MyTime = 1f;
+			MyTime =  ((60f/140f) * 1f);
 			Transmit = TransmitType.Always;
 
 			//Log.Info( "I SPAWNED" );
@@ -68,6 +68,15 @@ namespace TSS
 			{
 				return;
 			}
+			
+			if(Player.CurrentExercise != Exercise.Punch )
+			{
+				if ( IsServer )
+				{
+					Delete();
+				}
+				Panel?.Delete();
+			}
 
 			bool b = false;
 			if ( Type == 0 )
@@ -94,7 +103,7 @@ namespace TSS
 
 			MyTime -= Time.Delta;
 
-			if ( MyTime > -0.15f && MyTime < 0.15f )
+			if ( MyTime > -0.05f && MyTime < 0.15f )
 			{
 				if ( b )
 				{

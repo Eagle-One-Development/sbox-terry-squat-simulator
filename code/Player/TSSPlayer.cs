@@ -65,9 +65,51 @@ namespace TSS
 
 		public ModelEntity SodaCan;
 
+		/// <summary>
+		/// Basically a way of stopping the soda animation when its done
+		/// </summary>
 		[Net, Predicted]
 		public TimeSince TimeSinceSoda { get; set; }
 
+		
+		/// <summary>
+		/// Whether we've introduced running or not
+		/// </summary>
+		[Net]
+		public bool IntroRunning { get; set; }
+		/// <summary>
+		/// Whether we've introduced the punching mini-game or not
+		/// </summary>
+		[Net]
+		public bool IntroPunching { get; set; }
+		/// <summary>
+		/// Whether we've introduced the yoga game or not
+		/// </summary>
+		[Net]
+		public bool IntroYoga { get; set; }
+
+		/// <summary>
+		/// The time we've been doing the current exercise
+		/// </summary>
+		[Net,Predicted]
+		public TimeSince TimeSinceState { get; set; }
+
+		[Net]
+		public float MaxTimeInState { get; set; } = 10f;
+
+		[Net]
+		public bool[] TimeLines { get; set; } = new bool[20];
+
+		/// <summary>
+		/// Just a variable to introduce if we've introduced all the exercise or not
+		/// </summary>
+		[Net]
+		public bool ExercisesIntroduced { 
+			get
+			{
+				return IntroRunning && IntroPunching && IntroYoga;
+			}
+		}
 
 		public override void CreateHull()
 		{
@@ -105,6 +147,8 @@ namespace TSS
 			SodaCan.LocalRotation = Rotation.Identity;
 			SodaCan.EnableDrawing = false;
 
+			MaxTimeInState = 30f;
+
 			base.Respawn();
 		}
 
@@ -116,7 +160,7 @@ namespace TSS
 
 		public async void PlayMusic()
 		{
-			await GameTask.Delay( 2000 );
+			await GameTask.Delay( 1000 );
 			TSSGame.Current.StartMusic();
 		}
 
@@ -193,6 +237,8 @@ namespace TSS
 
 			DetectClick();
 
+			
+
 			switch ( CurrentExercise )
 			{
 				case Exercise.Squat:
@@ -212,6 +258,10 @@ namespace TSS
 			AdvanceExerciseState();
 
 			// Basically curSpeed increases based on how fast the player is squatting etc
+
+			float f = (TimeSinceExerciseStopped - 1f) / 3f;
+			f = MathF.Pow( f.Clamp( 0, 1f ), 3f );
+			TimeSinceState += Time.Delta * (1f - f);
 
 			tCurSpeed = tCurSpeed.Clamp( 0, 1 );
 			curSpeed = curSpeed.Clamp( 0, 1 );
@@ -271,25 +321,35 @@ namespace TSS
 		{
 			if ( IsServer )
 			{
-				if ( ExercisePoints == 200 )
+				if ( ExercisePoints >= 200 && !IntroRunning)
 				{
 					ChangeExercise( Exercise.Run );
-					ExercisePoints++;
+					TSSGame.Current.SetTarVolume( 1 );
+					TSSGame.Current.SetTarVolume( 7 );
+					IntroRunning = true;
 					return;
 				}
-				else if ( ExercisePoints == 300 )
+				if ( ExercisePoints >= 300 && !IntroPunching)
 				{
 					ChangeExercise( Exercise.Punch );
-					ExercisePoints++;
+					IntroPunching = true;
 					return;
 				}
-				else if ( ExercisePoints == 400 )
+				if ( ExercisePoints >= 400 && !IntroYoga)
 				{
 					ChangeExercise( Exercise.Yoga );
-					ExercisePoints++;
+					IntroYoga = true;
 					return;
 				}
 			}
+
+			if(ExercisePoints >= 100 && !TimeLines[0])
+			{
+				TSSGame.Current.SetTarVolume( 3 );
+				TSSGame.Current.SetTarVolume( 2 );
+				TimeLines[0] = true;
+			}
+
 
 			if ( ExercisePoints > 50 )
 			{
@@ -326,9 +386,9 @@ namespace TSS
 		/// </summary>
 		public void Punch()
 		{
-			ExercisePoints++;
+			ExercisePoints += 3;
 			tCurSpeed += 0.1f;
-			CreatePoint( 1 );
+			CreatePoint( 3 );
 			Scale = 1.2f;
 			CounterBump( 0.5f );
 			TimeSinceExerciseStopped = 0;

@@ -1,7 +1,7 @@
 ﻿using Sandbox;
 using System;
 using System.Linq;
-
+using System.Collections.Generic;
 
 namespace TSS {
 	public partial class TSSPlayer : Player
@@ -13,13 +13,22 @@ namespace TSS {
 		public void ChangeExercise( Exercise exercise )
 		{
 			Entity ent = null;
-			
-			switch(exercise) {
+
+			//Clear out a bunch of animation stuff
+			SetAnimInt( "punch", -1 );
+			SetAnimInt( "YogaPoses", 0 );
+			SetAnimBool( "b_grounded", true );
+			SetAnimFloat( "move_x", 0 );
+			SetAnimFloat( "squat", -1 );
+
+
+			switch ( exercise) {
 				case Exercise.Run:
 					ent = All.OfType<RunSpawn>().First();
 					break;
 				case Exercise.Squat:
 					ent = All.OfType<SquatSpawn>().First();
+					SetAnimFloat( "squat", squat );
 					StartSquatting();
 					break;
 				case Exercise.Punch:
@@ -30,11 +39,17 @@ namespace TSS {
 					break;
 			}
 
-			if (CurrentExercise != Exercise.Squat)
+			
+
+
+
+			if ( exercise != Exercise.Squat)
 			{
 				Barbell?.Delete();
 				Barbell = null;
 			}
+			TimeSinceState = 0;
+			MaxTimeInState = Rand.FromArray( new float[] { 15f, 20f, 25f, 30f } );
 
 			Position = ent.Transform.Position;
 			Rotation = ent.Transform.Rotation;
@@ -104,6 +119,13 @@ namespace TSS {
 				if ( cam.Down != null )
 					cam.Down.TextScale += 0.3f;
 			}
+
+			if ( TimeSinceState >= MaxTimeInState && ExercisesIntroduced )
+			{
+				TimeSinceState = 0;
+				MaxTimeInState = Rand.FromArray( new float[] { 10f, 15f, 15f, 15f, 30f } );
+				ChangeExercise( Rand.FromArray( new Exercise[] { Exercise.Squat, Exercise.Punch, Exercise.Yoga } ) );
+			}
 		}
 
 		/// <summary>
@@ -127,20 +149,60 @@ namespace TSS {
 
 				if ( IsServer )
 				{
-					var pt = new PunchQT();
-					pt.Player = this;
-					pt.TargetTime = 1f;
-					pt.MyTime = 1f;
-					pt.Type = Rand.Int( 0, 3 );
+					//var pt = new PunchQT();
+					//pt.Player = this;
+					//pt.TargetTime = 1f;
+					//pt.MyTime = 1f;
+					//pt.Type = Rand.Int( 0, 3 );
 				}
+				
 			}
+
+			if ( TimeSinceState >= MaxTimeInState && ExercisesIntroduced )
+			{
+				TimeSinceState = 0;
+
+				MaxTimeInState = Rand.FromArray( new float[] { 10f, 15f, 15f, 15f, 30f } );
+				ChangeExercise( Rand.FromArray( new Exercise[] { Exercise.Run, Exercise.Squat, Exercise.Yoga } ) );
+				
+			}
+		}
+
+		[Event("OtherBeat")]
+		public void PunchBeat()
+		{
+			if ( CurrentExercise == Exercise.Punch )
+			{
+				ConsoleSystem.Run( "create_punch" );
+			}
+		}
+		
+		/// <summary>
+		/// Command for creating the punch QT event
+		/// </summary>
+		[ServerCmd("create_punch")]
+		public static void CreatePunchQT()
+		{
+
+		var pt = new PunchQT();
+		pt.Player = TSSPlayer.Instance;
+		pt.TargetTime = 1f;
+		pt.MyTime = (60f/140f) * 2f;
+		pt.Type = Rand.Int( 0, 3 );
+
 		}
 
 		[ServerCmd( "yoga_pose" )]
 		public static void SetPose( int i )
 		{
+			if(Instance.CurrentExercise != Exercise.Yoga )
+			{
+				return;
+			}
 			Instance.SetAnimInt( "YogaPoses", i );
 			Instance.SetClientPose( i );
+			Instance.SetAnimBool( "b_grounded", false );
+			Instance.GivePoints( 5 );
 		}
 
 		[ClientRpc]
@@ -157,7 +219,7 @@ namespace TSS {
 				return;
 			}
 
-			SetAnimBool( "b_grounded", false );
+			
 
 			if ( TimeSinceYoga > 3.05f )
 			{
@@ -169,6 +231,14 @@ namespace TSS {
 					pt.Player = this;
 
 				}
+			}
+
+			//In theory this will work for introducing exercises at random 
+			if(TimeSinceState >= MaxTimeInState && IntroYoga)
+			{
+				Log.Info( IsClient );
+				SetAnimBool( "b_grounded", true );
+				ChangeExercise( Rand.FromArray( new Exercise[] { Exercise.Run, Exercise.Punch, Exercise.Squat } ));
 			}
 		}
 
@@ -239,6 +309,13 @@ namespace TSS {
 				TimeSinceDownPressed = 0;
 				if ( cam.Down != null )
 					cam.Down.TextScale += 0.3f;
+			}
+
+			if ( TimeSinceState >= MaxTimeInState && ExercisesIntroduced )
+			{
+				TimeSinceState = 0;
+				MaxTimeInState = Rand.FromArray( new float[] { 10f, 15f, 15f, 15f, 30f } );
+				ChangeExercise( Rand.FromArray( new Exercise[] { Exercise.Run, Exercise.Punch, Exercise.Yoga } ) );
 			}
 		}
 	}
