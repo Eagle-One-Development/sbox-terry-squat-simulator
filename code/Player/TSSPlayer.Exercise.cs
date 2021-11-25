@@ -39,10 +39,6 @@ namespace TSS {
 					break;
 			}
 
-			
-
-
-
 			if ( exercise != Exercise.Squat)
 			{
 				Barbell?.Delete();
@@ -260,20 +256,14 @@ namespace TSS {
 
 			SetAnimInt( "squat", squat );
 
-			if ( TimeSinceExerciseStopped < 3f && squat != -1 && !IntroComplete )
+			if ( TimeSinceExerciseStopped < 3f && squat != -1 && !cam.IntroComplete )
 			{
 				float f = (TimeSinceExerciseStopped - 1f) / 3f;
 				f = MathF.Pow( f.Clamp( 0, 1f ), 3f );
 				cam.Progress += Time.Delta * 0.025f * (1 - f);
-
-
-				if ( cam.Progress >= 1f )
-				{
-					IntroComplete = true;
-				}
 			}
 
-			if ( TimeSinceExerciseStopped < 3f && squat != -1 && IntroComplete )
+			if ( TimeSinceExerciseStopped < 3f && squat != -1 && cam.IntroComplete )
 			{
 				cam.Progress += Time.Delta * 0.35f;
 			}
@@ -285,6 +275,7 @@ namespace TSS {
 
 			if ( Input.Pressed( InputButton.Forward ) && (squat == 0 || squat == -1) && TimeSinceDownPressed > 0.1f )
 			{
+
 				if ( squat == 0 )
 				{
 
@@ -294,7 +285,8 @@ namespace TSS {
 					SetScale( 1.2f );
 					CounterBump( 0.5f );
 					TimeSinceExerciseStopped = 0;
-					Log.Info( $"SQUAT: {ExercisePoints}" );
+
+
 					if ( cam.Up != null )
 						cam.Up.TextScale += 0.3f;
 				}

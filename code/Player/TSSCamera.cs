@@ -1,10 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Sandbox;
-using TSS;
 using TSS.UI;
 
 public enum CameraState
@@ -19,6 +14,12 @@ public enum CameraState
 
 namespace TSS
 {
+
+	//public enum Scene
+	//{
+	//	JOSH_PRESENT,
+	//	ASSOCATION
+	//}
 
 	public partial class TSSCamera : Camera
 	{
@@ -39,25 +40,27 @@ namespace TSS
 		private CreditPanel Assoc;
 		private CreditPanel Dawdle;
 		private CreditPanel Mungus;
+		private CreditPanel Jacob;
+		private CreditPanel Kabubu;
 		private CreditPanel TSS;
 		public CreditPanel Up;
 		public CreditPanel Down;
+		public CreditPanel TreadmillTutorial;
 		public TimeSince TimeSinceStart;
 
-		public bool Active;
+		//public Scene CurrentScene;
 
+		public bool Active;
 
 		Material _myPostProcessingMaterial;
 		[Event( "render.postprocess" )]
 		public void DoPostProcess()
 		{
-			Log.Info( "HERE, IT WORKS" );
 			if ( _myPostProcessingMaterial != null )
 			{
 				Render.CopyFrameBuffer( false );
 				Render.Material = _myPostProcessingMaterial;
 				Render.DrawScreenQuad();
-
 			}
 		}
 
@@ -65,7 +68,6 @@ namespace TSS
 
 		public override void Activated()
 		{
-
 			base.Activated();
 			if ( !Active )
 			{
@@ -76,23 +78,17 @@ namespace TSS
 				Log.Info( "WAIT WHAT" );
 				Active = true;
 			}
-
-
-		}
-
-		public override void BuildInput( InputBuilder input )
-		{
-			if ( input.Pressed( InputButton.Attack1 ) )
-			{
-				var pawn = Local.Pawn as TSSPlayer;
-			}
 		}
 
 		public override void Update()
 		{
 			var pawn = Local.Pawn as TSSPlayer;
-
 			yaw = yaw.LerpTo( yawTar, Time.Delta * 2f );
+
+			if ( pawn.CurrentExercise != Exercise.Squat )
+			{
+				Progress = 1.0f;
+			}
 
 			switch ( CamState )
 			{
@@ -103,7 +99,7 @@ namespace TSS
 					FollowPlayer();
 					break;
 				case CameraState.Intro:
-					Intro();
+					AdvanceIntro();
 					break;
 
 				case CameraState.Ground:
@@ -117,9 +113,9 @@ namespace TSS
 
 			if ( pawn.GetAnimBool( "Drink" ) && pawn.TimeSinceSoda > 0.05f )
 			{
-				var trans = pawn.GetBoneTransform( "Camera" );
-				Position = trans.Position;
-				Rotation = trans.Rotation * Rotation.From( 90, 0, -90 );
+				var transform = pawn.GetBoneTransform( "Camera" );
+				Position = transform.Position;
+				Rotation = transform.Rotation * Rotation.From( 90, 0, -90 );
 			}
 
 			Progress = Math.Clamp( Progress, 0f, 1f );
@@ -138,6 +134,11 @@ namespace TSS
 					TSS?.Delete();
 					TSS = null;
 				}
+
+				Down?.Delete();
+				Down = null;
+				Up?.Delete();
+				Down = null;
 			}
 
 			//For now make the score face in the forward direction of the player
@@ -151,7 +152,7 @@ namespace TSS
 			}
 		}
 
-		public void Intro()
+		public void AdvanceIntro()
 		{
 
 			var pawn = Local.Pawn as TSSPlayer;
@@ -200,16 +201,20 @@ namespace TSS
 				yawTar = 30f;
 			}
 
-			if ( Progress >= 0.25f && Progress < 0.5f )
+			if (Progress >= 0.25f)
 			{
 				JoshWilson?.Delete();
 				JoshWilson = null;
 				Presents?.Delete();
 				Presents = null;
+			}
 
-				Assoc ??= new CreditPanel( "In Association With", 3200, 1600 );
-				Assoc.Rotation = Rotation.From( 0, 35, 0 );
-				Assoc.Position = pawn.Position + Assoc.Rotation.Forward * 12f;
+			if ( Progress >= 0.25f && Progress < 0.5f )
+			{
+
+				Assoc ??= new CreditPanel( "and", 3200, 1600 );
+				Assoc.Rotation = Rotation.From( 0, 90, 0 );
+				Assoc.Position = pawn.Position + pawn.Rotation.Forward * 12f;
 				Assoc.Opacity = 1f;
 				Assoc.Bop = true;
 				Assoc.FontSize = 100f;
@@ -226,6 +231,18 @@ namespace TSS
 				Mungus.Opacity = 1f;
 				Mungus.FontSize = 200f;
 
+				Kabubu ??= new CreditPanel( "Kabubu", 3200, 400 );
+				Kabubu.Rotation = Rotation.From( 0, 55, 0 );
+				Kabubu.Position = pawn.Position + pawn.Rotation.Right * -50f + Vector3.Up * 64f;
+				Kabubu.Opacity = 1f;
+				Kabubu.FontSize = 200f;
+
+				Jacob ??= new CreditPanel( "Jac0xb", 3200, 400 );
+				Jacob.Rotation = Rotation.From( 0, -55 + 180, 0 );
+				Jacob.Position = pawn.Position + pawn.Rotation.Right * 50f + Vector3.Up * 64f;
+				Jacob.Opacity = 1f;
+				Jacob.FontSize = 200f;
+
 				float p = (Progress - 0.25f) / 0.24f;
 				p = p.Clamp( 0, 1f );
 				CamDistance = 150f;
@@ -240,9 +257,7 @@ namespace TSS
 
 			}
 
-
-
-			if ( Progress >= 0.5f && Progress < 0.75f )
+			if ( Progress >= 0.5f )
 			{
 				Assoc?.Delete();
 				Assoc = null;
@@ -250,7 +265,18 @@ namespace TSS
 				Dawdle = null;
 				Mungus?.Delete();
 				Mungus = null;
+				Kabubu?.Delete();
+				Kabubu = null;
+				Jacob?.Delete();
+				Jacob = null;
+				Up?.Delete();
+				Up = null;
+				Down?.Delete();
+				Up = null;
+			}
 
+			if ( Progress >= 0.5f && Progress < 0.75f )
+			{
 				float p = (Progress - 0.5f) / 0.25f;
 				p = p.Clamp( 0, 1f );
 				CamDistance = 50f;
@@ -284,7 +310,7 @@ namespace TSS
 				Position = center + pawn.Rotation.Forward * CamDistance;
 			}
 
-			if ( Progress >= 1f )
+			if ( Progress >= 1.0f )
 			{
 				IntroComplete = true;
 				CamState = CameraState.Static;
@@ -292,13 +318,15 @@ namespace TSS
 				TimeSinceState = 0f;
 
 				TSS.Opacity = 1f;
-				SCounter ??= new CreditPanel( "Squats: 0", 3200, 3200 );
-				SCounter.Position = pawn.Position + Vector3.Up * 30f + pawn.Rotation.Forward * -50f;// + pawn.Rotation.Left * 50f;
-				SCounter.Rotation = Rotation.From( 0, 90, 0 );
-				SCounter.Opacity = 0;
-				SCounter.TextScale = 1;
-			}
+				TSS.Delete();
+				TSS = null;
 
+				SCounter ??= new CreditPanel( "Squats: 0", 3200, 3200 );
+				SCounter.Position = pawn.Position + Vector3.Up * 30f + pawn.Rotation.Forward * -50f;
+				SCounter.Rotation = Rotation.From( 0, 90, 0 );
+				SCounter.Opacity = 0.0f;
+				SCounter.TextScale = 1.0f;
+			}
 		}
 
 		public void FollowPlayer()

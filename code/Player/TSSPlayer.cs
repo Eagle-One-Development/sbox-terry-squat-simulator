@@ -20,9 +20,6 @@ namespace TSS
 		public float ScaleTar;
 
 		[Net]
-		public bool IntroComplete { get; set; }
-
-		[Net]
 		public Exercise CurrentExercise { get; set; }
 
 		[Net]

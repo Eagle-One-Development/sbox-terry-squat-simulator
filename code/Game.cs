@@ -1,5 +1,6 @@
 ﻿
 using Sandbox;
+using System.Linq;
 
 namespace TSS
 {
@@ -9,6 +10,7 @@ namespace TSS
 			if (IsServer)
 			{
 				_ = new TSSHud();
+				DequeueLoop();
 			}
 		}
 
@@ -18,10 +20,10 @@ namespace TSS
 
 			var player = new TSSPlayer();
 			client.Pawn = player;
-
 			player.Respawn();
 		}
 
 		public static new TSSGame Current => Game.Current as TSSGame;
+		public static TSSPlayer Pawn => All.OfType<TSSPlayer>().First();
 	}
 }

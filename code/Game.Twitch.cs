@@ -3,10 +3,16 @@ using System.Collections.Generic;
 
 namespace TSS
 {
+	public struct GenericMessage
+	{
+		public string DisplayName;
+		public string Username;
+		public string Message;
+	}
+
 	public partial class TSSGame : Game
 	{
-
-		public Queue<StreamChatMessage> Queue = new Queue<StreamChatMessage>();
+		public static Queue<GenericMessage> Queue = new Queue<GenericMessage>();
 
 		[Event.Streamer.ChatMessage]
 		public static void OnStreamMessage( StreamChatMessage message )
@@ -14,8 +20,69 @@ namespace TSS
 			if ( !Host.IsClient )
 				return;
 
-			Current.Queue.Enqueue( message );
+			var msg = new GenericMessage()
+			{
+				Message = message.Message,
+				DisplayName = message.DisplayName,
+				Username = message.Username,
+			};
+
+			ProcessMessage( msg );
+		}
+
+
+		/// <summary>
+		/// A mock function to simulate twitch messages.
+		/// </summary>
+		[ServerCmd( "twitch_simulate" )]
+		public static void Say( string message )
+		{
+			Assert.NotNull( ConsoleSystem.Caller );
+
+			if ( message.Contains( '\n' ) || message.Contains( '\r' ) ) 
+				return;
+
+			var msg = new GenericMessage() { 
+				Message = message, 
+				DisplayName = ConsoleSystem.Caller.Name, 
+				Username = ConsoleSystem.Caller.Name, 
+			};
+
+			ProcessMessage( msg );
+		}
+
+		public static void ProcessMessage( GenericMessage message )
+		{
 			Log.Info( $"({message.DisplayName} | {message.Username}) - {message.Message}" );
+			Queue.Enqueue( message );
+		}
+
+		public async static void DequeueLoop()
+		{
+			while(true)
+			{
+				await GameTask.Delay( 100 );
+
+				if (Queue.TryDequeue( out var msg ) )
+				{
+					if (msg.Message.Contains("!soda"))
+					{
+						Pawn.DrinkSoda();
+					} else if (msg.Message.Contains("!burger"))
+					{
+						_ = new Food();
+					}
+					// tomato
+					// pull red cable (treadmill)
+					// random excerise
+					// quicktime events
+					// medicine ball and ragdoll
+					// cheer
+					// gym hottie confusion
+					// pay gym subscription
+					// 
+				}
+			}
 		}
 
 		/// <summary>
