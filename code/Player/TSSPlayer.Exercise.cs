@@ -1,9 +1,11 @@
 ﻿using Sandbox;
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Collections.Generic;
 
-namespace TSS {
+namespace TSS
+{
 	public partial class TSSPlayer : Player
 	{
 		/// <summary>
@@ -29,7 +31,8 @@ namespace TSS {
 				}
 			}
 
-			switch ( exercise) {
+			switch ( exercise )
+			{
 				case Exercise.Run:
 					ent = All.OfType<RunSpawn>().First();
 					break;
@@ -48,6 +51,16 @@ namespace TSS {
 			Position = ent.Transform.Position;
 			Rotation = ent.Transform.Rotation;
 			CurrentExercise = exercise;
+
+			if ( ExercisePoints > 100 )
+				SetTitleCardActive();
+		}
+
+		[ClientRpc]
+		private async void SetTitleCardActive()
+		{
+			await Task.DelaySeconds( 0.1f );
+			titleCardActive = true;
 		}
 		
 		public void ClearAnimation()
@@ -142,7 +155,7 @@ namespace TSS {
 			}
 		}
 
-		[Event("OtherBeat")]
+		[Event( "OtherBeat" )]
 		public void PunchBeat()
 		{
 			if ( CurrentExercise == Exercise.Punch )
@@ -150,19 +163,19 @@ namespace TSS {
 				ConsoleSystem.Run( "create_punch" );
 			}
 		}
-		
+
 		/// <summary>
 		/// Command for creating the punch QT event
 		/// </summary>
-		[ServerCmd("create_punch")]
+		[ServerCmd( "create_punch" )]
 		public static void CreatePunchQT()
 		{
 
-		var pt = new PunchQT();
-		pt.Player = TSSPlayer.Instance;
-		pt.TargetTime = 1f;
-		pt.MyTime = (60f/140f) * 2f;
-		pt.Type = Rand.Int( 0, 3 );
+			var pt = new PunchQT();
+			pt.Player = TSSPlayer.Instance;
+			pt.TargetTime = 1f;
+			pt.MyTime = (60f / 140f) * 2f;
+			pt.Type = Rand.Int( 0, 3 );
 
 		}
 

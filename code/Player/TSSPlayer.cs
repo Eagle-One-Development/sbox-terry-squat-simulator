@@ -69,7 +69,7 @@ namespace TSS
 		[Net, Predicted]
 		public TimeSince TimeSinceSoda { get; set; }
 
-		
+
 		/// <summary>
 		/// Whether we've introduced running or not
 		/// </summary>
@@ -100,6 +100,10 @@ namespace TSS
 
 		[Net]
 		public bool[] TimeLines { get; set; } = new bool[20];
+
+		private bool titleCardActive;
+
+		private UI.CreditPanel titleCard;
 
 		/// <summary>
 		/// Just a variable to introduce if we've introduced all the exercise or not
@@ -293,6 +297,32 @@ namespace TSS
 			SimulateActiveChild( cl, ActiveChild );
 		}
 
+		public override void FrameSimulate( Client cl )
+		{
+			if ( IsClient && titleCardActive )
+			{
+				titleCard ??= new UI.CreditPanel( CurrentExercise.ToString().ToUpper(), 3200, 3200 )
+				{
+					Position = Position + Vector3.Up * -35f + Rotation.Forward * 35f,
+					FontSize = 400f,
+					Rotation = this.Rotation,
+					Opacity = 5f,
+					Bop = true,
+				};
+
+				titleCard.Opacity -= Time.Delta;
+
+				if ( titleCard.Opacity < 1 )
+					titleCard.TextScale = titleCard.TextScale.LerpTo( 0, Time.Delta * 5f );
+
+				if ( titleCard.Opacity < 0 )
+				{
+					titleCardActive = false;
+					titleCard.Delete( true );
+					titleCard = null;
+				}
+			}
+		}
 
 		/// <summary>
 		/// This runs a trace which will click on a food item in the world and consume or destroy it.
