@@ -101,6 +101,8 @@ namespace TSS
 		[Net]
 		public bool[] TimeLines { get; set; } = new bool[20];
 
+		Particles PartSystem;
+
 		/// <summary>
 		/// Just a variable to introduce if we've introduced all the exercise or not
 		/// </summary>
@@ -152,6 +154,7 @@ namespace TSS
 			SodaCan.EnableDrawing = false;
 
 			//MaxTimeInState = 30f;
+			
 
 			base.Respawn();
 		}
@@ -160,6 +163,8 @@ namespace TSS
 		{
 			base.ClientSpawn();
 			PlayMusic();
+			//PartSystem = Particles.Create( "particles/sicko_mode/sicko_mode.vpcf" );
+			//PartSystem.SetPosition( 0, Transform.Position + Rotation.Forward * -20f + Vector3.Up * 48f );
 		}
 
 		public async void PlayMusic()
@@ -241,6 +246,11 @@ namespace TSS
 
 			DetectClick();
 			ClearAnimation();
+
+			if ( IsClient )
+			{
+				
+			}
 
 			switch ( CurrentExercise )
 			{

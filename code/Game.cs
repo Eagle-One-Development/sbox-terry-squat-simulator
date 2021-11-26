@@ -12,6 +12,13 @@ namespace TSS
 				_ = new TSSHud();
 				DequeueLoop();
 			}
+
+			if ( IsClient )
+			{
+				PostProcess.Add( new VHSPostProcess() );
+				var vhsInvert = PostProcess.Get<VHSPostProcess>();
+				vhsInvert.Enabled = true;
+			}
 		}
 
 		public override void ClientJoined( Client client )
