@@ -601,7 +601,6 @@
 					m_vDomainMaxs = [ 0.0, 0.0 ]
 				}
 			}
-			m_nSelfIllumPerParticle = "26"
 		},
 		{
 			_class = "C_OP_RenderSprites"
