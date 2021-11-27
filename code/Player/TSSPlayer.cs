@@ -415,9 +415,11 @@ namespace TSS
 			//Switch to the running exercise state
 			if ( ExercisePoints >= 200 && !IntroRunning)
 			{
+
 				ChangeExercise( Exercise.Run );
 				TSSGame.Current.SetTarVolume( 1 );
 				TSSGame.Current.SetTarVolume( 7 );
+				TimeSinceRun = 0f;
 				IntroRunning = true;
 				return;
 			}

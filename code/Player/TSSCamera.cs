@@ -47,6 +47,8 @@ namespace TSS
 		public CreditPanel Down;
 		public CreditPanel TreadmillTutorial;
 		public TimeSince TimeSinceStart;
+		public bool RunTutorial;
+		public bool RunTutorialComplete;
 
 		//public Scene CurrentScene;
 
@@ -125,7 +127,7 @@ namespace TSS
 			TimedProgress = TimedProgress.LerpTo( TimeSinceState / 5f, Time.Delta * 8f );
 			TimedProgress = TimedProgress.Clamp( 0f, 1f );
 
-			if ( TSS != null && IntroComplete )
+			if ( TSS != null && IntroComplete && !pawn.IntroRunning )
 			{
 				TSS.Opacity -= Time.Delta * pawn.curSpeed * 0.5f;
 
@@ -138,8 +140,62 @@ namespace TSS
 				Down?.Delete();
 				Down = null;
 				Up?.Delete();
-				Down = null;
+				Up = null;
 			}
+
+			#region Run Tutorial Prompt
+			//Spawn a tutorial prompt for running
+			if ( pawn.IntroRunning)
+			{
+				if ( !RunTutorial && pawn.CurrentExercise == Exercise.Run)
+				{
+					Down?.Delete();
+					Up?.Delete();
+					Down = null;
+					Up = null;
+					Up ??= new CreditPanel( Input.GetKeyWithBinding( "+iv_right" ).ToUpper(), 200, 200 );
+					Down ??= new CreditPanel( Input.GetKeyWithBinding( "+iv_left" ).ToUpper(), 200, 200 );
+					
+				
+					RunTutorial = true;
+				}
+
+			}
+
+			//Basically fade these out after a few seconds.
+			if ( RunTutorial && !RunTutorialComplete)
+			{
+				float runTutAlph = 0f;
+				if(pawn.TimeSinceRun > 8f )
+				{
+					runTutAlph = ((pawn.TimeSinceRun - 8f) / 3f).Clamp( 0, 1f );
+				}
+
+
+
+				
+
+				Down.TextScale = Down.TextScale.LerpTo( 1, Time.Delta * 10f );
+				Up.TextScale = Up.TextScale.LerpTo( 1, Time.Delta * 10f );
+
+				Up.Position = pawn.ExercisePosition + Vector3.Up * 55f + pawn.Rotation.Right * -22f;
+				Up.Rotation = pawn.Rotation;
+				Up.Opacity = 1 - runTutAlph;
+
+				Down.Position = pawn.ExercisePosition + Vector3.Up * 55f + pawn.Rotation.Right * 22f;
+				Down.Rotation = pawn.Rotation;
+				Down.Opacity = 1 - runTutAlph;
+
+				if(pawn.TimeSinceRun > 15f )
+				{
+					RunTutorialComplete = true;
+					Down?.Delete();
+					Down = null;
+					Up?.Delete();
+					Up = null;
+				}
+			}
+			#endregion
 
 			//For now make the score face in the forward direction of the player
 			if ( Local.Pawn is TSSPlayer t )
