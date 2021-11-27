@@ -147,7 +147,7 @@ namespace TSS
 				if ( SCounter != null )
 				{
 					SCounter.Rotation = t.Rotation;
-					SCounter.Position = pawn.Position + Vector3.Up * 30f + pawn.Rotation.Forward * -50f;
+					SCounter.Position = t.ExercisePosition + Vector3.Up * 30f + pawn.Rotation.Forward * -50f;
 				}
 			}
 		}
@@ -166,13 +166,13 @@ namespace TSS
 			{
 
 				JoshWilson ??= new CreditPanel( "Josh Wilson", 3200, 3200 );
-				JoshWilson.Position = pawn.Position + Vector3.Up * 10f + pawn.Rotation.Forward * -20f;
+				JoshWilson.Position = pawn.ExercisePosition + Vector3.Up * 10f + pawn.Rotation.Forward * -20f;
 				JoshWilson.Rotation = Rotation.From( 0, 90, 0 );
 				JoshWilson.Opacity = ((Progress - 0.01f) / 0.05f).Clamp( 0, 1f );
 				JoshWilson.Bop = true;
 
 				Presents ??= new CreditPanel( "Presents", 3200, 3200 );
-				Presents.Position = pawn.Position + Vector3.Up * -50f + pawn.Rotation.Forward * 9f;
+				Presents.Position = pawn.ExercisePosition + Vector3.Up * -50f + pawn.Rotation.Forward * 9f;
 				Presents.Rotation = Rotation.From( 0, 90, 0 );
 				Presents.Opacity = ((Progress - 0.1f) / 0.05f).Clamp( 0, 1f );
 				Presents.Bop = true;
@@ -180,18 +180,18 @@ namespace TSS
 				float f = ((TimeSinceStart - 2f) / 5f).Clamp( 0, 1f );
 
 				Up ??= new CreditPanel( Input.GetKeyWithBinding( "+iv_forward" ), 200, 200 );
-				Up.Position = pawn.Position + Vector3.Up * 55f + pawn.Rotation.Right * -22f + pawn.Rotation.Forward * 12f;
+				Up.Position = pawn.ExercisePosition + Vector3.Up * 55f + pawn.Rotation.Right * -22f + pawn.Rotation.Forward * 12f;
 				Up.Rotation = Rotation.From( 0, 90, 0 );
 				Up.Opacity = (1f - ((Progress - 0.1f) / 0.05f).Clamp( 0, 1f )) * f;
 				Up.TextScale = Up.TextScale.LerpTo( 1, Time.Delta * 10f );
 
 				Down ??= new CreditPanel( Input.GetKeyWithBinding( "+iv_back" ), 200, 200 );
-				Down.Position = pawn.Position + Vector3.Up * 25f + pawn.Rotation.Right * -22f + pawn.Rotation.Forward * 12f;
+				Down.Position = pawn.ExercisePosition + Vector3.Up * 25f + pawn.Rotation.Right * -22f + pawn.Rotation.Forward * 12f;
 				Down.Rotation = Rotation.From( 0, 90, 0 );
 				Down.Opacity = (1f - ((Progress - 0.1f) / 0.05f).Clamp( 0, 1f )) * f;
 				Down.TextScale = Down.TextScale.LerpTo( 1, Time.Delta * 10f );
 
-				var center = pawn.Position + Vector3.Up * CamHeight;
+				var center = pawn.ExercisePosition + Vector3.Up * CamHeight;
 
 				CamDistance = 125f - 50f * (Progress / 0.25f);
 				CamHeight = 45f;
@@ -214,32 +214,32 @@ namespace TSS
 
 				Assoc ??= new CreditPanel( "and", 3200, 1600 );
 				Assoc.Rotation = Rotation.From( 0, 90, 0 );
-				Assoc.Position = pawn.Position + pawn.Rotation.Forward * 12f;
+				Assoc.Position = pawn.ExercisePosition + pawn.Rotation.Forward * 12f;
 				Assoc.Opacity = 1f;
 				Assoc.Bop = true;
 				Assoc.FontSize = 100f;
 
 				Dawdle ??= new CreditPanel( "Dawdle", 3200, 400 );
 				Dawdle.Rotation = Rotation.From( 0, 55, 0 );
-				Dawdle.Position = pawn.Position + pawn.Rotation.Right * -50f + Vector3.Up * -3f;
+				Dawdle.Position = pawn.ExercisePosition + pawn.Rotation.Right * -50f + Vector3.Up * -3f;
 				Dawdle.Opacity = 1f;
 				Dawdle.FontSize = 200f;
 
 				Mungus ??= new CreditPanel( "Mungus", 3200, 400 );
 				Mungus.Rotation = Rotation.From( 0, -55 + 180, 0 );
-				Mungus.Position = pawn.Position + pawn.Rotation.Right * 50f + Vector3.Up * -3f;
+				Mungus.Position = pawn.ExercisePosition + pawn.Rotation.Right * 50f + Vector3.Up * -3f;
 				Mungus.Opacity = 1f;
 				Mungus.FontSize = 200f;
 
 				Kabubu ??= new CreditPanel( "Kabubu", 3200, 400 );
 				Kabubu.Rotation = Rotation.From( 0, 55, 0 );
-				Kabubu.Position = pawn.Position + pawn.Rotation.Right * -50f + Vector3.Up * 64f;
+				Kabubu.Position = pawn.ExercisePosition + pawn.Rotation.Right * -50f + Vector3.Up * 64f;
 				Kabubu.Opacity = 1f;
 				Kabubu.FontSize = 200f;
 
 				Jacob ??= new CreditPanel( "Jac0xb", 3200, 400 );
 				Jacob.Rotation = Rotation.From( 0, -55 + 180, 0 );
-				Jacob.Position = pawn.Position + pawn.Rotation.Right * 50f + Vector3.Up * 64f;
+				Jacob.Position = pawn.ExercisePosition + pawn.Rotation.Right * 50f + Vector3.Up * 64f;
 				Jacob.Opacity = 1f;
 				Jacob.FontSize = 200f;
 
@@ -247,7 +247,7 @@ namespace TSS
 				p = p.Clamp( 0, 1f );
 				CamDistance = 150f;
 				CamHeight = 20f;
-				var center = pawn.Position + Vector3.Up * CamHeight;
+				var center = pawn.ExercisePosition + Vector3.Up * CamHeight;
 
 				yawTar = MathX.LerpTo( 30f, 120f, p );
 				Position = center + Rotation.FromYaw( yaw ).Forward * CamDistance;
@@ -282,7 +282,7 @@ namespace TSS
 				CamDistance = 50f;
 				CamHeight = 32f + 32f * p;
 
-				var center = pawn.Position + Vector3.Up * CamHeight;
+				var center = pawn.ExercisePosition + Vector3.Up * CamHeight;
 				Position = center + pawn.Rotation.Forward * CamDistance;
 				Rotation = Rotation.LookAt( (center - Position), Vector3.Up );
 
@@ -297,7 +297,7 @@ namespace TSS
 				CamHeight = 64f - 19f * p;
 
 				TSS ??= new CreditPanel( "Terry\nSquat\nSimulator", 3200, 3200 );
-				TSS.Position = pawn.Position + Vector3.Up * -26f + pawn.Rotation.Forward * 20f;
+				TSS.Position = pawn.ExercisePosition + Vector3.Up * -26f + pawn.Rotation.Forward * 20f;
 				TSS.Rotation = Rotation.From( 0, 90, 0 );
 				TSS.Opacity = p * 2f;
 				TSS.Bop = true;
@@ -305,7 +305,7 @@ namespace TSS
 				TSSGame.Current.SetTarVolume( 4 );
 
 
-				var center = pawn.Position + Vector3.Up * CamHeight;
+				var center = pawn.ExercisePosition + Vector3.Up * CamHeight;
 				Rotation = Rotation.LookAt( (center - Position), Vector3.Up );
 				Position = center + pawn.Rotation.Forward * CamDistance;
 			}
@@ -322,7 +322,7 @@ namespace TSS
 				TSS = null;
 
 				SCounter ??= new CreditPanel( "Squats: 0", 3200, 3200 );
-				SCounter.Position = pawn.Position + Vector3.Up * 30f + pawn.Rotation.Forward * -50f;
+				SCounter.Position = pawn.ExercisePosition + Vector3.Up * 30f + pawn.Rotation.Forward * -50f;
 				SCounter.Rotation = Rotation.From( 0, 90, 0 );
 				SCounter.Opacity = 0.0f;
 				SCounter.TextScale = 1.0f;
@@ -335,8 +335,8 @@ namespace TSS
 			CamHeight = 45f;
 			float p = TimedProgress;
 			p = p.Clamp( 0, 1f );
-			var pawn = Local.Pawn as AnimEntity;
-			var center = pawn.Position + Vector3.Up * CamHeight;
+			var pawn = Local.Pawn as TSSPlayer;
+			var center = pawn.ExercisePosition + Vector3.Up * CamHeight;
 
 
 			Position = center + pawn.Rotation.Forward * CamDistance + pawn.Rotation.Right * MathX.LerpTo( -100f, 100f, p );
@@ -359,8 +359,8 @@ namespace TSS
 			CamHeight = 15f;
 			float p = TimedProgress;
 			p = p.Clamp( 0, 1f );
-			var pawn = Local.Pawn as AnimEntity;
-			var center = pawn.Position + Vector3.Up * CamHeight;
+			var pawn = Local.Pawn as TSSPlayer;
+			var center = pawn.ExercisePosition + Vector3.Up * CamHeight;
 
 			Position = center + pawn.Rotation.Forward * CamDistance + pawn.Rotation.Right * MathX.LerpTo( -50f, 50f, p );
 			Rotation = Rotation.LookAt( pawn.Rotation.Forward * -1f, Vector3.Up );
@@ -379,8 +379,8 @@ namespace TSS
 		{
 			CamDistance = 100f;
 			CamHeight = 45f;
-			var pawn = Local.Pawn as AnimEntity;
-			var center = pawn.Position + Vector3.Up * CamHeight;
+			var pawn = Local.Pawn as TSSPlayer;
+			var center = pawn.ExercisePosition + Vector3.Up * CamHeight;
 
 
 			Position = center + pawn.Rotation.Forward * CamDistance;

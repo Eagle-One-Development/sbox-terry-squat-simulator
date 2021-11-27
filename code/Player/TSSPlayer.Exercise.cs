@@ -9,11 +9,18 @@ namespace TSS
 	public partial class TSSPlayer : Player
 	{
 		/// <summary>
+		/// The position in the world where the exercise is taking place. Camera centers around this point so terry can move indepdent of the camera if needed.
+		/// </summary>
+		[Net]
+		public Vector3 ExercisePosition { get; set; }
+
+		/// <summary>
 		/// Changes the current exercise and moves the player to a given position and rotation
 		/// </summary>
 		/// <param name="exercise">The exercise we're moving to</param>
 		public void ChangeExercise( Exercise exercise )
 		{
+			//Define the entity we're going to move the player to;
 			Entity ent = null;
 
 			// Cleanup on exercise change.
@@ -35,6 +42,8 @@ namespace TSS
 			{
 				case Exercise.Run:
 					ent = All.OfType<RunSpawn>().First();
+					//Run position is used for the mini-game for terry being pushed off the treadmill
+					ExercisePosition = ent.Transform.Position;
 					break;
 				case Exercise.Squat:
 					ent = All.OfType<SquatSpawn>().First();
@@ -48,6 +57,7 @@ namespace TSS
 					break;
 			}
 
+			ExercisePosition = ent.Transform.Position;
 			Position = ent.Transform.Position;
 			Rotation = ent.Transform.Rotation;
 			CurrentExercise = exercise;
@@ -56,6 +66,9 @@ namespace TSS
 				SetTitleCardActive();
 		}
 
+		/// <summary>
+		/// Client command which activates the title card for each exercise. This way people know what to do. 
+		/// </summary>
 		[ClientRpc]
 		private async void SetTitleCardActive()
 		{
@@ -63,6 +76,9 @@ namespace TSS
 			titleCardActive = true;
 		}
 		
+		/// <summary>
+		/// Resets all the proper animgraph parameters when switching between exercise states
+		/// </summary>
 		public void ClearAnimation()
 		{
 			SetAnimInt( "squat", -1 );
@@ -72,6 +88,9 @@ namespace TSS
 			SetAnimFloat( "move_x", 0 );
 		}
 
+		/// <summary>
+		/// Initialize the squatting exercise state
+		/// </summary>
 		public void StartSquatting()
 		{
 			Barbell?.Delete();
@@ -82,9 +101,76 @@ namespace TSS
 			lastSquat = -1;
 		}
 
+		/// <summary>
+		/// Initializes the punch exercise state
+		/// </summary>
 		public void StartPunching()
 		{
 			TimeToNextPunch = 1.1f;
+		}
+
+
+		/// <summary>
+		/// The offset by which we are falling off of the tread mill
+		/// </summary>
+		[Net, Predicted]
+		public float RunPositionOffset { get; set; }
+
+		/// <summary>
+		/// The offset by which we are falling off of the tread mill
+		/// </summary>
+		[Net, Predicted]
+		public TimeSince TimeSinceRagdolled{ get; set; }
+
+		[ClientRpc]
+		void BecomeRagdollOnClient( Vector3 force, int forceBone )
+		{
+
+			ModelEntity ent = new();
+			ent.Position = Position;
+			ent.Rotation = Rotation;
+			ent.MoveType = MoveType.Physics;
+			ent.UsePhysicsCollision = true;
+			ent.SetInteractsAs( CollisionLayer.Debris );
+			ent.SetInteractsWith( CollisionLayer.WORLD_GEOMETRY );
+			ent.SetInteractsExclude( CollisionLayer.Player | CollisionLayer.Debris );
+
+			ent.SetModel( this.GetModel() );
+
+			//.SetBodyGroup(1, BodyGroup);
+			//ent.RenderColor = PlayerColor;
+
+			ent.CopyBonesFrom( this );
+			ent.TakeDecalsFrom( this );
+			ent.SetRagdollVelocityFrom( this );
+			ent.DeleteAsync( 5.0f );
+
+			ent.PhysicsGroup.AddVelocity( force );
+
+			_ = new ModelEntity( "models/clothes/fitness/shorts_fitness.vmdl", ent );
+			_ = new ModelEntity( "models/clothes/fitness/shirt_fitness.vmdl", ent );
+			_ = new ModelEntity( "models/clothes/fitness/shoes_sneakers.vmdl", ent );
+			_ = new ModelEntity( "models/clothes/fitness/sweatband_wrists.vmdl", ent );
+			_ = new ModelEntity( "models/clothes/fitness/sweatband_head.vmdl", ent );
+			_ = new ModelEntity( "models/clothes/fitness/hair_head.vmdl", ent );
+			_ = new ModelEntity( "models/clothes/fitness/hair_body.vmdl", ent );
+
+			if ( forceBone >= 0 )
+			{
+				var body = ent.GetBonePhysicsBody( forceBone );
+				if ( body != null )
+				{
+					body.ApplyForce( force * 1000 );
+				}
+				else
+				{
+					ent.PhysicsGroup.AddVelocity( force );
+				}
+			}
+
+			Corpse = ent;
+
+
 		}
 
 		/// <summary>
@@ -94,6 +180,33 @@ namespace TSS
 		public void SimulateRunning( TSSCamera cam )
 		{
 			SetAnimFloat( "move_x", MathX.LerpTo( 0, 350f, (curSpeed * 4f).Clamp( 0, 1f ) ) );
+
+			//We're going to set our position to the RunPosition + some offset
+			Position = ExercisePosition + Rotation.Forward * -RunPositionOffset;
+
+			//Basically we're going to use our curSpeed, a value which determines how fast we are running, to determine if we're moving forward or backward on the treadmill
+			float treadSpeed = (curSpeed / 0.28f).Clamp(0f,1f);
+			//Basically check and see if we're exercising fast enough, if not, uptick the run position offset to make us 
+			if(treadSpeed >= 0.6f )
+			{
+				RunPositionOffset -= Time.Delta * 25f;
+			}
+			else
+			{
+				RunPositionOffset += Time.Delta * (1f - treadSpeed) * 50f;
+			}
+			RunPositionOffset = RunPositionOffset.Clamp( -10f, 45f );
+			//DebugOverlay.ScreenText( new Vector2( 100, 100 ), $"{(1f - treadSpeed)}" );
+
+			if(RunPositionOffset >= 45f )
+			{
+				BecomeRagdollOnClient( (Rotation.Forward * -1f + Vector3.Up).Normal * 250f, 0 );
+				RunPositionOffset = 0f;
+				curSpeed = 1f;
+				TimeSinceExerciseStopped = 0f;
+				TimeSinceRagdolled = 0f;
+			}
+			
 
 			if ( cam == null )
 			{
@@ -179,6 +292,10 @@ namespace TSS
 
 		}
 
+		/// <summary>
+		/// Sets the pose on both the server and client, updating the yoga pose terry is using during the yoga exercise
+		/// </summary>
+		/// <param name="i"></param>
 		[ServerCmd( "yoga_pose" )]
 		public static void SetPose( int i )
 		{
@@ -191,6 +308,10 @@ namespace TSS
 			Instance.GivePoints( 5 );
 		}
 
+		/// <summary>
+		/// Simulate the yoga exercise state
+		/// </summary>
+		/// <param name="cam"></param>
 		public void SimulateYoga( TSSCamera cam )
 		{
 			SetAnimInt( "YogaPoses", CurrentYogaPosition );

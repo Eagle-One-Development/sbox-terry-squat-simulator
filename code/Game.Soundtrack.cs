@@ -70,11 +70,14 @@ namespace TSS
 			}
 			SecondsPerBeat = 60f / 140f;
 			SongStartTime = Time.Sound;
+
+			Sound.FromScreen( "roomambience" );
 		}
 
 		[ClientRpc]
 		public void SetTarVolume( int v )
 		{
+			if(tarVolumes == null ) { return; }
 			tarVolumes[v] = 1f;
 		}
 

@@ -1,7 +1,7 @@
 ﻿using Sandbox;
 using System;
 using System.Linq;
-
+using System.Collections.Generic;
 public enum Exercise
 {
 	Squat = 0,
@@ -61,6 +61,7 @@ namespace TSS
 		[Net]
 		public bool MusicStarted { get; set; }
 
+		[Net]
 		public ModelEntity SodaCan { get; set; }
 
 		/// <summary>
@@ -155,9 +156,8 @@ namespace TSS
 			SodaCan.LocalPosition = Vector3.Zero;
 			SodaCan.LocalRotation = Rotation.Identity;
 			SodaCan.EnableDrawing = false;
-
-			//MaxTimeInState = 30f;
-			
+			//This is to prevent blinking at the beginning of the game
+			TimeSinceRagdolled = 10f;
 
 			base.Respawn();
 		}
@@ -175,6 +175,8 @@ namespace TSS
 			await GameTask.Delay( 1000 );
 			TSSGame.Current.StartMusic();
 		}
+
+		
 
 		void Dress()
 		{
@@ -250,9 +252,12 @@ namespace TSS
 			DetectClick();
 			ClearAnimation();
 
-			if ( IsClient )
+			if ( IsServer )
 			{
-				
+				if ( Input.Pressed( InputButton.Reload ) )
+				{
+					
+				}
 			}
 
 			switch ( CurrentExercise )
@@ -290,6 +295,52 @@ namespace TSS
 			curSpeed = curSpeed.LerpTo( tCurSpeed, Time.Delta * 2f );
 
 			Scale = Scale.LerpTo( 1, Time.Delta * 10f );
+
+			//This block of code is going to cause the player to blink in and and out of existence after ragdolling
+			//This indicates that the player has a period of invulnerability
+			float alph = 0f;
+			if (TimeSinceRagdolled < 3f )
+			{
+				EnableDrawing = false;
+				TimeSinceExerciseStopped = 0f;
+
+				if ( TimeSinceRagdolled > 1f )
+				{
+					EnableDrawing = true;
+					float sin = MathF.Sin( TimeSinceRagdolled * 10f );
+					if ( sin > 0 )
+					{
+						alph = 1f;
+					}
+					else
+					{
+						alph = 0.5f;
+					}
+				}
+				else
+				{
+					alph = 0.5f;
+				}
+			}
+			else
+			{
+				alph = 1f;
+			}
+			Color co = Color.White;
+			co.a = alph;
+			RenderColor = co; 
+
+			foreach(ModelEntity m in Children.OfType<ModelEntity>().ToList() )
+			{
+				
+				if ( m.GetModelName() != SodaCan.GetModelName())
+				{
+					m.EnableDrawing = this.EnableDrawing;
+					m.RenderColor = co;
+				}
+			}
+
+
 
 			if ( cam.SCounter != null )
 			{
@@ -361,7 +412,7 @@ namespace TSS
 		public void AdvanceExerciseState()
 		{
 
-
+			//Switch to the running exercise state
 			if ( ExercisePoints >= 200 && !IntroRunning)
 			{
 				ChangeExercise( Exercise.Run );
@@ -370,18 +421,22 @@ namespace TSS
 				IntroRunning = true;
 				return;
 			}
+			//Introduce the punching exercise state
 			if ( ExercisePoints >= 300 && !IntroPunching)
 			{
 				ChangeExercise( Exercise.Punch );
 				IntroPunching = true;
 				return;
 			}
+			//Introduce the yoga mini game
 			if ( ExercisePoints >= 400 && !IntroYoga)
 			{
 				ChangeExercise( Exercise.Yoga );
 				IntroYoga = true;
 				return;
 			}
+
+			//Basically once our exercise points are above a certain point ceiling, switch randomly to other gamemodes.
 			if (ExercisePoints >= PointCeiling)
 			{
 				PointCeiling = ExercisePoints + 10;
@@ -389,6 +444,7 @@ namespace TSS
 				ChangeExercise( exercises[Time.Tick % exercises.Length] );
 			}
 
+			//Basically, at 100 exercise points introduce some new music layers
 			if (ExercisePoints >= 100 && !TimeLines[0])
 			{
 				TSSGame.Current.SetTarVolume( 3 );
@@ -396,6 +452,7 @@ namespace TSS
 				TimeLines[0] = true;
 			}
 
+			//Basically, if we have more than 50 exercise points make Terry make an angry/determined facial pose.
 			if ( ExercisePoints > 50 )
 			{
 				SetAnimBool( "Angry", TimeSinceExerciseStopped < 4f );
