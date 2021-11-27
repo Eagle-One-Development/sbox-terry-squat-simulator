@@ -285,7 +285,7 @@ namespace TSS
 		{
 
 			var pt = new PunchQT();
-			pt.Player = TSSPlayer.Instance;
+			pt.Player = Instance;
 			pt.TargetTime = 1f;
 			pt.MyTime = (60f / 140f) * 2f;
 			pt.Type = Rand.Int( 0, 3 );

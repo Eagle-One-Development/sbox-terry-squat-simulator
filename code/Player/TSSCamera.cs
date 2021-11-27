@@ -1,12 +1,15 @@
 ﻿using System;
+using System.Linq;
 using Sandbox;
 using TSS.UI;
 
 public enum CameraState
 {
-	Static = 0,
-	Follow = 1,
-	Rotate = 2,
+	Static,
+	Follow,
+	Rotate,
+	Topdown,
+	Beat,
 	Ground,
 	Intro
 };
@@ -14,13 +17,6 @@ public enum CameraState
 
 namespace TSS
 {
-
-	//public enum Scene
-	//{
-	//	JOSH_PRESENT,
-	//	ASSOCATION
-	//}
-
 	public partial class TSSCamera : Camera
 	{
 		public float CamHeight;
@@ -103,15 +99,20 @@ namespace TSS
 				case CameraState.Intro:
 					AdvanceIntro();
 					break;
-
 				case CameraState.Ground:
 					Ground();
 					break;
-
 				case CameraState.Static:
 					StaticPlayer();
 					break;
+				case CameraState.Topdown:
+					Topdown();
+					break;
+				case CameraState.Beat:
+					Beat();
+					break;
 			}
+
 
 			if ( pawn.GetAnimBool( "Drink" ) && pawn.TimeSinceSoda > 0.05f )
 			{
@@ -400,12 +401,8 @@ namespace TSS
 
 			if ( TimeSinceState > 5f )
 			{
-				TimeSinceState = 0f;
-				CamState = CameraState.Ground;
-				TimedProgress = 0f;
-				Ground();
+				NextCameraScene();
 			}
-
 		}
 
 
@@ -423,10 +420,7 @@ namespace TSS
 
 			if ( TimeSinceState > 5f )
 			{
-				TimeSinceState = 0f;
-				CamState = CameraState.Static;
-				TimedProgress = 0f;
-				StaticPlayer();
+				NextCameraScene();
 			}
 
 		}
@@ -444,12 +438,75 @@ namespace TSS
 
 			if ( TimeSinceState > 5f )
 			{
-				TimeSinceState = 0f;
-				CamState = CameraState.Follow;
-				TimedProgress = 0f;
-				FollowPlayer();
+				NextCameraScene();
 			}
 
 		}
+
+		public void Topdown()
+		{
+			CamDistance = 100f;
+			CamHeight = 45f;
+			var pawn = Local.Pawn as TSSPlayer;
+			var center = pawn.ExercisePosition + Vector3.Up * CamHeight;
+
+
+			Position = center + pawn.Rotation.Up * CamDistance + new Vector3( 32*MathF.Sin(Time.Now/3), 32*MathF.Cos( Time.Now/3 ), 0);
+			var hitPos = Trace.Ray( pawn.Position, Position ).Ignore(pawn);
+			Position = hitPos.Run().EndPos;
+
+			Rotation = Rotation.LookAt( (center - Position), Vector3.Up );
+
+			if ( pawn.CurrentExercise == Exercise.Yoga || TimeSinceState > 5f )
+			{
+				NextCameraScene();
+			}
+
+		}
+
+		public void Beat()
+		{
+			CamDistance = 100f;
+			CamHeight = 45f;
+			var pawn = Local.Pawn as TSSPlayer;
+			var center = pawn.ExercisePosition + Vector3.Up * CamHeight;
+
+
+			var beatMultiplier = 2f;
+
+			if (pawn.CurrentExercise == Exercise.Punch)
+			{
+				beatMultiplier = 1/4f;
+			}
+
+			var beatFreq = MathF.PI / 4 * TSSGame.Current.BeatNonce * beatMultiplier;
+
+			Position = center + pawn.Rotation.Forward * 128f + new Vector3( 32 * MathF.Sin( beatFreq ), 32 * MathF.Cos( beatFreq ), 0 );
+			Rotation = Rotation.LookAt( (center - Position), Vector3.Up );
+
+
+			if ( TimeSinceState > 10f )
+			{
+				NextCameraScene();
+			}
+		}
+
+		public void NextCameraScene()
+		{
+			var states = new CameraState[] {
+				CameraState.Static,
+				CameraState.Follow,
+				CameraState.Rotate,
+				CameraState.Topdown,
+				CameraState.Beat,
+				CameraState.Ground,
+				CameraState.Intro
+			};
+
+			TimeSinceState = 0f;
+			TimedProgress = 0f;
+			CamState = states[((int)CamState + 1) % states.Length];
+		}
+
 	}
 }

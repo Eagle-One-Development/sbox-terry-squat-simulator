@@ -12,6 +12,15 @@ namespace TSS
 
 		public double SongStartTime;
 
+
+		public int BeatNonce { get; set; }
+
+		[Event( "OtherBeat" )]
+		public void HandleBeat()
+		{
+			BeatNonce++;
+		}
+
 		// This is going to require more explanation. It's basically a way of tracking when a "beat" in a song happens, we can use this for some basic effects.
 		#region Beats
 		public int Beats;
