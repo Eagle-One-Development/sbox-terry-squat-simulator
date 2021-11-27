@@ -93,7 +93,7 @@ PS
 
     #include "common/eo_math.vfx"
 
-    CreateTexture2D( g_FrameBuffer )< Attribute("FrameBufferCopyTexture"); >; 
+    CreateTexture2D( g_FrameBuffer )< Attribute( "ColorBuffer" );  	SrgbRead( true ); Filter( MIN_MAG_LINEAR_MIP_POINT ); AddressU( MIRROR ); AddressV( MIRROR ); >; 
     struct PixelOutput
     {
         float4 vColor : SV_Target0;

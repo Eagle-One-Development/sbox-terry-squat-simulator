@@ -1,13 +1,6 @@
 ﻿
 using Sandbox;
-using Sandbox.UI.Construct;
-using System;
-using System.IO;
-using System.Threading.Tasks;
 
-//
-// You don't need to put things in a namespace, but it doesn't hurt.
-//
 namespace TSS
 {
 	public partial class TSSGame : Game
@@ -18,14 +11,13 @@ namespace TSS
 
 		}
 
-
 		[ServerCmd( "set_ep" )]
 		public static void SetPoints( int p )
 		{
 			if ( ConsoleSystem.Caller.Pawn is TSSPlayer player )
 			{
-
 				player.ExercisePoints += p;
+				//player.IntroComplete = true;
 			}
 		}
 
@@ -38,5 +30,4 @@ namespace TSS
 			}
 		}
 	}
-
 }

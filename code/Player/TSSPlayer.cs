@@ -1,7 +1,7 @@
 ﻿using Sandbox;
 using System;
 using System.Linq;
-
+using System.Collections.Generic;
 public enum Exercise
 {
 	Squat = 0,
@@ -20,16 +20,13 @@ namespace TSS
 		public float ScaleTar;
 
 		[Net]
-		public bool IntroComplete { get; set; }
-
-		[Net]
 		public Exercise CurrentExercise { get; set; }
 
 		[Net]
 		public static TSSPlayer Instance { get; set; }
 
 		[Net, Predicted]
-		public int squat { get; set; }
+		public int Squat { get; set; }
 
 		[Net, Predicted]
 		private int lastSquat { get; set; }
@@ -58,12 +55,14 @@ namespace TSS
 		[Net]
 		public float TimeToNextPunch { get; set; }
 
+		[Net]
 		public TimeSince TimeSinceYoga { get; set; }
 
 		[Net]
 		public bool MusicStarted { get; set; }
 
-		public ModelEntity SodaCan;
+		[Net]
+		public ModelEntity SodaCan { get; set; }
 
 		/// <summary>
 		/// Basically a way of stopping the soda animation when its done
@@ -71,7 +70,7 @@ namespace TSS
 		[Net, Predicted]
 		public TimeSince TimeSinceSoda { get; set; }
 
-		
+
 		/// <summary>
 		/// Whether we've introduced running or not
 		/// </summary>
@@ -91,25 +90,36 @@ namespace TSS
 		/// <summary>
 		/// The time we've been doing the current exercise
 		/// </summary>
-		[Net,Predicted]
-		public TimeSince TimeSinceState { get; set; }
+		//[Net,Predicted]
+		//public TimeSince TimeSinceState { get; set; }
 
 		[Net]
-		public float MaxTimeInState { get; set; } = 10f;
+		public int PointCeiling { get; set; } = 500;
+
+		//[Net]
+		//public float MaxTimeInState { get; set; } = 10f;
 
 		[Net]
 		public bool[] TimeLines { get; set; } = new bool[20];
 
+		private bool titleCardActive;
+
+		private UI.CreditPanel titleCard;
+		Particles PartSystem;
+
 		/// <summary>
 		/// Just a variable to introduce if we've introduced all the exercise or not
 		/// </summary>
-		[Net]
 		public bool ExercisesIntroduced { 
 			get
 			{
 				return IntroRunning && IntroPunching && IntroYoga;
 			}
 		}
+
+		[Net]
+		public int CurrentYogaPosition { get; set; } = -1;
+
 
 		public override void CreateHull()
 		{
@@ -146,8 +156,8 @@ namespace TSS
 			SodaCan.LocalPosition = Vector3.Zero;
 			SodaCan.LocalRotation = Rotation.Identity;
 			SodaCan.EnableDrawing = false;
-
-			MaxTimeInState = 30f;
+			//This is to prevent blinking at the beginning of the game
+			TimeSinceRagdolled = 10f;
 
 			base.Respawn();
 		}
@@ -156,6 +166,8 @@ namespace TSS
 		{
 			base.ClientSpawn();
 			PlayMusic();
+			//PartSystem = Particles.Create( "particles/sicko_mode/sicko_mode.vpcf" );
+			//PartSystem.SetPosition( 0, Transform.Position + Rotation.Forward * -20f + Vector3.Up * 48f );
 		}
 
 		public async void PlayMusic()
@@ -163,6 +175,8 @@ namespace TSS
 			await GameTask.Delay( 1000 );
 			TSSGame.Current.StartMusic();
 		}
+
+		
 
 		void Dress()
 		{
@@ -236,22 +250,29 @@ namespace TSS
 			}
 
 			DetectClick();
+			ClearAnimation();
 
-			
+			if ( IsServer )
+			{
+				if ( Input.Pressed( InputButton.Reload ) )
+				{
+					
+				}
+			}
 
 			switch ( CurrentExercise )
 			{
 				case Exercise.Squat:
-					Squatting( cam );
+					SimulateSquatting( cam );
 					break;
 				case Exercise.Run:
-					Running( cam );
+					SimulateRunning( cam );
 					break;
 				case Exercise.Punch:
-					Punching( cam );
+					SimulatePunching( cam );
 					break;
 				case Exercise.Yoga:
-					Yogaing( cam );
+					SimulateYoga( cam );
 					break;
 			}
 
@@ -261,7 +282,6 @@ namespace TSS
 
 			float f = (TimeSinceExerciseStopped - 1f) / 3f;
 			f = MathF.Pow( f.Clamp( 0, 1f ), 3f );
-			TimeSinceState += Time.Delta * (1f - f);
 
 			tCurSpeed = tCurSpeed.Clamp( 0, 1 );
 			curSpeed = curSpeed.Clamp( 0, 1 );
@@ -275,6 +295,52 @@ namespace TSS
 			curSpeed = curSpeed.LerpTo( tCurSpeed, Time.Delta * 2f );
 
 			Scale = Scale.LerpTo( 1, Time.Delta * 10f );
+
+			//This block of code is going to cause the player to blink in and and out of existence after ragdolling
+			//This indicates that the player has a period of invulnerability
+			float alph = 0f;
+			if (TimeSinceRagdolled < 3f )
+			{
+				EnableDrawing = false;
+				TimeSinceExerciseStopped = 0f;
+
+				if ( TimeSinceRagdolled > 1f )
+				{
+					EnableDrawing = true;
+					float sin = MathF.Sin( TimeSinceRagdolled * 10f );
+					if ( sin > 0 )
+					{
+						alph = 1f;
+					}
+					else
+					{
+						alph = 0.5f;
+					}
+				}
+				else
+				{
+					alph = 0.5f;
+				}
+			}
+			else
+			{
+				alph = 1f;
+			}
+			Color co = Color.White;
+			co.a = alph;
+			RenderColor = co; 
+
+			foreach(ModelEntity m in Children.OfType<ModelEntity>().ToList() )
+			{
+				
+				if ( m.GetModelName() != SodaCan.GetModelName())
+				{
+					m.EnableDrawing = this.EnableDrawing;
+					m.RenderColor = co;
+				}
+			}
+
+
 
 			if ( cam.SCounter != null )
 			{
@@ -291,6 +357,32 @@ namespace TSS
 			SimulateActiveChild( cl, ActiveChild );
 		}
 
+		public override void FrameSimulate( Client cl )
+		{
+			if ( IsClient && titleCardActive )
+			{
+				titleCard ??= new UI.CreditPanel( CurrentExercise.ToString().ToUpper(), 3200, 3200 )
+				{
+					Position = Position + Vector3.Up * -35f + Rotation.Forward * 35f,
+					FontSize = 400f,
+					Rotation = this.Rotation,
+					Opacity = 5f,
+					Bop = true,
+				};
+
+				titleCard.Opacity -= Time.Delta;
+
+				if ( titleCard.Opacity < 1 )
+					titleCard.TextScale = titleCard.TextScale.LerpTo( 0, Time.Delta * 5f );
+
+				if ( titleCard.Opacity < 0 )
+				{
+					titleCardActive = false;
+					titleCard.Delete( true );
+					titleCard = null;
+				}
+			}
+		}
 
 		/// <summary>
 		/// This runs a trace which will click on a food item in the world and consume or destroy it.
@@ -319,38 +411,50 @@ namespace TSS
 		/// </summary>
 		public void AdvanceExerciseState()
 		{
-			if ( IsServer )
+
+			//Switch to the running exercise state
+			if ( ExercisePoints >= 200 && !IntroRunning)
 			{
-				if ( ExercisePoints >= 200 && !IntroRunning)
-				{
-					ChangeExercise( Exercise.Run );
-					TSSGame.Current.SetTarVolume( 1 );
-					TSSGame.Current.SetTarVolume( 7 );
-					IntroRunning = true;
-					return;
-				}
-				if ( ExercisePoints >= 300 && !IntroPunching)
-				{
-					ChangeExercise( Exercise.Punch );
-					IntroPunching = true;
-					return;
-				}
-				if ( ExercisePoints >= 400 && !IntroYoga)
-				{
-					ChangeExercise( Exercise.Yoga );
-					IntroYoga = true;
-					return;
-				}
+
+				ChangeExercise( Exercise.Run );
+				TSSGame.Current.SetTarVolume( 1 );
+				TSSGame.Current.SetTarVolume( 7 );
+				TimeSinceRun = 0f;
+				IntroRunning = true;
+				return;
+			}
+			//Introduce the punching exercise state
+			if ( ExercisePoints >= 300 && !IntroPunching)
+			{
+				ChangeExercise( Exercise.Punch );
+				IntroPunching = true;
+				return;
+			}
+			//Introduce the yoga mini game
+			if ( ExercisePoints >= 400 && !IntroYoga)
+			{
+				ChangeExercise( Exercise.Yoga );
+				IntroYoga = true;
+				return;
 			}
 
-			if(ExercisePoints >= 100 && !TimeLines[0])
+			//Basically once our exercise points are above a certain point ceiling, switch randomly to other gamemodes.
+			if (ExercisePoints >= PointCeiling)
+			{
+				PointCeiling = ExercisePoints + 10;
+				var exercises = new Exercise[] { Exercise.Squat, Exercise.Run, Exercise.Punch, Exercise.Yoga };
+				ChangeExercise( exercises[Time.Tick % exercises.Length] );
+			}
+
+			//Basically, at 100 exercise points introduce some new music layers
+			if (ExercisePoints >= 100 && !TimeLines[0])
 			{
 				TSSGame.Current.SetTarVolume( 3 );
 				TSSGame.Current.SetTarVolume( 2 );
 				TimeLines[0] = true;
 			}
 
-
+			//Basically, if we have more than 50 exercise points make Terry make an angry/determined facial pose.
 			if ( ExercisePoints > 50 )
 			{
 				SetAnimBool( "Angry", TimeSinceExerciseStopped < 4f );
@@ -393,15 +497,15 @@ namespace TSS
 			CounterBump( 0.5f );
 			TimeSinceExerciseStopped = 0;
 
-			if ( squat == 0 )
+			if ( Squat == 0 )
 			{
-				squat = 1;
+				Squat = 1;
 				return;
 			}
 
-			if ( squat == 1 )
+			if ( Squat == 1 )
 			{
-				squat = 0;
+				Squat = 0;
 				return;
 			}
 		}

@@ -65,10 +65,11 @@ namespace TSS.UI
 		public override void Tick()
 		{
 			base.Tick();
+
 			Style.Opacity = Opacity;
 			if ( TimeSinceAlive > Life )
 			{
-				this.Delete( true );
+				Delete( true );
 				return;
 			}
 
@@ -86,7 +87,6 @@ namespace TSS.UI
 				InitialPosition += Velocity * Time.Delta;
 				Velocity += Vector3.Down * 150f * Time.Delta;
 			}
-
 
 			Style.Dirty();
 			if ( l != null )

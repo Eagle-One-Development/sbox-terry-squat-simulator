@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Sandbox;
+﻿using Sandbox;
 using TSS.UI;
 
 namespace TSS
@@ -22,26 +17,24 @@ namespace TSS
 		[Net]
 		public TSSPlayer Player { get; set; }
 
-
-
 		public PunchQTPanel Panel;
-
-
-
 
 		public override void Spawn()
 		{
 			base.Spawn();
 			MyTime =  ((60f/140f) * 1f);
 			Transmit = TransmitType.Always;
+		}
 
-			//Log.Info( "I SPAWNED" );
+		public new void Delete()
+		{
+			base.Delete();
+			Panel?.Delete( true );
 		}
 
 		public override void ClientSpawn()
 		{
 			base.ClientSpawn();
-			//Log.Info( "I'm ON THE CLIENT, MA" );
 
 			Panel = new PunchQTPanel( this, new Vector2( Rand.Float( -200f, 200f ), Rand.Float( -200f, 200f ) ) );
 			switch ( Type )
@@ -62,14 +55,14 @@ namespace TSS
 		}
 
 		[Event.Tick]
-		public void Sim()
+		public void Simulate()
 		{
 			if ( Player == null )
 			{
 				return;
 			}
 			
-			if(Player.CurrentExercise != Exercise.Punch )
+			if( Player.CurrentExercise != Exercise.Punch )
 			{
 				if ( IsServer )
 				{
@@ -78,36 +71,30 @@ namespace TSS
 				Panel?.Delete();
 			}
 
-			bool b = false;
+			bool pressed = false;
 			if ( Type == 0 )
 			{
-				b = Input.Pressed( InputButton.Forward );
+				pressed = Input.Pressed( InputButton.Forward );
 			}
 			if ( Type == 1 )
 			{
-				b = Input.Pressed( InputButton.Back );
+				pressed = Input.Pressed( InputButton.Back );
 			}
 			if ( Type == 2 )
 			{
-				b = Input.Pressed( InputButton.Left );
+				pressed = Input.Pressed( InputButton.Left );
 			}
 			if ( Type == 3 )
 			{
-				b = Input.Pressed( InputButton.Right );
-			}
-
-			if ( IsServer && Input.Pressed( InputButton.Reload ) )
-			{
-				Log.Info( "SERVER SIDED INPUT" );
+				pressed = Input.Pressed( InputButton.Right );
 			}
 
 			MyTime -= Time.Delta;
 
 			if ( MyTime > -0.05f && MyTime < 0.15f )
 			{
-				if ( b )
+				if ( pressed )
 				{
-					Log.Info( IsServer );
 					ConsoleSystem.Run( "Punch" );
 
 					if ( IsClient )
@@ -126,7 +113,6 @@ namespace TSS
 			{
 				if ( Input.Pressed( InputButton.Forward ) || Input.Pressed( InputButton.Back ) || Input.Pressed( InputButton.Right ) || Input.Pressed( InputButton.Left ) )
 				{
-
 					if ( IsClient )
 					{
 						Panel.Finished = true;
@@ -140,16 +126,11 @@ namespace TSS
 				}
 			}
 
-			if ( Panel != null )
-			{
-				//DebugOverlay.ScreenText( new Vector2( Screen.Width / 2 + Panel.Pos.x, Screen.Height / 2 + Panel.Pos.y - 200f ), MyTime.ToString(), 0 );
-			}
-
 			if ( MyTime < -0.1f )
 			{
 				if ( IsClient )
 				{
-					if ( !Panel.Finished )
+					if ( Panel != null && !Panel.Finished )
 					{
 						Panel?.Delete( true );
 					}
@@ -159,11 +140,7 @@ namespace TSS
 					Delete();
 					return;
 				}
-
 			}
-
-
-
 		}
 	}
 }

@@ -32,9 +32,15 @@ public partial class Food : ModelEntity {
 
 	public override void Spawn()
 	{
+
 		base.Spawn();
+
 		TimeSinceSpawned = 0;
-		Player = Entity.All.OfType<TSSPlayer>().First();
+		Player = TSSGame.Pawn;
+		Position = Player.Position + 
+			Player.Rotation.Forward * 256 + 
+			Player.Rotation.Down * Rand.Int( -64, 64 ) +
+			Player.Rotation.Left * Rand.Int( -64, 64 );
 		Transmit = TransmitType.Always;
 		SetupPhysicsFromSphere( PhysicsMotionType.Keyframed, Vector3.Zero + Vector3.Up * 2.5f, 5f );
 		SetInteractsAs( CollisionLayer.Player);
@@ -68,7 +74,7 @@ public partial class Food : ModelEntity {
 
 		
 
-		if(other is TSSPlayer player && TimeSinceSpawned > 0.5f)
+		if(other is TSSPlayer && TimeSinceSpawned > 0.5f)
 		{
 			if ( ConsumeOnCollide )
 			{
@@ -87,8 +93,6 @@ public partial class Food : ModelEntity {
 	{
 		base.ClientSpawn();
 		FoodModel = new SceneObject( Model.Load( "models/sbox_props/burger_box/burger_box.vmdl"), this.Transform);
-		//FoodModel = new ModelEntity( "models/sbox_props/burger_box/burger_box.vmdl" );
-		//FoodModel.Predictable = false;
 	}
 
 	public virtual void Consume()
@@ -111,7 +115,7 @@ public partial class Food : ModelEntity {
 	}
 
 	[Event.Tick]
-	public virtual void Sim()
+	public virtual void Simulate()
 	{
 		if ( IsServer )
 		{

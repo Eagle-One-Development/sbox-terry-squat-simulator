@@ -1,14 +1,8 @@
 ﻿using Sandbox;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 
 namespace TSS
 {
-
 	public partial class TSSGame : Game
 	{
 		public List<Sound> Music;
@@ -18,7 +12,7 @@ namespace TSS
 
 		public double SongStartTime;
 
-		//This is going to require more explanation. It's basically a way of tracking when a "beat" in a song happens, we can use this for some basic effects
+		// This is going to require more explanation. It's basically a way of tracking when a "beat" in a song happens, we can use this for some basic effects.
 		#region Beats
 		public int Beats;
 		public double SongPosInBeats;
@@ -76,11 +70,14 @@ namespace TSS
 			}
 			SecondsPerBeat = 60f / 140f;
 			SongStartTime = Time.Sound;
+
+			Sound.FromScreen( "roomambience" );
 		}
 
 		[ClientRpc]
 		public void SetTarVolume( int v )
 		{
+			if(tarVolumes == null ) { return; }
 			tarVolumes[v] = 1f;
 		}
 

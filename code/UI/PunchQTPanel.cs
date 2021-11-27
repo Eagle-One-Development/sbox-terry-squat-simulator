@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Sandbox;
 using Sandbox.UI;
 using Sandbox.UI.Construct;
@@ -11,14 +7,15 @@ namespace TSS.UI
 {
 	public class PunchQTPanel : Panel
 	{
-		public PunchQT MyQT;
 		public Vector2 Pos;
+		public PunchQT MyQT;
 		public Panel Back;
 		public Panel Measure;
-		public bool Finished;
 		public Label Key;
-		public TimeSince TimeSinceSpawned;
+		public bool Finished;
 		public bool Failed;
+		public TimeSince TimeSinceSpawned;
+
 		public PunchQTPanel( PunchQT p, Vector2 p2 )
 		{
 			Parent = TSSHud.Instance.RootPanel;
@@ -36,11 +33,13 @@ namespace TSS.UI
 		public override void Tick()
 		{
 			base.Tick();
-			float f = (1f - MathF.Pow( (TimeSinceSpawned / 0.3f).Clamp( 0, 1f ), 3.0f ));
-			PanelTransform pt = new PanelTransform();
+
+			PanelTransform pt = new();
+
 			pt.AddTranslateX( Length.Pixels( (Screen.Width / 2) + Pos.x ) );
 			pt.AddTranslateY( Length.Pixels( (Screen.Height / 2) + Pos.y ) );
 
+			float growth = (1f - MathF.Pow( (TimeSinceSpawned / 0.3f).Clamp( 0, 1f ), 3.0f ));
 
 			if ( !Finished )
 			{
@@ -49,9 +48,9 @@ namespace TSS.UI
 			}
 			else
 			{
-				Back.Style.Opacity = f;
+				Back.Style.Opacity = growth;
 				Key.Style.Opacity = 0f;
-				Style.Opacity = f;
+				Style.Opacity = growth;
 				Measure.Style.Opacity = 0f;
 				if ( Failed )
 				{
@@ -63,23 +62,19 @@ namespace TSS.UI
 
 			if ( TimeSinceSpawned > 1f )
 			{
-				Delete();
+				Delete(true);
 			}
 
-			Style.Opacity = f;
+			Style.Opacity = growth;
 			Style.Transform = pt;
 			Style.Dirty();
 
-			f = MathX.LerpTo( 0f, 1f, (MyQT.MyTime / 1f).Clamp( 0, 1f ) );
+			growth = MathX.LerpTo( 0f, 1f, (MyQT.MyTime / 1f).Clamp( 0, 1f ) );
 
-
-
-			Measure.Style.Width = Length.Fraction( 1.1f * (1 - f) );
-			Measure.Style.Height = Length.Fraction( 1.1f * (1 - f) );
+			Measure.Style.Width = Length.Fraction( 1.1f * (1 - growth) );
+			Measure.Style.Height = Length.Fraction( 1.1f * (1 - growth) );
 			Measure.Style.Dirty();
 
-
-			//		DebugOverlay.ScreenText( new Vector2( Screen.Width / 2 + Pos.x, Screen.Height / 2 + Pos.y + 200f ), MyQT.MyTime.ToString() );
 		}
 	}
 }
