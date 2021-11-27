@@ -1,0 +1,63 @@
+// THIS FILE IS AUTO-GENERATED
+
+Layer0
+{
+	shader "skin.vfx"
+
+	//---- Animation ----
+	F_MORPH_SUPPORTED 1
+
+	//---- Per-Instance Tint Mask ----
+	F_TINT_MASK 1
+
+	//---- Skin ----
+	F_USE_BENT_NORMALS 1
+
+	//---- Ambient Occlusion ----
+	g_flAmbientOcclusionDirectDiffuse "1.000"
+	g_flAmbientOcclusionDirectSpecular "1.000"
+	g_vAmbientOcclusionColorBleed "[0.400000 0.149020 0.129412 0.000000]"
+	TextureAmbientOcclusion "materials/default/default_ao.tga"
+
+	//---- Color ----
+	g_flModelTintAmount "1.000"
+	g_vColorTint "[0.611765 0.470588 0.400000 0.000000]"
+	TextureColor "models/terry_buff/texture/citizen_skin_color_png_a9d5a2f2.png"
+	TextureTintMask "[0.735000 0.735000 0.735000 0.000000]"
+
+	//---- Curvature ----
+	g_flCurvatureScale "1.000"
+
+	//---- Face Occlusion ----
+	g_flMouthInteriorBrightnessScale "0.409"
+	TextureInsideMouth "materials/default/default_black_mask.tga"
+
+	//---- Fog ----
+	g_bFogEnabled "1"
+
+	//---- Lookup Textures ----
+	g_vAmbientNormalSoftness "[1.000000 0.301961 0.000000 0.000000]"
+	TextureDiffuseFalloff "materials/default/default_skin_diffusewarp.tga"
+	TextureShadowFalloff "materials/default/default_skin_shadowwarp.tga"
+
+	//---- Normal ----
+	g_flDiffuseNormalBlur "0.500"
+	TextureBentNormal "models/terry_buff/texture/citizen_skin_bentnormal_png_b4ce9801.png"
+	TextureNormal "models/terry_buff/texture/citizen_skin_normal.png"
+
+	//---- Roughness ----
+	TextureRoughness "models/terry_buff/texture/citizen_skin_ao_png_a69fe080.png"
+
+	//---- Specular ----
+	g_flSecondSpecularLobeGlossiness "0.015"
+	g_flSecondSpecularLobeRatio "0.328"
+
+	//---- Texture Coordinates ----
+	g_vTexCoordOffset "[0.000 0.000]"
+	g_vTexCoordScale "[1.000 1.000]"
+
+	//---- Transmission ----
+	g_flTransmissionFalloff "2.409"
+	g_vTransmissionColor "[0.749020 0.231373 0.011765 0.000000]"
+	TextureTransmissiveMask "materials/default/default_trans.tga"
+}
