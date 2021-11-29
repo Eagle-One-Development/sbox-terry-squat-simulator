@@ -42,11 +42,10 @@ namespace TSS
 		public CreditPanel Up;
 		public CreditPanel Down;
 		public CreditPanel TreadmillTutorial;
+		public CreditPanel SCounter;
 		public TimeSince TimeSinceStart;
 		public bool RunTutorial;
 		public bool RunTutorialComplete;
-
-		//public Scene CurrentScene;
 
 		public bool Active;
 
@@ -62,7 +61,6 @@ namespace TSS
 			}
 		}
 
-		public CreditPanel SCounter;
 
 		public override void Activated()
 		{
@@ -73,7 +71,6 @@ namespace TSS
 				IntroComplete = false;
 				JoshWilson = null;
 				TimeSinceStart = 0;
-				Log.Info( "WAIT WHAT" );
 				Active = true;
 			}
 		}
@@ -112,7 +109,6 @@ namespace TSS
 					Beat();
 					break;
 			}
-
 
 			if ( pawn.GetAnimBool( "Drink" ) && pawn.TimeSinceSoda > 0.05f )
 			{
@@ -172,28 +168,27 @@ namespace TSS
 					runTutAlph = ((pawn.TimeSinceRun - 8f) / 3f).Clamp( 0, 1f );
 				}
 
-
-
-				
-
-				Down.TextScale = Down.TextScale.LerpTo( 1, Time.Delta * 10f );
-				Up.TextScale = Up.TextScale.LerpTo( 1, Time.Delta * 10f );
-
-				Up.Position = pawn.ExercisePosition + Vector3.Up * 55f + pawn.Rotation.Right * -22f;
-				Up.Rotation = pawn.Rotation;
-				Up.Opacity = 1 - runTutAlph;
-
-				Down.Position = pawn.ExercisePosition + Vector3.Up * 55f + pawn.Rotation.Right * 22f;
-				Down.Rotation = pawn.Rotation;
-				Down.Opacity = 1 - runTutAlph;
-
-				if(pawn.TimeSinceRun > 15f )
+				if ( Up != null && Down != null )
 				{
-					RunTutorialComplete = true;
-					Down?.Delete();
-					Down = null;
-					Up?.Delete();
-					Up = null;
+					Down.TextScale = Down.TextScale.LerpTo( 1, Time.Delta * 10f );
+					Up.TextScale = Up.TextScale.LerpTo( 1, Time.Delta * 10f );
+
+					Up.Position = pawn.ExercisePosition + Vector3.Up * 55f + pawn.Rotation.Right * -22f;
+					Up.Rotation = pawn.Rotation;
+					Up.Opacity = 1 - runTutAlph;
+
+					Down.Position = pawn.ExercisePosition + Vector3.Up * 55f + pawn.Rotation.Right * 22f;
+					Down.Rotation = pawn.Rotation;
+					Down.Opacity = 1 - runTutAlph;
+
+					if ( pawn.TimeSinceRun > 15f )
+					{
+						RunTutorialComplete = true;
+						Down?.Delete();
+						Up?.Delete();
+						Down = null;
+						Up = null;
+					}
 				}
 			}
 			#endregion
@@ -374,9 +369,12 @@ namespace TSS
 				Progress = 0f;
 				TimeSinceState = 0f;
 
-				TSS.Opacity = 1f;
-				TSS.Delete();
-				TSS = null;
+				if ( TSS != null)
+				{
+					TSS.Opacity = 1f;
+					TSS?.Delete();
+					TSS = null;
+				}
 
 				SCounter ??= new CreditPanel( "Squats: 0", 3200, 3200 );
 				SCounter.Position = pawn.ExercisePosition + Vector3.Up * 30f + pawn.Rotation.Forward * -50f;
