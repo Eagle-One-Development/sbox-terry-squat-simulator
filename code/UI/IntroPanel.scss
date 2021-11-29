@@ -1,0 +1,46 @@
+﻿IntroPanel {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+
+    .back {
+        position: absolute;
+        background-color: #000;
+        width: 100%;
+        height: 100%;
+    }
+
+    .textback {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+
+        .text {
+            position: absolute;
+            font-family: VCR_OSD_MONO;
+            font-size: 80px;
+            color: white;
+            left: 75px;
+            bottom: 60px;
+        }
+
+        .date {
+            position: absolute;
+            font-family: VCR_OSD_MONO;
+            font-size: 80px;
+            color: white;
+            right: 75px;
+            bottom: 60px;
+        }
+    }
+
+    justify-content: center;
+    align-items: center;
+
+    .scene {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+    }
+}

@@ -13,6 +13,7 @@ namespace TSS
 			{
 				Instance = this;
 				RootPanel.AddChild<UIPanel>();
+				RootPanel.AddChild<IntroPanel>();
 			}
 		}
 	}

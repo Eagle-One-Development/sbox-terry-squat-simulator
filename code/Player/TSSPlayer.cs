@@ -174,6 +174,7 @@ namespace TSS
 		{
 			await GameTask.Delay( 1000 );
 			TSSGame.Current.StartMusic();
+			TSSGame.Current.PlayIntro();
 		}
 
 		
