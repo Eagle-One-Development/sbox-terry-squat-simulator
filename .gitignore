@@ -13,6 +13,7 @@ materials/default
 *.vtex_c
 *.zip
 *.vpk
+*.fgd
 .codegen/
 .intermediate
 accesslist.txt
