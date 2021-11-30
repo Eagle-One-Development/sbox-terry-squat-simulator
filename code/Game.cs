@@ -25,12 +25,21 @@ namespace TSS
 		{
 			base.ClientJoined( client );
 
+			// Kick anyone who isn't host.
+			if (!client.IsListenServerHost)
+			{
+				client.Kick();
+			}
+
 			var player = new TSSPlayer();
 			client.Pawn = player;
 			player.Respawn();
 		}
 
+		// Helper field that casts game.
 		public static new TSSGame Current => Game.Current as TSSGame;
+
+		// Get the player, there should only be one.
 		public static TSSPlayer Pawn => All.OfType<TSSPlayer>().First();
 	}
 }

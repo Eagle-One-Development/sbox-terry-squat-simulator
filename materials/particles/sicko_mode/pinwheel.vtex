@@ -6,7 +6,7 @@
 		"CDmeInputTexture"
 		{
 			"m_name" "string" "0"
-			"m_fileName" "string" "materials/particles/sicko_mode/pinwheel.mks"
+			"m_fileName" "string" "materials/particles/sicko_mode/pinwheel/stripes.tga"
 			"m_colorSpace" "string" "srgb"
 			"m_typeString" "string" "2D"
 		}
@@ -22,7 +22,7 @@
 			"m_dstChannels" "string" "rgba"
 			"m_mipAlgorithm" "CDmeImageProcessor"
 			{
-				"m_algorithm" "string" ""
+				"m_algorithm" "string" "Box"
 				"m_stringArg" "string" ""
 				"m_vFloat4Arg" "vector4" "0 0 0 0"
 			}

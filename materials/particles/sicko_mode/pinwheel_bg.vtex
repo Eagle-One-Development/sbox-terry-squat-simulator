@@ -6,7 +6,7 @@
 		"CDmeInputTexture"
 		{
 			"m_name" "string" "0"
-			"m_fileName" "string" "materials/particles/sicko_mode/pinwheel_bg.mks"
+			"m_fileName" "string" "materials/particles/sicko_mode/pinwheel/bg.png"
 			"m_colorSpace" "string" "srgb"
 			"m_typeString" "string" "2D"
 		}

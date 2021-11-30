@@ -174,6 +174,7 @@ namespace TSS
 		{
 			await GameTask.Delay( 1000 );
 			TSSGame.Current.StartMusic();
+			TSSGame.Current.PlayIntro();
 		}
 
 		
@@ -441,9 +442,9 @@ namespace TSS
 			//Basically once our exercise points are above a certain point ceiling, switch randomly to other gamemodes.
 			if (ExercisePoints >= PointCeiling)
 			{
-				PointCeiling = ExercisePoints + 10;
-				var exercises = new Exercise[] { Exercise.Squat, Exercise.Run, Exercise.Punch, Exercise.Yoga };
-				ChangeExercise( exercises[Time.Tick % exercises.Length] );
+				PointCeiling = ExercisePoints + Rand.Int(20,50);
+				var exercises = new Exercise[] { Exercise.Squat, Exercise.Run, Exercise.Punch, Exercise.Yoga }.Where((e) => e != CurrentExercise).ToArray();
+				ChangeExercise( exercises[Rand.Int(0, exercises.Count() - 1)] );
 			}
 
 			//Basically, at 100 exercise points introduce some new music layers
