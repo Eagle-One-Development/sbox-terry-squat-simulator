@@ -65,7 +65,6 @@
 		{
 			_class = "C_INIT_CreateWithinSphere"
 			m_fSpeedRandExp = 0.0
-			m_bLocalCoords = true
 		},
 		{
 			_class = "C_INIT_VelocityRandom"
@@ -721,7 +720,7 @@
 				m_flMultFactor = 1.0
 				m_flInput0 = 0.0
 				m_flInput1 = 1.0
-				m_flOutput0 = 1.0
+				m_flOutput0 = 2.0
 				m_flOutput1 = 0.0
 				m_nBiasType = "PF_BIAS_TYPE_STANDARD"
 				m_flBiasParameter = 0.0
