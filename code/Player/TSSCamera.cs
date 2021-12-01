@@ -72,6 +72,7 @@ namespace TSS
 				JoshWilson = null;
 				TimeSinceStart = 0;
 				Active = true;
+				Log.Info( "WHAT THE FUCK MAN" );
 			}
 		}
 
@@ -381,6 +382,7 @@ namespace TSS
 				SCounter.Rotation = Rotation.From( 0, 90, 0 );
 				SCounter.Opacity = 0.0f;
 				SCounter.TextScale = 1.0f;
+				Log.Info( "WE HAVE GONE BACK TO THE INTRO FOR SOME REASON" );
 			}
 		}
 
@@ -448,9 +450,8 @@ namespace TSS
 			var pawn = Local.Pawn as TSSPlayer;
 			var center = pawn.ExercisePosition + Vector3.Up * CamHeight;
 
-
 			Position = center + pawn.Rotation.Up * CamDistance + new Vector3( 32*MathF.Sin(Time.Now/3), 32*MathF.Cos( Time.Now/3 ), 0);
-			var hitPos = Trace.Ray( pawn.Position, Position ).Ignore(pawn);
+			var hitPos = Trace.Ray( pawn.Position + Vector3.Up * 10f, Position ).Ignore(pawn);
 			Position = hitPos.Run().EndPos;
 
 			Rotation = Rotation.LookAt( (center - Position), Vector3.Up );
@@ -497,8 +498,7 @@ namespace TSS
 				CameraState.Rotate,
 				CameraState.Topdown,
 				CameraState.Beat,
-				CameraState.Ground,
-				CameraState.Intro
+				CameraState.Ground
 			};
 
 			TimeSinceState = 0f;

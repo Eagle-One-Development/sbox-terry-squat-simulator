@@ -306,6 +306,7 @@ namespace TSS
 
 			Instance.CurrentYogaPosition = i;
 			Instance.GivePoints( 5 );
+
 		}
 
 		/// <summary>

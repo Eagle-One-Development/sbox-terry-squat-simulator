@@ -68,6 +68,8 @@ namespace TSS.UI
 				
 				Terry = new AnimSceneObject( Model.Load( "models/terry/terry.vmdl" ), Transform.Zero );
 				Terry.SetAnimBool( "Crying", true );
+				
+				
 
 				Spot = new SpotLight((Vector3.Up * 100f) + Vector3.Forward * 20f,Color.White);
 				Spot.Rotation = Rotation.LookAt( Terry.Position - Spot.Position );
