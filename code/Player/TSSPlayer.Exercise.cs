@@ -223,7 +223,7 @@ namespace TSS
 				return;
 			}
 
-			if ( Input.Pressed( InputButton.Right ) && (Squat == 0 || Squat == -1) && TimeSinceDownPressed > 0.1f )
+			if ( Input.Pressed( InputButton.Right ) && (Squat == 0 || Squat == -1) && TimeSinceDownPressed > TSSGame.QUARTER_NOTE_DURATION )
 			{
 				if ( Squat == 0 )
 				{
@@ -240,7 +240,7 @@ namespace TSS
 				TimeSinceUpPressed = 0;
 			}
 
-			if ( Input.Pressed( InputButton.Left ) && (Squat == 1 || Squat == -1) && TimeSinceUpPressed > 0.1f )
+			if ( Input.Pressed( InputButton.Left ) && (Squat == 1 || Squat == -1) && TimeSinceUpPressed > TSSGame.QUARTER_NOTE_DURATION )
 			{
 				Squat = 0;
 				TimeSinceDownPressed = 0;
@@ -370,7 +370,7 @@ namespace TSS
 				return;
 			}
 
-			if ( Input.Pressed( InputButton.Forward ) && (Squat == 0 || Squat == -1) && TimeSinceDownPressed > 0.1f )
+			if ( Input.Pressed( InputButton.Forward ) && (Squat == 0 || Squat == -1) && TimeSinceDownPressed > TSSGame.QUARTER_NOTE_DURATION )
 			{
 
 				if ( Squat == 0 )
@@ -392,7 +392,7 @@ namespace TSS
 
 			}
 
-			if ( Input.Pressed( InputButton.Back ) && (Squat == 1 || Squat == -1) && TimeSinceUpPressed > 0.1f )
+			if ( Input.Pressed( InputButton.Back ) && (Squat == 1 || Squat == -1) && TimeSinceUpPressed > TSSGame.QUARTER_NOTE_DURATION )
 			{
 				Squat = 0;
 				TimeSinceDownPressed = 0;

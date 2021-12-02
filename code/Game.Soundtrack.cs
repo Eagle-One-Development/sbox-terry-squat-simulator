@@ -1,5 +1,7 @@
 ﻿using Sandbox;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using TSS.UI;
 
 namespace TSS
@@ -9,10 +11,15 @@ namespace TSS
 		public List<Sound> Music;
 		public float[] volumes;
 		public float[] tarVolumes;
+		public SoundStream[] streams;
 		public RealTimeSince RealTimeSinceSongStart;
 
 		public double SongStartTime;
 
+		public static readonly float QUARTER_NOTE_DURATION = (60f / 140f) / 4f;
+		public static readonly float WHOLE_NOTE_DURATION = (60f / 140f);
+
+		public RealTimeSince TimeSinceLastBeat;
 
 		public int BeatNonce { get; set; }
 
@@ -31,6 +38,13 @@ namespace TSS
 
 		public void FrameBeats()
 		{
+
+			if ( TimeSinceLastBeat > WHOLE_NOTE_DURATION )
+			{
+				TimeSinceLastBeat = 0;
+				
+			}
+
 			SongPosInBeats = (Time.Sound - SongStartTime) / SecondsPerBeat;
 			if(Beats < SongPosInBeats )
 			{
@@ -56,6 +70,7 @@ namespace TSS
 				{
 					Log.Info( "FINISHED LOOP" );
 				}
+
 
 			}
 		}
@@ -88,6 +103,8 @@ namespace TSS
 			}
 			SecondsPerBeat = 60f / 140f;
 			SongStartTime = Time.Sound;
+			TimeSinceLastBeat = 0;
+
 
 			Sound.FromScreen( "roomambience" );
 		}
@@ -98,6 +115,7 @@ namespace TSS
 			if(tarVolumes == null ) { return; }
 			tarVolumes[v] = 1f;
 		}
+
 
 		[Event.Frame]
 		public void Volume()
@@ -111,6 +129,7 @@ namespace TSS
 			{
 				Music[i].SetVolume( volumes[i] );
 			}
+
 
 			FrameBeats();
 
