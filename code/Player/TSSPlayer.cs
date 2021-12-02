@@ -105,7 +105,9 @@ namespace TSS
 		private bool titleCardActive;
 
 		private UI.CreditPanel titleCard;
-		Particles PartSystem;
+		
+
+		Particles SweatSystem;
 
 		/// <summary>
 		/// Just a variable to introduce if we've introduced all the exercise or not
@@ -166,13 +168,16 @@ namespace TSS
 		{
 			base.ClientSpawn();
 			PlayMusic();
+			SweatSystem = Particles.Create( "particles/sweat/sweat.vpcf" , this);
+			SweatSystem.SetPosition( 1, new Vector3( 1000, 0, 0 ) );
+
 			//PartSystem = Particles.Create( "particles/sicko_mode/sicko_mode.vpcf" );
 			//PartSystem.SetPosition( 0, Transform.Position + Rotation.Forward * -20f + Vector3.Up * 48f );
 		}
 
 		public async void PlayMusic()
 		{
-			await GameTask.Delay( 1000 );
+			await GameTask.Delay( 2000 );
 			TSSGame.Current.StartMusic();
 			TSSGame.Current.PlayIntro();
 		}
@@ -252,6 +257,7 @@ namespace TSS
 
 			DetectClick();
 			ClearAnimation();
+			ParticleEffects();
 
 			if ( IsServer )
 			{
@@ -348,6 +354,7 @@ namespace TSS
 				var c = cam.SCounter;
 				c.l?.SetText( ExercisePoints.ToString() );
 				c.Opacity += Time.Delta * curSpeed * 0.4f;
+				
 
 				c.TextScale = cam.SCounter.TextScale.LerpTo( 1.5f * MathX.Clamp( curSpeed + 0.8f, 0, 1 ), Time.Delta * 2f );
 				float anim = MathF.Sin( aTime );
@@ -356,6 +363,27 @@ namespace TSS
 
 
 			SimulateActiveChild( cl, ActiveChild );
+		}
+
+		/// <summary>
+		/// A method run on simulate which helps us manage our particle effects.
+		/// </summary>
+		public void ParticleEffects()
+		{
+			//For client simulated particles
+			if ( IsClient )
+			{
+				//Here we have a sweat value
+				float sweatValue = 150f;
+
+				//First lets only start sweating once we've got exercise points and if we're exercising fast enough
+				float val = (TimeSinceExerciseStopped / 3f).Clamp( 0, 1 );
+				//Basically give us more sweat as we approach 500 exercise points
+				float val2 = ((ExercisePoints - 150) / 350f).Clamp(0,1f);
+
+				//Then we set our sweat value
+				SweatSystem.SetPosition( 1, new Vector3( sweatValue * MathF.Pow(val2,0.32f) * (1f - val), 0, 0 ) );
+			}
 		}
 
 		public override void FrameSimulate( Client cl )
@@ -510,6 +538,9 @@ namespace TSS
 				return;
 			}
 		}
+
+
+
 
 		public override void OnKilled()
 		{

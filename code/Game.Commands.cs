@@ -27,6 +27,7 @@ namespace TSS
 			if ( ConsoleSystem.Caller.Pawn is TSSPlayer player )
 			{
 				player.Punch();
+
 			}
 		}
 	}
