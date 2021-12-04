@@ -41,19 +41,19 @@ namespace TSS
 			switch ( exercise )
 			{
 				case Exercise.Run:
-					ent = All.OfType<RunSpawn>().First();
+					ent = All.OfType<TSSSpawn>().ToList().Find(x => x.SpawnType == SpawnType.Run);
 					//Run position is used for the mini-game for terry being pushed off the treadmill
 					ExercisePosition = ent.Transform.Position;
 					break;
 				case Exercise.Squat:
-					ent = All.OfType<SquatSpawn>().First();
+					ent = All.OfType<TSSSpawn>().ToList().Find( x => x.SpawnType == SpawnType.Squat );
 					StartSquatting();
 					break;
 				case Exercise.Punch:
-					ent = All.OfType<PunchSpawn>().First();
+					ent = All.OfType<TSSSpawn>().ToList().Find( x => x.SpawnType == SpawnType.Punch );
 					break;
 				case Exercise.Yoga:
-					ent = All.OfType<PunchSpawn>().First();
+					ent = All.OfType<TSSSpawn>().ToList().Find( x => x.SpawnType == SpawnType.Yoga );
 					break;
 			}
 
