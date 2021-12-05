@@ -20,7 +20,7 @@ namespace TSS
 			ExercisePoints += i;
 			TimeSinceExerciseStopped = 0;
 			tCurSpeed += 0.1f;
-			CreatePoint( 1, true, i );
+			CreatePoint( Math.Sign(i) * 1, true, Math.Abs(i) );
 		}
 
 		/// <summary>
@@ -36,11 +36,11 @@ namespace TSS
 			ExercisePoints += i;
 			TimeSinceExerciseStopped = 0;
 			tCurSpeed += 0.1f;
-			CreatePointAtPosition( 1, pos, fall, i );
+			CreatePointAtPosition( Math.Sign( i ) * 1, pos, fall, Math.Abs(i) );
 		}
 
 		/// <summary>
-		/// Creates a point panl at a radnom position around the player
+		/// Creates a point panel at a radnom position around the player
 		/// </summary>
 		/// <param name="i">The amount of points per point panel to give</param>
 		/// <param name="fall">Whether or not the point panel falls</param>

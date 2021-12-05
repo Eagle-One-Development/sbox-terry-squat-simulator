@@ -113,6 +113,7 @@ namespace TSS
 		[ClientRpc]
 		public void StartClientRunning()
 		{
+			treadmillSound.Stop();
 			treadmillSound = PlaySound( "treadmill" );
 		}
 
@@ -246,8 +247,10 @@ namespace TSS
 				else
 				{
 					// Turn down volume when stop working out
-					treadmillSound.SetVolume(MathF.Min(0, MathF.Max(1, 1 - TimeSinceExerciseStopped)));
+					treadmillSound.SetVolume(MathF.Max(0, MathF.Min(3, 3 - TimeSinceExerciseStopped)));
 				}
+
+				//treadmillSound.SetVolume( 3f );
 			}
 
 			if ( TimeSinceRun < 3f && Squat != -1 )

@@ -426,7 +426,7 @@ namespace TSS
 				{
 					if ( IsServer && clickTrace.Entity is Food food )
 					{
-						food.RemoveFood();
+						food.Click();
 					}
 				}
 			}

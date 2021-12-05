@@ -7,7 +7,6 @@ public enum CameraState
 {
 	Static,
 	Follow,
-	Rotate,
 	Topdown,
 	Beat,
 	Ground,
@@ -19,7 +18,7 @@ namespace TSS
 {
 	public partial class TSSCamera : Camera
 	{
-		public float CamHeight;
+		public float IntroCamHeight;
 		public float CamDistance;
 		public Vector3 CamOffset;
 		public CameraState CamState;
@@ -89,9 +88,6 @@ namespace TSS
 			switch ( CamState )
 			{
 				case CameraState.Follow:
-					FollowPlayer();
-					break;
-				case CameraState.Rotate:
 					FollowPlayer();
 					break;
 				case CameraState.Intro:
@@ -244,10 +240,10 @@ namespace TSS
 				Down.Opacity = (1f - ((Progress - 0.1f) / 0.05f).Clamp( 0, 1f )) * f;
 				Down.TextScale = Down.TextScale.LerpTo( 1, Time.Delta * 10f );
 
-				var center = pawn.ExercisePosition + Vector3.Up * CamHeight;
+				var center = pawn.ExercisePosition + Vector3.Up * IntroCamHeight;
 
 				CamDistance = 125f - 50f * (Progress / 0.25f);
-				CamHeight = 45f;
+				IntroCamHeight = 45f;
 				Position = center + pawn.Rotation.Forward * CamDistance;
 				Rotation = Rotation.LookAt( (center - Position), Vector3.Up );
 				yaw = 30f;
@@ -299,8 +295,8 @@ namespace TSS
 				float p = (Progress - 0.25f) / 0.24f;
 				p = p.Clamp( 0, 1f );
 				CamDistance = 150f;
-				CamHeight = 20f;
-				var center = pawn.ExercisePosition + Vector3.Up * CamHeight;
+				IntroCamHeight = 20f;
+				var center = pawn.ExercisePosition + Vector3.Up * IntroCamHeight;
 
 				yawTar = MathX.LerpTo( 30f, 120f, p );
 				Position = center + Rotation.FromYaw( yaw ).Forward * CamDistance;
@@ -333,9 +329,9 @@ namespace TSS
 				float p = (Progress - 0.5f) / 0.25f;
 				p = p.Clamp( 0, 1f );
 				CamDistance = 50f;
-				CamHeight = 32f + 32f * p;
+				IntroCamHeight = 32f + 32f * p;
 
-				var center = pawn.ExercisePosition + Vector3.Up * CamHeight;
+				var center = pawn.ExercisePosition + Vector3.Up * IntroCamHeight;
 				Position = center + pawn.Rotation.Forward * CamDistance;
 				Rotation = Rotation.LookAt( (center - Position), Vector3.Up );
 
@@ -347,7 +343,7 @@ namespace TSS
 				float p = (Progress - 0.75f) / 0.24f;
 				p = p.Clamp( 0, 1f );
 				CamDistance = 50f + 50f * p;
-				CamHeight = 64f - 19f * p;
+				IntroCamHeight = 64f - 19f * p;
 
 				TSS ??= new CreditPanel( "Terry\nSquat\nSimulator", 3200, 3200 );
 				TSS.Position = pawn.ExercisePosition + Vector3.Up * -26f + pawn.Rotation.Forward * 20f;
@@ -358,7 +354,7 @@ namespace TSS
 				TSSGame.Current.SetTarVolume( 4 );
 
 
-				var center = pawn.ExercisePosition + Vector3.Up * CamHeight;
+				var center = pawn.ExercisePosition + Vector3.Up * IntroCamHeight;
 				Rotation = Rotation.LookAt( (center - Position), Vector3.Up );
 				Position = center + pawn.Rotation.Forward * CamDistance;
 			}
@@ -389,14 +385,13 @@ namespace TSS
 		public void FollowPlayer()
 		{
 			CamDistance = 125f;
-			CamHeight = 45f;
 			float p = TimedProgress;
 			p = p.Clamp( 0, 1f );
 			var pawn = Local.Pawn as TSSPlayer;
-			var center = pawn.ExercisePosition + Vector3.Up * CamHeight;
+			var center = GetCenter();
 
 
-			Position = center + pawn.Rotation.Forward * CamDistance + pawn.Rotation.Right * MathX.LerpTo( -100f, 100f, p );
+			Position = center + pawn.Rotation.Forward * CamDistance + Vector3.Up * GetSceneCameraHeight() + pawn.Rotation.Right * MathX.LerpTo( -100f, 100f, p );
 			Rotation = Rotation.LookAt( (center - Position), Vector3.Up );
 
 			if ( TimeSinceState > 5f )
@@ -409,13 +404,12 @@ namespace TSS
 		public void Ground()
 		{
 			CamDistance = 125f;
-			CamHeight = 15f;
 			float p = TimedProgress;
 			p = p.Clamp( 0, 1f );
 			var pawn = Local.Pawn as TSSPlayer;
-			var center = pawn.ExercisePosition + Vector3.Up * CamHeight;
+			var center = GetCenter();
 
-			Position = center + pawn.Rotation.Forward * CamDistance + pawn.Rotation.Right * MathX.LerpTo( -50f, 50f, p );
+			Position = center + pawn.Rotation.Forward * CamDistance + Vector3.Up * GetSceneCameraHeight() + pawn.Rotation.Right * MathX.LerpTo( -50f, 50f, p );
 			Rotation = Rotation.LookAt( pawn.Rotation.Forward * -1f, Vector3.Up );
 
 			if ( TimeSinceState > 5f )
@@ -428,12 +422,10 @@ namespace TSS
 		public void StaticPlayer()
 		{
 			CamDistance = 100f;
-			CamHeight = 45f;
 			var pawn = Local.Pawn as TSSPlayer;
-			var center = pawn.ExercisePosition + Vector3.Up * CamHeight;
+			var center = GetCenter();
 
-
-			Position = center + pawn.Rotation.Forward * CamDistance;
+			Position = center + pawn.Rotation.Forward * CamDistance + Vector3.Up * GetSceneCameraHeight();
 			Rotation = Rotation.LookAt( (center - Position), Vector3.Up );
 
 			if ( TimeSinceState > 5f )
@@ -446,9 +438,8 @@ namespace TSS
 		public void Topdown()
 		{
 			CamDistance = 100f;
-			CamHeight = 45f;
 			var pawn = Local.Pawn as TSSPlayer;
-			var center = pawn.ExercisePosition + Vector3.Up * CamHeight;
+			var center = GetCenter();
 
 			Position = center + pawn.Rotation.Up * CamDistance + new Vector3( 32*MathF.Sin(Time.Now/3), 32*MathF.Cos( Time.Now/3 ), 0);
 			var hitPos = Trace.Ray( pawn.Position + Vector3.Up * 10f, Position ).Ignore(pawn);
@@ -466,10 +457,8 @@ namespace TSS
 		public void Beat()
 		{
 			CamDistance = 100f;
-			CamHeight = 45f;
 			var pawn = Local.Pawn as TSSPlayer;
-			var center = pawn.ExercisePosition + Vector3.Up * CamHeight;
-
+			var center = GetCenter();
 
 			var beatMultiplier = 2f;
 
@@ -480,7 +469,7 @@ namespace TSS
 
 			var beatFreq = MathF.PI / 4 * TSSGame.Current.BeatNonce * beatMultiplier;
 
-			Position = center + pawn.Rotation.Forward * 128f + new Vector3( 32 * MathF.Sin( beatFreq ), 32 * MathF.Cos( beatFreq ), 0 );
+			Position = center + pawn.Rotation.Forward * 128f + Vector3.Up * GetSceneCameraHeight() + new Vector3( 32 * MathF.Sin( beatFreq ), 32 * MathF.Cos( beatFreq ), 0 );
 			Rotation = Rotation.LookAt( (center - Position), Vector3.Up );
 
 
@@ -495,7 +484,6 @@ namespace TSS
 			var states = new CameraState[] {
 				CameraState.Static,
 				CameraState.Follow,
-				CameraState.Rotate,
 				CameraState.Topdown,
 				CameraState.Beat,
 				CameraState.Ground
@@ -504,6 +492,31 @@ namespace TSS
 			TimeSinceState = 0f;
 			TimedProgress = 0f;
 			CamState = states[((int)CamState + 1) % states.Length];
+		}
+
+		public Vector3 GetCenter()
+		{
+			var pawn = Local.Pawn as TSSPlayer;
+			return pawn.ExercisePosition + Vector3.Up * 45f;
+		}
+
+		public float GetSceneCameraHeight()
+		{
+			var pawn = Local.Pawn as TSSPlayer;
+
+
+			if (CamState == CameraState.Ground)
+			{
+				return 15f;
+			}  
+			else if ( pawn.CurrentExercise == Exercise.Run )
+			{
+				return 80f;
+			}
+			else
+			{
+				return 45f;
+			}
 		}
 
 	}

@@ -6,5 +6,12 @@
 		[
 			"sounds/exercise/treadmill.vsnd",
 		]
+		ui = false
+		volume = 3.0
+		volumerandom = 0.0
+		pitch = 1.0
+		pitchrandom = 0.0
+		distancemax = 2000.0
+		selectionmode = "3"
 	}
 }

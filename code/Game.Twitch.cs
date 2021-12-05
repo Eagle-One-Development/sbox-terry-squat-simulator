@@ -70,10 +70,13 @@ namespace TSS
 						Pawn.DrinkSoda();
 					} else if (msg.Message.Contains("!burger"))
 					{
-						_ = new Food();
+						_ = new Burger();
 					} else if (msg.Message.Contains("!cheer"))
 					{
 						Sound.FromScreen( $"cheering_0{Rand.Int( 1, 3)}" );
+					} else if(msg.Message.Contains("!fries"))
+					{
+						_ = new FrenchFries();
 					}
 					// tomato
 					// random excerise
