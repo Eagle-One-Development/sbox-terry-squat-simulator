@@ -373,9 +373,12 @@ namespace TSS
 
 				if ( IsClient )
 				{
-					var pt = new YogaQT();
-					pt.Player = this;
-
+					// Prevent duplicate yoga qt panels appearing when alt-tabbed.
+					if (All.OfType<YogaQT>().Count() == 0)
+					{
+						var pt = new YogaQT();
+						pt.Player = this;
+					}
 				}
 			}
 		}

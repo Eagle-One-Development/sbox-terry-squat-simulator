@@ -131,7 +131,7 @@ namespace TSS.UI
 
 				if ( TimeSinceFinished > 0.5f )
 				{
-					Delete();
+					Delete(true);
 				}
 			}
 
@@ -148,7 +148,7 @@ namespace TSS.UI
 
 				if ( TimeSinceFinished > 0.5f )
 				{
-					Delete();
+					Delete(true);
 				}
 			}
 
