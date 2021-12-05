@@ -349,7 +349,7 @@ namespace TSS
 			Instance.GivePoints( 5 );
 			var sound = pawn.PlaySound( $"yoga_0{1 + (pawn.YogaCount % 3)}" );
 			pawn.YogaCount++;
-			sound.SetVolume( 5f );
+			sound.SetVolume( 2.5f );
 
 		}
 
