@@ -246,8 +246,7 @@ namespace TSS
 				}
 				else
 				{
-					// Turn down volume when stop working out
-					treadmillSound.SetVolume(MathF.Max(0, MathF.Min(3, 3 - TimeSinceExerciseStopped)));
+					treadmillSound.SetVolume(MathF.Max(0, MathF.Min(2.25f, 2.25f - 2*TimeSinceExerciseStopped)));
 				}
 
 				//treadmillSound.SetVolume( 3f );
