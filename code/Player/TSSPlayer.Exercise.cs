@@ -14,6 +14,11 @@ namespace TSS
 		[Net]
 		public Vector3 ExercisePosition { get; set; }
 
+		protected Sound treadmillSound { get; set; }
+
+
+		public int YogaCount = 0;
+
 		/// <summary>
 		/// Changes the current exercise and moves the player to a given position and rotation
 		/// </summary>
@@ -35,6 +40,9 @@ namespace TSS
 					case Exercise.Yoga:
 						CurrentYogaPosition = 0;
 						break;
+					case Exercise.Run:
+						StopClientRunning();
+						break;
 				}
 			}
 
@@ -44,6 +52,7 @@ namespace TSS
 					ent = All.OfType<TSSSpawn>().ToList().Find(x => x.SpawnType == SpawnType.Run);
 					//Run position is used for the mini-game for terry being pushed off the treadmill
 					ExercisePosition = ent.Transform.Position;
+					StartClientRunning();
 					break;
 				case Exercise.Squat:
 					ent = All.OfType<TSSSpawn>().ToList().Find( x => x.SpawnType == SpawnType.Squat );
@@ -99,6 +108,18 @@ namespace TSS
 			Barbell.Rotation = Rotation * Rotation.From( 0, 0, 90 );
 			Squat = 0;
 			lastSquat = -1;
+		}
+
+		[ClientRpc]
+		public void StartClientRunning()
+		{
+			treadmillSound = PlaySound( "treadmill" );
+		}
+
+		[ClientRpc]
+		public void StopClientRunning()
+		{
+			treadmillSound.Stop();
 		}
 
 		/// <summary>
@@ -173,6 +194,9 @@ namespace TSS
 
 		}
 
+
+
+
 		/// <summary>
 		/// The running exercise
 		/// </summary>
@@ -211,6 +235,19 @@ namespace TSS
 			if ( cam == null )
 			{
 				return;
+			}
+
+			if (IsClient)
+			{
+				if ( TimeSinceRagdolled > 0f && TimeSinceRagdolled < 1f )
+				{
+					treadmillSound.SetVolume( 0 );
+				}
+				else
+				{
+					// Turn down volume when stop working out
+					treadmillSound.SetVolume(MathF.Min(0, MathF.Max(1, 1 - TimeSinceExerciseStopped)));
+				}
 			}
 
 			if ( TimeSinceRun < 3f && Squat != -1 )
@@ -265,6 +302,7 @@ namespace TSS
 			if ( TimeSincePunch > TimeToNextPunch )
 			{
 				TimeSincePunch = 0;
+
 			}
 		}
 
@@ -283,7 +321,6 @@ namespace TSS
 		[ServerCmd( "create_punch" )]
 		public static void CreatePunchQT()
 		{
-
 			var pt = new PunchQT();
 			pt.Player = Instance;
 			pt.TargetTime = 1f;
@@ -291,6 +328,7 @@ namespace TSS
 			pt.Type = Rand.Int( 0, 3 );
 
 		}
+
 
 		/// <summary>
 		/// Sets the pose on both the server and client, updating the yoga pose terry is using during the yoga exercise
@@ -304,8 +342,14 @@ namespace TSS
 				return;
 			}
 
+			var pawn = TSSGame.Pawn;
+
+
 			Instance.CurrentYogaPosition = i;
 			Instance.GivePoints( 5 );
+			var sound = pawn.PlaySound( $"yoga_0{1 + (pawn.YogaCount % 3)}" );
+			pawn.YogaCount++;
+			sound.SetVolume( 5f );
 
 		}
 
@@ -390,6 +434,8 @@ namespace TSS
 				}
 				Squat = 1;
 				TimeSinceUpPressed = 0;
+				var sound = PlaySound( $"squat_0{Rand.Int( 1, 7 )}" );
+				sound.SetPitch( (100f / (50 + Math.Max( 1f, ExercisePoints ))).Clamp( 0.5f, 1.0f ));
 
 			}
 
@@ -399,6 +445,9 @@ namespace TSS
 				TimeSinceDownPressed = 0;
 				if ( cam.Down != null )
 					cam.Down.TextScale += 0.3f;
+
+				var sound = PlaySound( $"squat_0{Rand.Int(1, 7)}" );
+				sound.SetPitch( (100f / (50 + Math.Max( 1f, ExercisePoints ))).Clamp( 0.5f, 1.0f ) );
 			}
 		}
 	}

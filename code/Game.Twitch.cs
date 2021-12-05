@@ -71,9 +71,11 @@ namespace TSS
 					} else if (msg.Message.Contains("!burger"))
 					{
 						_ = new Food();
+					} else if (msg.Message.Contains("!cheer"))
+					{
+						Sound.FromScreen( $"cheering_0{Rand.Int( 1, 3)}" );
 					}
 					// tomato
-					// pull red cable (treadmill)
 					// random excerise
 					// quicktime events
 					// medicine ball and ragdoll

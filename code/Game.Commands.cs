@@ -17,7 +17,6 @@ namespace TSS
 			if ( ConsoleSystem.Caller.Pawn is TSSPlayer player )
 			{
 				player.ExercisePoints += p;
-				//player.IntroComplete = true;
 			}
 		}
 
@@ -27,7 +26,6 @@ namespace TSS
 			if ( ConsoleSystem.Caller.Pawn is TSSPlayer player )
 			{
 				player.Punch();
-
 			}
 		}
 	}

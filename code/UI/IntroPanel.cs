@@ -71,7 +71,7 @@ namespace TSS.UI
 			string s = dt.ToString( @"tt hh:mm" );
 			s += "\n";
 
-			s += dt.ToString( @"MMM. dd yyyy" );
+			s += dt.ToString( @"MMM. dd yyXX" );
 			date.Text = s;
 
 
