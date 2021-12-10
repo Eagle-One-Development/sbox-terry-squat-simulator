@@ -40,8 +40,6 @@ namespace TSS.UI
 				var lab = pan.Add.Label( GetKey( combo[i] ), "label" );
 				Letters.Add( lab );
 				Scales.Add( 0f );
-
-				Log.Info( "PANEL ADDED" );
 			}
 
 			TimeSinceSpawned = 0f;

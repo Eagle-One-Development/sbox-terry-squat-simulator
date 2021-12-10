@@ -6,6 +6,11 @@ using System.Collections.Generic;
 
 namespace TSS
 {
+	public enum SquatState { 
+		UP,
+		DOWN
+	}
+
 	public partial class TSSPlayer : Player
 	{
 		/// <summary>
@@ -135,13 +140,13 @@ namespace TSS
 		/// <summary>
 		/// The offset by which we are falling off of the tread mill
 		/// </summary>
-		[Net, Predicted]
+		[Net]
 		public float RunPositionOffset { get; set; }
 
 		/// <summary>
 		/// The offset by which we are falling off of the tread mill
 		/// </summary>
-		[Net, Predicted]
+		[Net]
 		public TimeSince TimeSinceRagdolled{ get; set; }
 
 		[ClientRpc]

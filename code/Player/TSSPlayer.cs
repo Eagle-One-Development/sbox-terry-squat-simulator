@@ -31,7 +31,7 @@ namespace TSS
 		[Net, Predicted]
 		private int lastSquat { get; set; }
 
-		[Net, Predicted]
+		[Net]
 		public TimeSince TimeSinceExerciseStopped { get; set; }
 
 		[Net, Predicted]
