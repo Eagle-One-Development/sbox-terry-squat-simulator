@@ -378,7 +378,6 @@ namespace TSS
 				SCounter.Rotation = Rotation.From( 0, 90, 0 );
 				SCounter.Opacity = 0.0f;
 				SCounter.TextScale = 1.0f;
-				Log.Info( "WE HAVE GONE BACK TO THE INTRO FOR SOME REASON" );
 			}
 		}
 

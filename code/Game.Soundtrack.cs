@@ -49,28 +49,23 @@ namespace TSS
 			if(Beats < SongPosInBeats )
 			{
 				Beats++;
-				
-				if(Beats % 4 == 0 )
-				{
-					
-				}
 
 				if ( Beats % 2 == 0 )
 				{
 					Event.Run( "OtherBeat" );
 				}
 
+				/**
 				if (Beats % 140 == 0 )
 				{
-					Log.Info( $"BEAT TO THE BOP: {Beats}\nCurrent Time:{RealTimeSinceSongStart}" );
-					Log.Info( "1 Minute!" );
+
 				}
 
 				if ( Music[0].Finished )
 				{
 					Log.Info( "FINISHED LOOP" );
 				}
-
+				**/
 
 			}
 		}
