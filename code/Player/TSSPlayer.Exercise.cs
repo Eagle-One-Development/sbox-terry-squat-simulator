@@ -118,14 +118,14 @@ namespace TSS
 		[ClientRpc]
 		public void StartClientRunning()
 		{
-			treadmillSound.Stop();
-			treadmillSound = PlaySound( "treadmill" );
+			//treadmillSound.Stop();
+			//treadmillSound = PlaySound( "treadmill" );
 		}
 
 		[ClientRpc]
 		public void StopClientRunning()
 		{
-			treadmillSound.Stop();
+			//treadmillSound.Stop();
 		}
 
 		/// <summary>
@@ -245,14 +245,14 @@ namespace TSS
 
 			if (IsClient)
 			{
-				if ( TimeSinceRagdolled > 0f && TimeSinceRagdolled < 1f )
-				{
-					treadmillSound.SetVolume( 0 );
-				}
-				else
-				{
-					treadmillSound.SetVolume(MathF.Max(0, MathF.Min(2.25f, 2.25f - 2*TimeSinceExerciseStopped)));
-				}
+				//if ( TimeSinceRagdolled > 0f && TimeSinceRagdolled < 1f )
+				//{
+				//	treadmillSound.SetVolume( 0 );
+				//}
+				//else
+				//{
+				//	treadmillSound.SetVolume(MathF.Max(0, MathF.Min(2.25f, 2.25f - 2*TimeSinceExerciseStopped)));
+				//}
 
 				//treadmillSound.SetVolume( 3f );
 			}
@@ -354,9 +354,9 @@ namespace TSS
 
 			Instance.CurrentYogaPosition = i;
 			Instance.GivePoints( 5 );
-			var sound = pawn.PlaySound( $"yoga_0{1 + (pawn.YogaCount % 3)}" );
+			//var sound = pawn.PlaySound( $"yoga_0{1 + (pawn.YogaCount % 3)}" );
 			pawn.YogaCount++;
-			sound.SetVolume( 2.5f );
+			//sound.SetVolume( 2.5f );
 
 		}
 
@@ -444,8 +444,8 @@ namespace TSS
 				}
 				Squat = 1;
 				TimeSinceUpPressed = 0;
-				var sound = PlaySound( $"squat_0{Rand.Int( 1, 7 )}" );
-				sound.SetPitch( (100f / (50 + Math.Max( 1f, ExercisePoints ))).Clamp( 0.5f, 1.0f ));
+				//var sound = PlaySound( $"squat_0{Rand.Int( 1, 7 )}" );
+				//sound.SetPitch( (100f / (50 + Math.Max( 1f, ExercisePoints ))).Clamp( 0.5f, 1.0f ));
 
 			}
 
@@ -456,8 +456,8 @@ namespace TSS
 				if ( cam.Down != null )
 					cam.Down.TextScale += 0.3f;
 
-				var sound = PlaySound( $"squat_0{Rand.Int(1, 7)}" );
-				sound.SetPitch( (100f / (50 + Math.Max( 1f, ExercisePoints ))).Clamp( 0.5f, 1.0f ) );
+				//var sound = PlaySound( $"squat_0{Rand.Int(1, 7)}" );
+				//sound.SetPitch( (100f / (50 + Math.Max( 1f, ExercisePoints ))).Clamp( 0.5f, 1.0f ) );
 			}
 		}
 	}

@@ -510,11 +510,13 @@ namespace TSS
 			}  
 			else if ( pawn.CurrentExercise == Exercise.Run )
 			{
-				return 80f;
+				return 45f;
 			}
 			else
 			{
-				return 45f;
+				Log.Info( "HM" );
+				return 0f;
+
 			}
 		}
 
