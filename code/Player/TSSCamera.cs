@@ -514,7 +514,6 @@ namespace TSS
 			}
 			else
 			{
-				Log.Info( "HM" );
 				return 0f;
 
 			}

@@ -140,8 +140,11 @@ namespace TSS.UI
 				back.Style.Opacity = 1.1f - (TimeSinceFinished / 0.5f);
 				foreach ( var l in Letters )
 				{
-					l.Parent.Style.Opacity = 1.1f - (TimeSinceFinished / 0.5f);
-					l.Style.FontColor = Color.White;
+					if (l != null && l.Parent != null )
+					{
+						l.Parent.Style.Opacity = 1.1f - (TimeSinceFinished / 0.5f);
+						l.Style.FontColor = Color.White;
+					}
 				}
 
 				if ( TimeSinceFinished > 0.5f )
