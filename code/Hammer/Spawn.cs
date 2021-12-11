@@ -11,6 +11,9 @@ public enum SpawnType
 	Run,
 	Punch,
 	Yoga,
+	Heaven,
+	Void,
+	Nature
 }
 
 [Hammer.EditorModel( "models/dev/playerstart_tint.vmdl" )]

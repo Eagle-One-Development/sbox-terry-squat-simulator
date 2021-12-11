@@ -48,6 +48,9 @@ metadata
 		1 : "Run"
 		2 : "Punch"
 		3 : "Yoga"
+		4 : "Heaven"
+		5 : "Void"
+		6 : "Nature"
 	]
 	enable_shadows(boolean) { group = "Rendering" } : "Shadow Casting" : 1 : "Whether this entity should cast shadows or not"
 

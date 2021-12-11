@@ -109,6 +109,8 @@ namespace TSS
 
 		Particles SweatSystem;
 
+
+
 		/// <summary>
 		/// Just a variable to introduce if we've introduced all the exercise or not
 		/// </summary>
@@ -526,8 +528,8 @@ namespace TSS
 			CounterBump( 0.5f );
 			TimeSinceExerciseStopped = 0;
 
-			var sound = PlaySound( $"squat_0{Rand.Int( 1, 7 )}" );
-			sound.SetPitch( (300f / (50 + Math.Max( 1f, ExercisePoints ))).Clamp( 0.5f, 1.0f ) );
+			//var sound = PlaySound( $"squat_0{Rand.Int( 1, 7 )}" );
+			//sound.SetPitch( (300f / (50 + Math.Max( 1f, ExercisePoints ))).Clamp( 0.5f, 1.0f ) );
 
 			if ( Squat == 0 )
 			{
