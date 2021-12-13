@@ -47,8 +47,15 @@ namespace TSS
 		[ClientRpc]
 		public void CreateSickoMode()
 		{
+			var localCam = (Camera as TSSCamera);
+			var pos = ExercisePosition + Vector3.Up * 45f;
+			var dir = (pos - localCam.Position).Normal;
+
 			Log.Info( "Sicko Mode Particle created" );
-			SickoMode = Particles.Create( "particles/sicko_mode/sicko_mode.vpcf" );
+			SickoModePositionTar = pos + dir * 200f;
+			SickoModePosition = SickoModePositionTar;
+			SickoMode = Particles.Create( "particles/sicko_mode/sicko_mode.vpcf", pos + dir * 200f);
+
 		}
 
 		/// <summary>

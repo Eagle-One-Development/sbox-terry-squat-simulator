@@ -118,14 +118,14 @@
 						{
 							x = 0.0
 							y = 0.0
-							m_flSlopeIncoming = 1.0
-							m_flSlopeOutgoing = 1.0
+							m_flSlopeIncoming = 1.5
+							m_flSlopeOutgoing = 1.5
 						},
 						{
-							x = 1.0
-							y = 1.0
-							m_flSlopeIncoming = 1.0
-							m_flSlopeOutgoing = 1.0
+							x = 2.0
+							y = 3.0
+							m_flSlopeIncoming = 1.5
+							m_flSlopeOutgoing = 1.5
 						},
 					]
 					m_tangents = 
@@ -140,7 +140,7 @@
 						},
 					]
 					m_vDomainMins = [ 0.0, 0.0 ]
-					m_vDomainMaxs = [ 1.0, 1.0 ]
+					m_vDomainMaxs = [ 2.0, 3.0 ]
 				}
 			}
 			m_nSetMethod = "PARTICLE_SET_SCALE_INITIAL_VALUE"

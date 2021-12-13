@@ -114,6 +114,9 @@ namespace TSS
 
 		Particles SickoMode;
 
+		private Vector3 SickoModePosition;
+		private Vector3 SickoModePositionTar;
+
 
 		/// <summary>
 		/// Just a variable to introduce if we've introduced all the exercise or not
@@ -272,8 +275,13 @@ namespace TSS
 					var localCam = (Camera as TSSCamera);
 					var pos = ExercisePosition + Vector3.Up * 45f;
 					var dir = (pos - localCam.Position).Normal;
-					SickoMode.SetPosition( 0, pos + dir * 200f );
+					SickoModePositionTar = pos + dir * 200f;
+					SickoModePosition = Vector3.Lerp( SickoModePosition, SickoModePositionTar, Time.Delta * 8f );
+					SickoMode.SetPosition( 0, SickoModePositionTar );
+					//DebugOverlay.Sphere( pos + dir * 200f, 1f, Color.Yellow,false,1);
+					
 				}
+
 			}
 
 			if ( IsServer )
