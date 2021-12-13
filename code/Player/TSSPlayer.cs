@@ -71,6 +71,9 @@ namespace TSS
 		[Net]
 		public bool EndingInitiated { get; set; }
 
+		[Net]
+		public bool EndingConditionMet { get; set; }
+
 		/// <summary>
 		/// Basically a way of stopping the soda animation when its done
 		/// </summary>
@@ -349,9 +352,10 @@ namespace TSS
 
 			if ( IsServer )
 			{
-				if(ExercisePoints == HeavenThreshold + 100 )
+				if(ExercisePoints >= HeavenThreshold + 100 && !EndingConditionMet )
 				{
 					StartEnding();
+					EndingConditionMet = true;
 					ExercisePoints++;
 				}
 			}
