@@ -37,7 +37,7 @@ namespace TSS
 			TSSPlayer.Instance.Rotation = ent.Transform.Rotation;
 			TSSPlayer.Instance.CreateSickoMode(To.Single(TSSPlayer.Instance));
 			TSSPlayer.Instance.CanGoToHeaven = true;
-			TSSPlayer.Instance.ChangeExercise( Exercise.Run );
+			TSSPlayer.Instance.ChangeExercise( Exercise.Squat );
 			
 		}
 

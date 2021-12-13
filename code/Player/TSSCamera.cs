@@ -120,6 +120,13 @@ namespace TSS
 				Rotation = transform.Rotation * Rotation.From( 90, 0, -90 );
 			}
 
+			if ( pawn.GetAnimBool( "Ending" ) && pawn.TimeSinceEnding > 0.02f )
+			{
+				var transform = pawn.GetBoneTransform( "Camera" );
+				Position = transform.Position;
+				Rotation = transform.Rotation * Rotation.From( 90, 0, -90 );
+			}
+
 			Progress = Math.Clamp( Progress, 0f, 1f );
 			float f = (pawn.TimeSinceExerciseStopped - 1f) / 3f;
 			f = MathF.Pow( f.Clamp( 0, 1f ), 3f );

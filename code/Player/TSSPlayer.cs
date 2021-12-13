@@ -2,6 +2,7 @@
 using System;
 using System.Linq;
 using System.Collections.Generic;
+using TSS.UI;
 public enum Exercise
 {
 	Squat = 0,
@@ -67,11 +68,20 @@ namespace TSS
 		[Net]
 		public bool CanGoToHeaven { get; set; }
 
+		[Net]
+		public bool EndingInitiated { get; set; }
+
 		/// <summary>
 		/// Basically a way of stopping the soda animation when its done
 		/// </summary>
 		[Net, Predicted]
 		public TimeSince TimeSinceSoda { get; set; }
+
+		/// <summary>
+		/// Basically a way of stopping the soda animation when its done
+		/// </summary>
+		[Net, Predicted]
+		public TimeSince TimeSinceEnding { get; set; }
 
 
 		/// <summary>
@@ -218,6 +228,15 @@ namespace TSS
 		}
 
 		[ClientRpc]
+		public void InitiateEnding()
+		{
+			SetAnimBool( "Ending", true );
+			Sound.FromScreen( "ending" );
+			SickoMode?.SetPosition( 3, 0 );
+		}
+
+
+		[ClientRpc]
 		public void StopSoda()
 		{
 			SetAnimBool( "Drink", false );
@@ -241,6 +260,30 @@ namespace TSS
 			InitiateSoda();
 		}
 
+
+		public void StartEnding()
+		{
+			if ( Barbell.IsValid() )
+			{
+				Barbell.EnableDrawing = false;
+			}
+			Barbell?.Delete();
+
+			TimeSinceEnding = 0;
+			InitiateEnding();
+			EndingInitiated = true;
+			TSSGame.Current.Silence();
+		}
+
+		[ClientRpc]
+		public void GoToEnding()
+		{
+			EndingPanel.Instance.Alph = 2f;
+			EndingPanel.Instance.FinalBlackout = true;
+		}
+
+
+
 		/// <summary>
 		/// Called every tick, clientside and serverside.
 		/// </summary>
@@ -262,6 +305,23 @@ namespace TSS
 				}
 
 				StopSoda();
+			}
+
+			if(TimeSinceEnding > 13.278f && EndingInitiated)
+			{
+				GoToEnding();
+				if ( IsServer )
+				{
+					var pl = new BuffPawn();
+					Client.Pawn = pl;
+					pl.Respawn();
+					Delete();
+				}
+			}
+
+			if ( EndingInitiated )
+			{
+				return;
 			}
 
 			DetectClick();
@@ -289,9 +349,10 @@ namespace TSS
 
 			if ( IsServer )
 			{
-				if ( Input.Pressed( InputButton.Reload ) )
+				if(ExercisePoints == HeavenThreshold + 100 )
 				{
-					
+					StartEnding();
+					ExercisePoints++;
 				}
 			}
 

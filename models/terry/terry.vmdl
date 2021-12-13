@@ -6840,7 +6840,7 @@
 						start_frame = 0
 						end_frame = 51
 						framerate = -1.0
-						take = 5
+						take = 7
 						reverse = false
 					},
 					{
@@ -6903,7 +6903,7 @@
 						start_frame = 0
 						end_frame = 10
 						framerate = -1.0
-						take = 4
+						take = 6
 						reverse = false
 					},
 					{
@@ -6924,7 +6924,7 @@
 						start_frame = 0
 						end_frame = 10
 						framerate = -1.0
-						take = 3
+						take = 5
 						reverse = false
 					},
 					{
@@ -6945,7 +6945,7 @@
 						start_frame = 0
 						end_frame = 31
 						framerate = -1.0
-						take = 8
+						take = 10
 						reverse = false
 					},
 					{
@@ -6966,7 +6966,7 @@
 						start_frame = 0
 						end_frame = 31
 						framerate = -1.0
-						take = 9
+						take = 11
 						reverse = false
 					},
 					{
@@ -6987,7 +6987,7 @@
 						start_frame = 0
 						end_frame = 31
 						framerate = -1.0
-						take = 10
+						take = 12
 						reverse = false
 					},
 					{
@@ -7008,7 +7008,7 @@
 						start_frame = 0
 						end_frame = 31
 						framerate = -1.0
-						take = 11
+						take = 13
 						reverse = false
 					},
 					{
@@ -7029,7 +7029,7 @@
 						start_frame = 0
 						end_frame = 31
 						framerate = -1.0
-						take = 12
+						take = 14
 						reverse = false
 					},
 					{
@@ -7050,7 +7050,28 @@
 						start_frame = 0
 						end_frame = 31
 						framerate = -1.0
-						take = 1
+						take = 2
+						reverse = false
+					},
+					{
+						_class = "AnimFile"
+						name = "Ending"
+						activity_name = ""
+						activity_weight = 1
+						weight_list_name = ""
+						fade_in_time = 0.2
+						fade_out_time = 0.2
+						looping = true
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/terry/terry.fbx"
+						start_frame = 0
+						end_frame = 399
+						framerate = -1.0
+						take = 3
 						reverse = false
 					},
 				]

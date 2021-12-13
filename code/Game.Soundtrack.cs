@@ -105,10 +105,20 @@ namespace TSS
 		}
 
 		[ClientRpc]
-		public void SetTarVolume( int v )
+		public void SetTarVolume( int v , float volume = 1f)
 		{
 			if(tarVolumes == null ) { return; }
-			tarVolumes[v] = 1f;
+			tarVolumes[v] = volume;
+		}
+
+		[ClientRpc]
+		public void Silence()
+		{
+			for(int i = 0; i < tarVolumes.Length; i++ )
+			{
+				tarVolumes[i] = 0f;
+				volumes[i] = 0f;
+			}
 		}
 
 
