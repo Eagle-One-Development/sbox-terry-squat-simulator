@@ -152,6 +152,7 @@ namespace TSS
 		{
 			Barbell?.Delete();
 			Barbell = new ModelEntity( "models/dumbbll/dumbbell.vmdl" );
+			Barbell.LocalPosition = Position + new Vector3(2, 0, 71.5f) * Rotation;
 			Barbell.SetParent( this, "head" );
 			Barbell.Rotation = Rotation * Rotation.From( 0, 0, 90 );
 			Squat = 0;
@@ -446,7 +447,7 @@ namespace TSS
 
 			if ( Barbell != null )
 			{
-				Barbell.LocalPosition = Vector3.Zero + Barbell.Transform.Rotation.Right * 15.5f;
+				//Barbell.LocalPosition = Vector3.Zero + Barbell.Transform.Rotation.Right * 15.5f;
 			}
 
 			SetAnimInt( "squat", Squat );
