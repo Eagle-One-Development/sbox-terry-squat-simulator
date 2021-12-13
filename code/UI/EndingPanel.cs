@@ -104,7 +104,7 @@ namespace TSS.UI
 				TransitionPanel.Style.Opacity = Alph;
 				if(Alph >= 0 )
 				{
-					Alph -= Time.Delta;
+					Alph -= Time.Delta * 0.5f;
 				}
 				TransitionPanel.Style.BackgroundColor = Color.Black;
 			}

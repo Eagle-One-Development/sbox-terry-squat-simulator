@@ -6,6 +6,105 @@ using TSS.UI;
 
 namespace TSS
 {
+	/// <summary>
+	/// A class we are going to use to manage our music layers
+	/// </summary>
+	public class MusicLayer{
+
+		/// <summary>
+		/// Reference to our sound
+		/// </summary>
+		Sound MySound;
+		/// <summary>
+		/// The current volume of the sound
+		/// </summary>
+		private float volume;
+		/// <summary>
+		/// The target volume of the sound
+		/// </summary>
+		private float targetVolume;
+
+		/// <summary>
+		/// The speed at which we move towards our target volume;
+		/// </summary>
+		private float fadeSpeed;
+
+		/// <summary>
+		/// The name of our sound
+		/// </summary>
+		private string soundName;
+
+		public MusicLayer(string name)
+		{
+			volume = 0;
+			targetVolume = 0;
+			fadeSpeed = 1f;
+			soundName = name;
+			MySound.SetVolume( volume );
+			MySound = Sound.FromScreen( name );
+		}
+
+		/// <summary>
+		/// Fades a sound to a specific volume at a given speed
+		/// </summary>
+		/// <param name="v">The target volume</param>
+		/// <param name="speed">How long in seconds you want to fade to the given value</param>
+		public void FadeTo(float v, float speed )
+		{
+			targetVolume = v;
+			//This is basically gonna do some really basic math since we use Time.Delta. Basically, take the difference between the current volume and the target volume and divide it by the number of
+			//"seconds", or speed. What this results in is the number of steps to increase the volume by "per frame".
+			fadeSpeed = (MathF.Abs(v - volume)/speed);
+		}
+
+		/// <summary>
+		/// Sets the volume directly regardless of fading
+		/// </summary>
+		/// <param name="v"></param>
+		public void SetVolume(float v )
+		{
+			volume = v;
+			targetVolume = v;
+			fadeSpeed = 0f;
+
+		}
+
+		/// <summary>
+		/// Completely restarts the sound
+		/// </summary>
+		public void RestartSound()
+		{
+			MySound.Stop();
+			MySound = Sound.FromScreen( soundName );
+			volume = 0;
+			targetVolume = 0;
+			fadeSpeed = 1f;
+		}
+
+		/// <summary>
+		/// A function that will handle volume when run every frame
+		/// </summary>
+		public void Simulate()
+		{
+			volume = Approach(volume,targetVolume,fadeSpeed * Time.Delta);
+			MySound.SetVolume( volume );
+		}
+
+		private float Approach(float current, float target, float delta )
+		{
+			if(current < target )
+			{
+				return MathF.Min( current + delta, target );
+			}
+			else
+			{
+				return MathF.Max( current - delta, target );
+			}
+		}
+
+	}
+
+
 	public partial class TSSGame : Game
 	{
 		public List<Sound> Music;
@@ -13,6 +112,10 @@ namespace TSS
 		public float[] tarVolumes;
 		public SoundStream[] streams;
 		public RealTimeSince RealTimeSinceSongStart;
+
+		public MusicLayer RantInstrumental;
+
+		public float RantInstrumentalVolume;
 
 		public double SongStartTime;
 
@@ -76,6 +179,21 @@ namespace TSS
 			Log.Info( "PLAYING INTRO SOUND" );
 			Sound.FromScreen( "Intro" );
 			IntroPanel.Instance.IntroStarted = true;
+		}
+		
+		[ClientRpc]
+		public void PlayRantInstrumental()
+		{
+			RantInstrumental = new MusicLayer( "rant_instrumental" );
+			RantInstrumental.FadeTo( 1f, 5f );
+			Silence();
+			PlayRant();
+		}
+
+		public async void PlayRant()
+		{
+			await GameTask.Delay( 5000 );
+			Sound.FromScreen( "rant_voice" );
 		}
 
 		[ClientRpc]

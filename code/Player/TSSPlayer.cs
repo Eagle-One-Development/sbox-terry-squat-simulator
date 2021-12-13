@@ -189,7 +189,7 @@ namespace TSS
 		public override void ClientSpawn()
 		{
 			base.ClientSpawn();
-			PlayMusic();
+			
 			SweatSystem = Particles.Create( "particles/sweat/sweat.vpcf" , this);
 			SweatSystem.SetPosition( 1, new Vector3( 1000, 0, 0 ) );
 
@@ -203,6 +203,8 @@ namespace TSS
 			TSSGame.Current.StartMusic();
 			TSSGame.Current.PlayIntro();
 		}
+
+		public bool IntroPlayed;
 
 		
 
@@ -283,6 +285,7 @@ namespace TSS
 		{
 			EndingPanel.Instance.Alph = 2f;
 			EndingPanel.Instance.FinalBlackout = true;
+			TSSGame.Current.PlayRantInstrumental();
 		}
 
 
@@ -310,6 +313,18 @@ namespace TSS
 				StopSoda();
 			}
 
+
+			//This will play the intro once you press the left click
+			if ( IsClient )
+			{
+				if(!IntroPlayed && Input.Pressed( InputButton.Attack1 ) && TimeSinceRagdolled > 12f)
+				{
+					IntroPlayed = true;
+					PlayMusic();
+				}
+			}
+
+			//Initiate the new pawn after the ending sound has played
 			if(TimeSinceEnding > 13.278f && EndingInitiated)
 			{
 				GoToEnding();
