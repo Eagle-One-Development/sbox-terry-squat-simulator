@@ -7418,6 +7418,15 @@
 						weight = 0.0
 						ignore_rotation = false
 					},
+					{
+						_class = "Attachment"
+						name = "dumbbell"
+						parent_bone = "spine_1"
+						relative_origin = [ 30.985741, -0.005342, 0.013364 ]
+						relative_angles = [ 0.001896, -0.009891, 0.0 ]
+						weight = 1.0
+						ignore_rotation = false
+					},
 				]
 			},
 			{

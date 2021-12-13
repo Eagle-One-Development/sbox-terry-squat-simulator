@@ -152,7 +152,7 @@ namespace TSS
 		{
 			Barbell?.Delete();
 			Barbell = new ModelEntity( "models/dumbbll/dumbbell.vmdl" );
-			Barbell.LocalPosition = Position + new Vector3(2, 0, 71.5f) * Rotation;
+			Barbell.Position = (Vector3)GetAttachment( "dumbbell" )?.Position;
 			Barbell.SetParent( this, "head" );
 			Barbell.Rotation = Rotation * Rotation.From( 0, 0, 90 );
 			Squat = 0;
