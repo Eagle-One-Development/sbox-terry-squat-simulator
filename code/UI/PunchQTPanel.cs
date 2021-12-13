@@ -41,6 +41,16 @@ namespace TSS.UI
 			pt.AddTranslateY( Length.Pixels( (Screen.Height / 2) + Pos.y ) );
 			float growth = (1f - MathF.Pow( (TimeSinceSpawned / 0.9f).Clamp( 0, 1f ), 3.0f ));
 
+			if ( Local.Pawn is TSSPlayer pl )
+			{
+				if ( pl.CanGoToHeaven )
+				{
+					Style.BorderColor = Color.Black;
+					Key.Style.FontColor = Color.Black;
+					Measure.Style.BackgroundColor = Color.Black;
+				}
+			}
+
 			if ( Finished )
 			{
 				Back.Style.Opacity = growth;
@@ -62,7 +72,7 @@ namespace TSS.UI
 				Delete(true);
 			}
 
-			Style.Opacity = growth;
+			Style.Opacity = 1f;
 			Style.Transform = pt;
 			Style.Dirty();
 

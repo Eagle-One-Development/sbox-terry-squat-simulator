@@ -26,7 +26,7 @@
 			m_nCP3 = 9
 			m_nCP4 = 10
 			m_vecCP1Pos = [ 0.0, 0.0, 0.0 ]
-			m_vecCP2Pos = [ 0.1, 0.0, 0.0 ]
+			m_vecCP2Pos = [ 0.2, 0.0, 0.0 ]
 			m_vecCP3Pos = [ 0.5, 0.0, 0.0 ]
 			m_vecCP4Pos = [ 1.0, 0.0, 0.0 ]
 			m_nHeadLocation = 63
@@ -63,6 +63,7 @@
 		},
 		{
 			m_ChildRef = resource:"particles/sicko_mode/wheel.vpcf"
+			m_bDisableChild = true
 		},
 		{
 			m_ChildRef = resource:"particles/sicko_mode/wheel.vpcf"

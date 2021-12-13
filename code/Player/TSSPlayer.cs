@@ -64,6 +64,9 @@ namespace TSS
 		[Net]
 		public ModelEntity SodaCan { get; set; }
 
+		[Net]
+		public bool CanGoToHeaven { get; set; }
+
 		/// <summary>
 		/// Basically a way of stopping the soda animation when its done
 		/// </summary>
@@ -109,6 +112,7 @@ namespace TSS
 
 		Particles SweatSystem;
 
+		Particles SickoMode;
 
 
 		/// <summary>
@@ -260,6 +264,17 @@ namespace TSS
 			DetectClick();
 			ClearAnimation();
 			ParticleEffects();
+
+			if ( IsClient )
+			{
+				if(SickoMode != null )
+				{
+					var localCam = (Camera as TSSCamera);
+					var pos = ExercisePosition + Vector3.Up * 45f;
+					var dir = (pos - localCam.Position).Normal;
+					SickoMode.SetPosition( 0, pos + dir * 200f );
+				}
+			}
 
 			if ( IsServer )
 			{

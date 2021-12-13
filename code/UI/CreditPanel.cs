@@ -42,6 +42,14 @@ namespace TSS.UI
 
 			Bump = Bump.LerpTo( 1f, Time.Delta * 8f );
 
+			if(Local.Pawn is TSSPlayer player )
+			{
+				if ( player.CanGoToHeaven )
+				{
+					l.Style.FontColor = Color.Black;
+				}
+			}
+
 			Style.Dirty();
 			l.Style.FontSize = Length.Pixels( FontSize * TextScale * Bump );
 

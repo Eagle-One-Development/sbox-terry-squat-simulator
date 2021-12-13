@@ -21,6 +21,7 @@ namespace TSS
 
 		protected Sound treadmillSound { get; set; }
 
+		public int HeavenThreshold { get; set; } = 500;
 
 		public int YogaCount = 0;
 
@@ -34,6 +35,20 @@ namespace TSS
 			TSSPlayer.Instance.ExercisePosition = ent.Transform.Position;
 			TSSPlayer.Instance.Position = ent.Transform.Position;
 			TSSPlayer.Instance.Rotation = ent.Transform.Rotation;
+			TSSPlayer.Instance.CreateSickoMode(To.Single(TSSPlayer.Instance));
+			TSSPlayer.Instance.CanGoToHeaven = true;
+			TSSPlayer.Instance.ChangeExercise( Exercise.Run );
+			
+		}
+
+		/// <summary>
+		/// Create the sickomode particle
+		/// </summary>
+		[ClientRpc]
+		public void CreateSickoMode()
+		{
+			Log.Info( "Sicko Mode Particle created" );
+			SickoMode = Particles.Create( "particles/sicko_mode/sicko_mode.vpcf" );
 		}
 
 		/// <summary>
@@ -67,8 +82,10 @@ namespace TSS
 			{
 				case Exercise.Run:
 					ent = All.OfType<TSSSpawn>().ToList().Find(x => x.SpawnType == SpawnType.Run);
-					//Run position is used for the mini-game for terry being pushed off the treadmill
-					ExercisePosition = ent.Transform.Position;
+					if ( ent != null )
+					{
+						ExercisePosition = ent.Transform.Position;
+					}
 					StartClientRunning();
 					break;
 				case Exercise.Squat:
@@ -83,9 +100,16 @@ namespace TSS
 					break;
 			}
 
-			ExercisePosition = ent.Transform.Position;
-			Position = ent.Transform.Position;
-			Rotation = ent.Transform.Rotation;
+			if(ExercisePoints > HeavenThreshold && CanGoToHeaven )
+			{
+				ent = All.OfType<TSSSpawn>().ToList().Find( x => x.SpawnType == SpawnType.Heaven );
+			}
+
+			if ( ent != null ) { 
+				ExercisePosition = ent.Transform.Position;
+				Position = ent.Transform.Position;
+				Rotation = ent.Transform.Rotation;
+			}
 			CurrentExercise = exercise;
 
 			if ( ExercisePoints > 100 )
