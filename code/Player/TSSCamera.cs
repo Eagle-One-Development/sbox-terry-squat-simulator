@@ -85,6 +85,12 @@ namespace TSS
 				Progress = 1.0f;
 			}
 
+			//If we're in the final portion of the game, set the camera state to static
+			if ( pawn.CanGoToHeaven )
+			{
+				CamState = CameraState.Static;
+			}
+
 			switch ( CamState )
 			{
 				case CameraState.Follow:
