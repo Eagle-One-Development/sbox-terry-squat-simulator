@@ -36,12 +36,13 @@ namespace TSS
 
 		public MusicLayer(string name)
 		{
-			volume = 0;
+			volume = 0f;
 			targetVolume = 0;
 			fadeSpeed = 1f;
 			soundName = name;
-			MySound.SetVolume( volume );
 			MySound = Sound.FromScreen( name );
+			MySound.SetVolume( volume );
+			
 		}
 
 		/// <summary>

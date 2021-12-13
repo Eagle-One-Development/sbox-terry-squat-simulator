@@ -360,6 +360,10 @@ namespace TSS
 		[Event( "OtherBeat" )]
 		public void PunchBeat()
 		{
+			if ( EndingInitiated )
+			{
+				return;
+			}
 			if ( CurrentExercise == Exercise.Punch )
 			{
 				ConsoleSystem.Run( "create_punch" );
