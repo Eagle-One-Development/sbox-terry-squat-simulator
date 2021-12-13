@@ -278,6 +278,9 @@ namespace TSS
 					SickoModePositionTar = pos + dir * 200f;
 					SickoModePosition = Vector3.Lerp( SickoModePosition, SickoModePositionTar, Time.Delta * 8f );
 					SickoMode.SetPosition( 0, SickoModePositionTar );
+					float sin = (MathF.Sin( Time.Now * 2f ) + 1) / 2f;
+					var beams = new Vector3( sin * 0.75f, 0, 0 );
+					SickoMode.SetPosition( 3, beams );
 					//DebugOverlay.Sphere( pos + dir * 200f, 1f, Color.Yellow,false,1);
 					
 				}
