@@ -96,6 +96,13 @@ namespace TSS.UI
 				{
 					Scales[i] = Scales[i].LerpTo( 1f, Time.Delta * 8f );
 					letter.Style.FontColor = Color.White;
+					if ( Local.Pawn is TSSPlayer pl2 )
+					{
+						if ( pl2.CanGoToHeaven )
+						{
+							letter.Style.FontColor = Color.Black;
+						}
+					}
 				}
 				else
 				{
@@ -160,6 +167,13 @@ namespace TSS.UI
 			}
 
 			timer.Style.Width = Length.Fraction( MyQT.TimeSinceSpawned / 3f );
+			if ( Local.Pawn is TSSPlayer pl )
+			{
+				if ( pl.CanGoToHeaven )
+				{
+					timer.Style.BackgroundColor = Color.Black;
+				}
+			}
 
 
 		}
