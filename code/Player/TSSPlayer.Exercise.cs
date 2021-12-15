@@ -38,7 +38,8 @@ namespace TSS
 			TSSPlayer.Instance.CreateSickoMode(To.Single(TSSPlayer.Instance));
 			TSSPlayer.Instance.CanGoToHeaven = true;
 			TSSPlayer.Instance.ChangeExercise( Exercise.Squat );
-			
+			TSSPlayer.Instance.PointCeiling = TSSPlayer.Instance.ExercisePoints + 300;
+
 		}
 
 		/// <summary>

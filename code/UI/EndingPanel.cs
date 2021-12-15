@@ -20,6 +20,12 @@ namespace TSS.UI
 		public Panel TransitionPanel;
 
 		/// <summary>
+		/// This is for the transition from the glowing crag of celestial light to the nature scene, but holy shit does this code base need a refactor.
+		/// Transition Panel TWO? Very descriptive. Note to self: stop programming inebriated. And maybe start writing UML diagrams.
+		/// </summary>
+		public Panel TransitionPanel2;
+
+		/// <summary>
 		/// Basically whether or not we've entered the white void the player exercises in just before the ending
 		/// </summary>
 		public bool HeavenTransitioned;
@@ -38,11 +44,18 @@ namespace TSS.UI
 		/// </summary>
 		public float Alph;
 
+		
+
+		public bool CanGoToNature;
+		public bool WentToNature;
+		public TimeSince TimeSinceNatureTransition;
+
 		public EndingPanel()
 		{
 			StyleSheet.Load( "/ui/EndingPanel.scss" );
 			Instance = this;
 			TransitionPanel = Add.Panel( "transitions" );
+			TransitionPanel2 = Add.Panel( "transitions" );
 			Alph = 0;
 
 		}
@@ -107,6 +120,34 @@ namespace TSS.UI
 					Alph -= Time.Delta * 0.5f;
 				}
 				TransitionPanel.Style.BackgroundColor = Color.Black;
+			}
+
+			if ( CanGoToNature )
+			{
+				float f = 0f;
+
+				if(TimeSinceNatureTransition < 2f )
+				{
+					f = TimeSinceNatureTransition / 2f;
+				}
+
+				if(TimeSinceNatureTransition > 2f )
+				{
+					if ( !WentToNature )
+					{
+						ConsoleSystem.Run( "nature" );
+						WentToNature = true;
+					}
+					f = 1f - ((TimeSinceNatureTransition - 2f) / 5f);
+				}
+
+				TransitionPanel2.Style.BackgroundColor = Color.White;
+				TransitionPanel2.Style.Opacity = f;
+
+			}
+			else
+			{
+				TimeSinceNatureTransition = 0f;
 			}
 
 			

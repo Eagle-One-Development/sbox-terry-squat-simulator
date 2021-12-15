@@ -1,6 +1,8 @@
 ﻿using Sandbox;
 using System;
 using System.Linq;
+using TSS.UI;
+using TSS;
 
 
 partial class BuffPawn : Player
@@ -24,6 +26,8 @@ partial class BuffPawn : Player
 		//
 		Camera = new ThirdPersonCamera();
 
+		(Camera as ThirdPersonCamera).ZNear = 0.001f;
+
 		EnableAllCollisions = true;
 		EnableDrawing = true;
 		EnableHideInFirstPerson = true;
@@ -36,6 +40,32 @@ partial class BuffPawn : Player
 		Rotation = ent.Rotation;
 
 		base.Respawn();
+	}
+
+	public override void StartTouch( Entity other )
+	{
+		base.StartTouch( other );
+		Log.Info( other.Tags.List.First() );
+		if ( other.Tags.List.First()  == "ending" )
+		{
+			StartEnding();
+		}
+	}
+
+	[ClientRpc]
+	public void StartEnding()
+	{
+		EndingPanel.Instance.CanGoToNature = true;
+	}
+
+	[ServerCmd("nature")]
+	public static void GoToNature()
+	{
+		var ent = All.OfType<TSSSpawn>().ToList().Find( x => x.SpawnType == SpawnType.Nature );
+		ConsoleSystem.Caller.Pawn.Position = ent.Position;
+		ConsoleSystem.Caller.Pawn.Rotation = ent.Rotation;
+		TSSGame.Current.StopInstrumental();
+		TSSGame.Current.StartNature();
 	}
 
 
@@ -52,6 +82,7 @@ partial class BuffPawn : Player
 		// simulate those too.
 		//
 		SimulateActiveChild( cl, ActiveChild );
+		(Camera as ThirdPersonCamera).ZNear = 0.2f;
 
 	}
 

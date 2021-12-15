@@ -115,8 +115,8 @@ namespace TSS
 		public RealTimeSince RealTimeSinceSongStart;
 
 		public MusicLayer RantInstrumental;
+		public MusicLayer NatureSounds;
 
-		public float RantInstrumentalVolume;
 
 		public double SongStartTime;
 
@@ -186,10 +186,24 @@ namespace TSS
 		public void PlayRantInstrumental()
 		{
 			RantInstrumental = new MusicLayer( "rant_instrumental" );
-			RantInstrumental.FadeTo( 1f, 5f );
+			RantInstrumental.FadeTo( 1f, 10f );
 			Silence();
 			PlayRant();
 		}
+
+		[ClientRpc]
+		public void StopInstrumental()
+		{
+			RantInstrumental.FadeTo( 0f, 1f );
+		}
+
+		[ClientRpc]
+		public void StartNature()
+		{
+			NatureSounds = new MusicLayer( "naturewind" );
+			NatureSounds.FadeTo( 1f, 10f );
+		}
+
 
 		public async void PlayRant()
 		{
@@ -220,7 +234,7 @@ namespace TSS
 			TimeSinceLastBeat = 0;
 
 
-			Sound.FromScreen( "roomambience" );
+			
 		}
 
 		[ClientRpc]
@@ -254,6 +268,8 @@ namespace TSS
 				Music[i].SetVolume( volumes[i] );
 			}
 
+			RantInstrumental?.Simulate();
+			NatureSounds?.Simulate();
 
 			FrameBeats();
 

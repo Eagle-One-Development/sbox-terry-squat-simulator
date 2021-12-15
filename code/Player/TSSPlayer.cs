@@ -235,6 +235,7 @@ namespace TSS
 		[ClientRpc]
 		public void InitiateEnding()
 		{
+			ClearAnimation();
 			SetAnimBool( "Ending", true );
 			Sound.FromScreen( "ending" );
 			SickoMode?.SetPosition( 3, 0 );
@@ -277,6 +278,7 @@ namespace TSS
 			TimeSinceEnding = 0;
 			InitiateEnding();
 			EndingInitiated = true;
+
 			TSSGame.Current.Silence();
 		}
 
@@ -367,9 +369,10 @@ namespace TSS
 
 			if ( IsServer )
 			{
-				if(ExercisePoints >= HeavenThreshold + 100 && !EndingConditionMet )
+				if(ExercisePoints >= HeavenThreshold + 65 && !EndingConditionMet )
 				{
 					StartEnding();
+					
 					EndingConditionMet = true;
 					ExercisePoints++;
 				}
