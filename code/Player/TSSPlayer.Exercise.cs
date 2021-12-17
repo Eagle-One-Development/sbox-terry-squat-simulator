@@ -13,187 +13,148 @@ namespace TSS
 
 	public partial class TSSPlayer : Player
 	{
+
+		#region Exercise Members
 		/// <summary>
 		/// The position in the world where the exercise is taking place. Camera centers around this point so terry can move indepdent of the camera if needed.
 		/// </summary>
 		[Net]
 		public Vector3 ExercisePosition { get; set; }
 
-		protected Sound treadmillSound { get; set; }
-
-		public int HeavenThreshold => 1;
-
-		public int YogaCount = 0;
+		/// <summary>
+		/// Effectively the "score" used for the game, you get points for doing exercises and this is the variable that tracks that.
+		/// </summary>
+		[Net]
+		public int ExercisePoints { get; set; }
 
 		/// <summary>
-		/// This is a method that will take us to the white void, done as a server command
+		/// Our 'current' exercise. Helps decide which mini game to simulate
 		/// </summary>
-		[ServerCmd("heaven")]
-		public static void GoToHeaven()
-		{
-			var ent = All.OfType<TSSSpawn>().ToList().Find( x => x.SpawnType == SpawnType.Heaven );
-			TSSPlayer.Instance.ExercisePosition = ent.Transform.Position;
-			TSSPlayer.Instance.Position = ent.Transform.Position;
-			TSSPlayer.Instance.Rotation = ent.Transform.Rotation;
-			TSSPlayer.Instance.CreateSickoMode(To.Single(TSSPlayer.Instance));
-			TSSPlayer.Instance.CanGoToHeaven = true;
-			TSSPlayer.Instance.ChangeExercise( Exercise.Squat );
-			TSSPlayer.Instance.PointCeiling = TSSPlayer.Instance.ExercisePoints + 300;
-
-		}
+		[Net]
+		public Exercise CurrentExercise { get; set; }
 
 		/// <summary>
-		/// Create the sickomode particle
+		/// The time since we last stopped exercising. Used for handling stuff like the slow down of the camera and other effects when you stop or fail the mini-game
 		/// </summary>
-		[ClientRpc]
-		public void CreateSickoMode()
-		{
-			var localCam = (Camera as TSSCamera);
-			var pos = ExercisePosition + Vector3.Up * 45f;
-			var dir = (pos - localCam.Position).Normal;
-
-			Log.Info( "Sicko Mode Particle created" );
-			SickoModePositionTar = pos + dir * 200f;
-			SickoModePosition = SickoModePositionTar;
-			SickoMode = Particles.Create( "particles/sicko_mode/sicko_mode.vpcf", pos + dir * 200f);
-
-		}
+		[Net]
+		public TimeSince TimeSinceExerciseStopped { get; set; }
 
 		/// <summary>
-		/// Changes the current exercise and moves the player to a given position and rotation
+		/// A variable representing how long it's been since we've pressed the up key
+		/// TODO: this system could be replaced with a "TimeSinceAnyKeyPressed", there's no reason to have two of these
 		/// </summary>
-		/// <param name="exercise">The exercise we're moving to</param>
-		public void ChangeExercise( Exercise exercise )
-		{
-			//Define the entity we're going to move the player to;
-			Entity ent = null;
+		[Net, Predicted]
+		public TimeSince TimeSinceUpPressed { get; set; }
 
-			// Cleanup on exercise change.
-			if ( CurrentExercise != exercise )
+		/// <summary>
+		/// A variable representing how long it's been since we've pressed the down key
+		/// TODO: this system could be replaced with a "TimeSinceAnyKeyPressed", there's no reason to have two of these
+		/// </summary>
+		[Net, Predicted]
+		public TimeSince TimeSinceDownPressed { get; set; }
+
+		/// <summary>
+		/// Once all the exercises have been introduced, the point ceiling becomes relevant. It determines when we move to the next exercise, picking at random.
+		/// </summary>
+		[Net]
+		public int PointCeiling { get; set; } = 500;
+
+
+		/// <summary>
+		/// Just a variable to introduce if we've introduced all the exercise or not
+		/// TODO: Work this in with the exercise timeline system.
+		/// </summary>
+		public bool ExercisesIntroduced
+		{
+			get
 			{
-				switch ( CurrentExercise )
-				{
-					case Exercise.Squat:
-						Barbell?.Delete();
-						Barbell = null;
-						break;
-					case Exercise.Yoga:
-						CurrentYogaPosition = 0;
-						break;
-					case Exercise.Run:
-						StopClientRunning();
-						break;
-				}
+				return IntroRunning && IntroPunching && IntroYoga;
 			}
-
-			switch ( exercise )
-			{
-				case Exercise.Run:
-					ent = All.OfType<TSSSpawn>().ToList().Find(x => x.SpawnType == SpawnType.Run);
-					if ( ent != null )
-					{
-						ExercisePosition = ent.Transform.Position;
-					}
-					StartClientRunning();
-					break;
-				case Exercise.Squat:
-					ent = All.OfType<TSSSpawn>().ToList().Find( x => x.SpawnType == SpawnType.Squat );
-					StartSquatting();
-					break;
-				case Exercise.Punch:
-					ent = All.OfType<TSSSpawn>().ToList().Find( x => x.SpawnType == SpawnType.Punch );
-					break;
-				case Exercise.Yoga:
-					ent = All.OfType<TSSSpawn>().ToList().Find( x => x.SpawnType == SpawnType.Yoga );
-					break;
-			}
-
-			if(ExercisePoints > HeavenThreshold && CanGoToHeaven )
-			{
-				ent = All.OfType<TSSSpawn>().ToList().Find( x => x.SpawnType == SpawnType.Heaven );
-			}
-
-			if ( ent != null ) { 
-				ExercisePosition = ent.Transform.Position;
-				Position = ent.Transform.Position;
-				Rotation = ent.Transform.Rotation;
-			}
-			CurrentExercise = exercise;
-
-			if ( ExercisePoints > 100 )
-				SetTitleCardActive();
 		}
 
+
+		#region Squatting
 		/// <summary>
-		/// Client command which activates the title card for each exercise. This way people know what to do. 
+		/// A value to drive whether or not we're in the 'up' or 'down' squat position. Used to drive animation and figure out when we've completed a full squat.
 		/// </summary>
-		[ClientRpc]
-		private async void SetTitleCardActive()
-		{
-			await Task.DelaySeconds( 0.1f );
-			titleCardActive = true;
-		}
-		
+		[Net, Predicted]
+		public int Squat { get; set; }
+
 		/// <summary>
-		/// Resets all the proper animgraph parameters when switching between exercise states
+		/// A reference to the barbell model
 		/// </summary>
-		public void ClearAnimation()
-		{
-			SetAnimInt( "squat", -1 );
-			SetAnimInt( "punch", -1 );
-			SetAnimInt( "YogaPoses", 0 );
-			SetAnimBool( "b_grounded", CurrentExercise != Exercise.Yoga );
-			SetAnimFloat( "move_x", 0 );
-		}
+		public ModelEntity Barbell;
+		#endregion
 
+		#region Running
 		/// <summary>
-		/// Initialize the squatting exercise state
+		/// The time since we stopped running. 
+		/// TODO: Review for redundancy with TimeSinceExerciseStopped
 		/// </summary>
-		public void StartSquatting()
-		{
-			Barbell?.Delete();
-			Barbell = new ModelEntity( "models/dumbbll/dumbbell.vmdl" );
-			Barbell.Position = (Vector3)GetAttachment( "dumbbell" )?.Position;
-			Barbell.SetParent( this, "head" );
-			Barbell.Rotation = Rotation * Rotation.From( 0, 0, 90 );
-			Squat = 0;
-			lastSquat = -1;
-		}
-
-		[ClientRpc]
-		public void StartClientRunning()
-		{
-			//treadmillSound.Stop();
-			//treadmillSound = PlaySound( "treadmill" );
-		}
-
-		[ClientRpc]
-		public void StopClientRunning()
-		{
-			//treadmillSound.Stop();
-		}
+		[Net, Predicted]
+		public TimeSince TimeSinceRun { get; set; }
 
 		/// <summary>
-		/// Initializes the punch exercise state
-		/// </summary>
-		public void StartPunching()
-		{
-			TimeToNextPunch = 1.1f;
-		}
-
-
-		/// <summary>
-		/// The offset by which we are falling off of the tread mill
+		/// A vector3 representing the player slipping off the treadmill.
 		/// </summary>
 		[Net]
 		public float RunPositionOffset { get; set; }
 
+		#endregion
+
+		#region Punching
 		/// <summary>
-		/// The offset by which we are falling off of the tread mill
+		/// The time since we last punch
+		/// TODO: Review for redundancy with TimeSinceExerciseStopped
+		/// </summary>
+		[Net, Predicted]
+		public TimeSince TimeSincePunch { get; set; }
+
+		/// <summary>
+		/// The time between punches. Lets us know when to spawn another punch quick time event
 		/// </summary>
 		[Net]
-		public TimeSince TimeSinceRagdolled{ get; set; }
+		public float TimeToNextPunch { get; set; }
+		#endregion
 
+		#region Yoga
+		/// <summary>
+		/// The time since we last did a yoga pose.
+		/// TODO: Review for redundancy with TimeSinceExerciseStopped
+		/// </summary>
+		[Net]
+		public TimeSince TimeSinceYoga { get; set; }
+
+		/// <summary>
+		/// The current 'position' our player is posing in for yoga
+		/// </summary>
+		[Net]
+		public int CurrentYogaPosition { get; set; } = -1;
+		#endregion
+
+		#region Soda
+		/// <summary>
+		/// Reference to the soda can that we drink with the soda power up.
+		/// </summary>
+		[Net]
+		public ModelEntity SodaCan { get; set; }
+
+		/// <summary>
+		/// Basically a way of stopping the soda animation when its done
+		/// </summary>
+		[Net, Predicted]
+		public TimeSince TimeSinceSoda { get; set; }
+
+
+		#endregion
+		#endregion
+
+		public int HeavenThreshold => 500;
+
+		#region Methods
+
+		#region Visual
+		//Creates a ragdoll
 		[ClientRpc]
 		void BecomeRagdollOnClient( Vector3 force, int forceBone )
 		{
@@ -245,8 +206,160 @@ namespace TSS
 
 		}
 
+		/// <summary>
+		/// Create the particle that acts as the heaven void towards the end of the game. Creates the particle and sets its positions
+		/// </summary>
+		[ClientRpc]
+		public void CreateNearEndParticle()
+		{
+			//Get the camera
+			var localCam = (Camera as TSSCamera);
+			//Get a position roughlt up the middle of the player
+			var pos = ExercisePosition + Vector3.Up * 45f;
+			//Get a vector representing the direction from the pos to the local cameras position
+			var dir = (pos - localCam.Position).Normal;
 
+			//Set the position variables of the particle and create it
+			SickoModePositionTar = pos + dir * 200f;
+			SickoModePosition = SickoModePositionTar;
+			SickoMode = Particles.Create( "particles/sicko_mode/sicko_mode.vpcf", pos + dir * 200f );
+		}
 
+		/// <summary>
+		/// Client command which activates the title card for each exercise. This way people know what to do. 
+		/// </summary>
+		[ClientRpc]
+		private async void SetTitleCardActive()
+		{
+			await Task.DelaySeconds( 0.1f );
+			titleCardActive = true;
+		}
+
+		/// <summary>
+		/// Resets all the animgraph parameters on the player
+		/// </summary>
+		public void ClearAnimation()
+		{
+			SetAnimInt( "squat", -1 );
+			SetAnimInt( "punch", -1 );
+			SetAnimInt( "YogaPoses", 0 );
+			SetAnimBool( "b_grounded", CurrentExercise != Exercise.Yoga );
+			SetAnimFloat( "move_x", 0 );
+		}
+
+		/// <summary>
+		/// Dress terry in the 90s outfit
+		/// </summary>
+		void Dress()
+		{
+			_ = new ModelEntity( "models/clothes/fitness/shorts_fitness.vmdl", this );
+			_ = new ModelEntity( "models/clothes/fitness/shirt_fitness.vmdl", this );
+			_ = new ModelEntity( "models/clothes/fitness/shoes_sneakers.vmdl", this );
+			_ = new ModelEntity( "models/clothes/fitness/sweatband_wrists.vmdl", this );
+			_ = new ModelEntity( "models/clothes/fitness/sweatband_head.vmdl", this );
+			_ = new ModelEntity( "models/clothes/fitness/hair_head.vmdl", this );
+			_ = new ModelEntity( "models/clothes/fitness/hair_body.vmdl", this );
+		}
+		#endregion
+
+		/// <summary>
+		/// Changes the current exercise and moves the player to a given position and rotation
+		/// </summary>
+		/// <param name="exercise">The exercise we're moving to</param>
+		public void ChangeExercise( Exercise exercise )
+		{
+			//Define an entity who's transform represents the position and rotation of the given exercise
+			Entity ent = null;
+
+			//Perform various pieces of code to clean up the previous exercise
+			//TODO: Probably can be its own function
+			if ( CurrentExercise != exercise )
+			{
+				switch ( CurrentExercise )
+				{
+					case Exercise.Squat:
+						Barbell?.Delete();
+						Barbell = null;
+						break;
+					case Exercise.Yoga:
+						CurrentYogaPosition = 0;
+						break;
+					case Exercise.Run:
+						break;
+				}
+			}
+
+			//Look at each exercise and set ent to the appropriate TSS spawn with the requested spawn type
+			//Also used to initalize each exercise
+			//TODO: Move exercises to their own class
+			switch ( exercise )
+			{
+				case Exercise.Run:
+					ent = All.OfType<TSSSpawn>().ToList().Find( x => x.SpawnType == SpawnType.Run );
+					if ( ent != null )
+					{
+						ExercisePosition = ent.Transform.Position;
+					}
+					break;
+				case Exercise.Squat:
+					ent = All.OfType<TSSSpawn>().ToList().Find( x => x.SpawnType == SpawnType.Squat );
+					StartSquatting();
+					break;
+				case Exercise.Punch:
+					ent = All.OfType<TSSSpawn>().ToList().Find( x => x.SpawnType == SpawnType.Punch );
+					break;
+				case Exercise.Yoga:
+					ent = All.OfType<TSSSpawn>().ToList().Find( x => x.SpawnType == SpawnType.Yoga );
+					break;
+			}
+
+			//Basically if our exercise points are greater than the threshold, we move the player to the heaven void. This is done so we can switch exercises in this void
+			//and not have them jump back to the gym
+			//TODO: Do this better, or at least replace can go to heaven with an exercise event
+			if ( ExercisePoints > HeavenThreshold && CanGoToHeaven )
+			{
+				ent = All.OfType<TSSSpawn>().ToList().Find( x => x.SpawnType == SpawnType.Heaven );
+			}
+
+			//If the ent isn't null, then set our exercise position and transform to that entity.
+			if ( ent != null )
+			{
+				ExercisePosition = ent.Transform.Position;
+				Position = ent.Transform.Position;
+				Rotation = ent.Transform.Rotation;
+			}
+			
+			//Set the current exercise to this
+			CurrentExercise = exercise;
+
+			//Basically after the first exercise is introduced, set the title card to be active. This flashes a bright sign in front of the player which indicates which exercise they're doing.
+			if ( ExercisePoints > 100 )
+			{
+				SetTitleCardActive();
+			}
+		}
+		#endregion
+
+		/// <summary>
+		/// Initialize the squatting exercise state
+		/// </summary>
+		public void StartSquatting()
+		{
+			Barbell?.Delete();
+			Barbell = new ModelEntity( "models/dumbbll/dumbbell.vmdl" );
+			Barbell.Position = (Vector3)GetAttachment( "dumbbell" )?.Position;
+			Barbell.SetParent( this, "head" );
+			Barbell.Rotation = Rotation * Rotation.From( 0, 0, 90 );
+			Squat = 0;
+		}
+
+		/// <summary>
+		/// Initializes the punch exercise state
+		/// </summary>
+		public void StartPunching()
+		{
+			TimeToNextPunch = 1.1f;
+		}
 
 		/// <summary>
 		/// The running exercise
@@ -271,7 +384,7 @@ namespace TSS
 				RunPositionOffset += Time.Delta * (1f - treadSpeed) * 50f;
 			}
 			RunPositionOffset = RunPositionOffset.Clamp( -10f, 45f );
-			//DebugOverlay.ScreenText( new Vector2( 100, 100 ), $"{(1f - treadSpeed)}" );
+			
 
 			if(RunPositionOffset >= 45f )
 			{
@@ -288,19 +401,7 @@ namespace TSS
 				return;
 			}
 
-			if (IsClient)
-			{
-				if ( TimeSinceRagdolled > 0f && TimeSinceRagdolled < 1f )
-				{
-					//treadmillSound.SetVolume( 0 );
-				}
-				else
-				{
-					//treadmillSound.SetVolume(MathF.Max(0, MathF.Min(2.25f, 2.25f - 2*TimeSinceExerciseStopped)));
-				}
-
-				//treadmillSound.SetVolume( 3f );
-			}
+			
 
 			if ( TimeSinceRun < 3f && Squat != -1 )
 			{
@@ -369,44 +470,6 @@ namespace TSS
 			{
 				ConsoleSystem.Run( "create_punch" );
 			}
-		}
-
-		/// <summary>
-		/// Command for creating the punch QT event
-		/// </summary>
-		[ServerCmd( "create_punch" )]
-		public static void CreatePunchQT()
-		{
-			var pt = new PunchQT();
-			pt.Player = Instance;
-			pt.TargetTime = 1f;
-			pt.MyTime = (60f / 140f) * 2f;
-			pt.Type = Rand.Int( 0, 3 );
-
-		}
-
-
-		/// <summary>
-		/// Sets the pose on both the server and client, updating the yoga pose terry is using during the yoga exercise
-		/// </summary>
-		/// <param name="i"></param>
-		[ServerCmd( "yoga_pose" )]
-		public static void SetPose( int i )
-		{
-			if ( Instance.CurrentExercise != Exercise.Yoga )
-			{
-				return;
-			}
-
-			var pawn = TSSGame.Pawn;
-
-
-			Instance.CurrentYogaPosition = i;
-			Instance.GivePoints( 5 );
-			//var sound = pawn.PlaySound( $"yoga_0{1 + (pawn.YogaCount % 3)}" );
-			pawn.YogaCount++;
-			//sound.SetVolume( 2.5f );
-
 		}
 
 		/// <summary>

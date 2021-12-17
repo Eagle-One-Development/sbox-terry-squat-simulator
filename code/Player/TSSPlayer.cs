@@ -13,72 +13,76 @@ public enum Exercise
 
 namespace TSS
 {
-	public partial class TSSPlayer : Player
+
+	/// <summary>
+	/// This is a class intended to replace the abuse of "do this" booleans in the main player class.
+	/// The main idea here is that when a certain exercise point threshhold is met, it will run a function
+	/// </summary>
+	public class ExerciseEvent
 	{
-		[Net]
-		public int ExercisePoints { get; set; }
-
-		public float ScaleTar;
-
-		[Net]
-		public Exercise CurrentExercise { get; set; }
-
-		[Net]
-		public static TSSPlayer Instance { get; set; }
-
-		[Net, Predicted]
-		public int Squat { get; set; }
-
-		[Net, Predicted]
-		private int lastSquat { get; set; }
-
-		[Net]
-		public TimeSince TimeSinceExerciseStopped { get; set; }
-
-		[Net, Predicted]
-		public TimeSince TimeSinceRun { get; set; }
-
-		[Net, Predicted]
-		public TimeSince TimeSinceUpPressed { get; set; }
-
-		public ModelEntity Barbell;
-
-		[Net, Predicted]
-		public TimeSince TimeSinceDownPressed { get; set; }
-		private TimeSince aTime;
-
-		public float curSpeed;
-		private float tCurSpeed;
-
-		[Net, Predicted]
-		public TimeSince TimeSincePunch { get; set; }
-
-		[Net]
-		public float TimeToNextPunch { get; set; }
-
-		[Net]
-		public TimeSince TimeSinceYoga { get; set; }
-
-		[Net]
-		public bool MusicStarted { get; set; }
-
-		[Net]
-		public ModelEntity SodaCan { get; set; }
-
-		[Net]
-		public bool CanGoToHeaven { get; set; }
-
-		[Net]
-		public bool EndingInitiated { get; set; }
-
-		[Net]
-		public bool EndingConditionMet { get; set; }
+		/// <summary>
+		/// Whether or not we've triggered this event
+		/// </summary>
+		public bool Triggered { get; protected set; }
 
 		/// <summary>
-		/// Basically a way of stopping the soda animation when its done
+		/// The action we run when this event has been reached
 		/// </summary>
-		[Net, Predicted]
-		public TimeSince TimeSinceSoda { get; set; }
+		public Action Action { get; protected set; }
+
+		/// <summary>
+		/// The value our given action will trigger at.
+		/// I.e: At 200 exercise points trigger this action
+		/// TODO: Abstract this system later to take a bool func so that people can determine their own conditions for an event
+		/// </summary>
+		public int PointThresh { get; protected set; }
+
+		/// <summary>
+		/// The constructor for our exercise event
+		/// </summary>
+		/// <param name="thresh"></param>
+		/// <param name="a"></param>
+		public ExerciseEvent(int thresh, Action a )
+		{
+			PointThresh = thresh;
+			Action = a;
+		}
+
+		/// <summary>
+		/// A function that will determine if the points passed in will trigger our event
+		/// </summary>
+		/// <param name="points"></param>
+		public void Simulate( int points )
+		{
+			//If we aren't triggered
+			if ( !Triggered )
+			{
+				//And the incoming points is equal to our point thresh
+				if(points == PointThresh )
+				{
+					Triggered = true;
+					Action();
+				}
+			}
+		}
+	}
+
+	public partial class TSSPlayer : Player
+	{
+		#region Public Members
+
+		#region Visuals
+		/// <summary>
+		/// The "scale" of terry. Used client side to make him "bump", which sets this value to a specific level. It goes down to 1 via a lerp
+		/// but Terry scales with this value, make him appear to bump when he recieves points.
+		/// </summary>
+		public float ScaleTar;
+
+		/// <summary>
+		/// The time since the player has last been ragdolled. 
+		/// </summary>
+		[Net]
+		public TimeSince TimeSinceRagdolled { get; set; }
 
 		/// <summary>
 		/// Basically a way of stopping the soda animation when its done
@@ -86,12 +90,66 @@ namespace TSS
 		[Net, Predicted]
 		public TimeSince TimeSinceEnding { get; set; }
 
+		/// <summary>
+		/// The particle system used for sweating
+		/// </summary>
+		private Particles SweatSystem;
+
+		/// <summary>
+		/// The particle system used for the white void and colorful lasers at the end of the game.
+		/// </summary>
+		private Particles SickoMode;
+
+		/// <summary>
+		/// The position of the sickomode particle
+		/// </summary>
+		private Vector3 SickoModePosition;
+
+		/// <summary>
+		/// The target position of the sickomode particle. Used with a lerp.
+		/// </summary>
+		private Vector3 SickoModePositionTar;
+
+		#endregion
+
+		/// <summary>
+		/// A singleton instance referring to the player
+		/// TODO: Replace calls to this with client.pawn
+		/// </summary>
+		[Net]
+		public static TSSPlayer Instance { get; set; }
+
+		#endregion
+
+		#region Pre-Timeline Variables
+		//A set of variables that likely can be replaced with exercise events
+
+
+		/// <summary>
+		/// If we are able to go to 'heaven'
+		/// </summary>
+		[Net]
+		public bool CanGoToHeaven { get; set; }
+
+		/// <summary>
+		/// If the ending has been initiated
+		/// </summary>
+		[Net]
+		public bool EndingInitiated { get; set; }
+
+		/// <summary>
+		/// I don't know what the difference between this and ending initiated are. I need to investigate
+		/// </summary>
+		[Net]
+		public bool EndingConditionMet { get; set; }
+
 
 		/// <summary>
 		/// Whether we've introduced running or not
 		/// </summary>
 		[Net]
 		public bool IntroRunning { get; set; }
+
 		/// <summary>
 		/// Whether we've introduced the punching mini-game or not
 		/// </summary>
@@ -104,49 +162,34 @@ namespace TSS
 		public bool IntroYoga { get; set; }
 
 		/// <summary>
-		/// The time we've been doing the current exercise
+		/// This is an array of booleans used to check if various things are true. Unsure what's being used,
+		/// but these need to be replaced with the exercise events where relevant
 		/// </summary>
-		//[Net,Predicted]
-		//public TimeSince TimeSinceState { get; set; }
-
-		[Net]
-		public int PointCeiling { get; set; } = 500;
-
-		//[Net]
-		//public float MaxTimeInState { get; set; } = 10f;
-
 		[Net]
 		public bool[] TimeLines { get; set; } = new bool[20];
 
-		private bool titleCardActive;
-
-		private UI.CreditPanel titleCard;
-		
-
-		Particles SweatSystem;
-
-		Particles SickoMode;
-
-		private Vector3 SickoModePosition;
-		private Vector3 SickoModePositionTar;
-
-
 		/// <summary>
-		/// Just a variable to introduce if we've introduced all the exercise or not
+		/// Wether the intro has been played or not
 		/// </summary>
-		public bool ExercisesIntroduced { 
-			get
-			{
-				return IntroRunning && IntroPunching && IntroYoga;
-			}
-		}
+		public bool IntroPlayed;
+		#endregion
 
+		#region Uncategorized Members
+		private TimeSince aTime;
+		public float curSpeed;
+		private float tCurSpeed;
+		private bool titleCardActive;
+		private UI.CreditPanel titleCard;
 		[Net]
-		public int CurrentYogaPosition { get; set; } = -1;
+		public bool MusicStarted { get; set; }
+		#endregion
 
+		#region Methods
 
+		#region Overrides
 		public override void CreateHull()
 		{
+			//Set up collisions for the player
 			CollisionGroup = CollisionGroup.Player;
 			AddCollisionLayer( CollisionLayer.Player );
 			SetupPhysicsFromAABB( PhysicsMotionType.Keyframed, new Vector3( -8, -8, 0 ), new Vector3( 8, 8, 72 ) );
@@ -157,29 +200,38 @@ namespace TSS
 
 		public override void Respawn()
 		{
+			//Set the instance
+			//TODO: Replace calls to this with call to client.pawn
 			Instance = this;
 
+			//Enable various drawing stuff
 			EnableAllCollisions = true;
 			EnableDrawing = true;
 			EnableHideInFirstPerson = true;
 			EnableShadowInFirstPerson = true;
 
+			//Set the model and dress it
 			SetModel( "models/terry/terry.vmdl" );
 			Dress();
 
 			Animator = new TSSPlayerAnimator();
 			Camera = new TSSCamera();
 
+			//Set the initial exercise to squat
 			ChangeExercise( Exercise.Squat );
 
+			//Set this to 4 seconds so that the camera already starts 'stopped'
 			TimeSinceExerciseStopped = 4f;
 
+			//Spawn the soda can
 			SodaCan = new ModelEntity();
 			SodaCan.SetModel( "models/soda/soda.vmdl" );
 			SodaCan.SetParent( this, "Soda" );
 			SodaCan.LocalPosition = Vector3.Zero;
 			SodaCan.LocalRotation = Rotation.Identity;
 			SodaCan.EnableDrawing = false;
+
+
 			//This is to prevent blinking at the beginning of the game
 			TimeSinceRagdolled = 10f;
 
@@ -189,36 +241,12 @@ namespace TSS
 		public override void ClientSpawn()
 		{
 			base.ClientSpawn();
-			
-			SweatSystem = Particles.Create( "particles/sweat/sweat.vpcf" , this);
+
+			//Initiate the particle sweat system on the client
+			SweatSystem = Particles.Create( "particles/sweat/sweat.vpcf", this );
+			//Set itsp osition to be very sweaty
 			SweatSystem.SetPosition( 1, new Vector3( 1000, 0, 0 ) );
-
-			//PartSystem = Particles.Create( "particles/sicko_mode/sicko_mode.vpcf" );
-			//PartSystem.SetPosition( 0, Transform.Position + Rotation.Forward * -20f + Vector3.Up * 48f );
 		}
-
-		public async void PlayMusic()
-		{
-			await GameTask.Delay( 2000 );
-			TSSGame.Current.StartMusic();
-			TSSGame.Current.PlayIntro();
-		}
-
-		public bool IntroPlayed;
-
-		
-
-		void Dress()
-		{
-			_ = new ModelEntity( "models/clothes/fitness/shorts_fitness.vmdl", this );
-			_ = new ModelEntity( "models/clothes/fitness/shirt_fitness.vmdl", this );
-			_ = new ModelEntity( "models/clothes/fitness/shoes_sneakers.vmdl", this );
-			_ = new ModelEntity( "models/clothes/fitness/sweatband_wrists.vmdl", this );
-			_ = new ModelEntity( "models/clothes/fitness/sweatband_head.vmdl", this );
-			_ = new ModelEntity( "models/clothes/fitness/hair_head.vmdl", this );
-			_ = new ModelEntity( "models/clothes/fitness/hair_body.vmdl", this );
-		}
-
 
 		public override void StartTouch( Entity other )
 		{
@@ -226,14 +254,31 @@ namespace TSS
 			Log.Info( other );
 		}
 
-		[ClientRpc]
-		public void InitiateSoda()
+		public override void OnKilled()
 		{
-			SetAnimBool( "Drink", true );
+			base.OnKilled();
+
+			EnableDrawing = false;
 		}
 
+		#endregion
+
+		#region Uncategorized
+		/// <summary>
+		/// Waits a moment then plays the music on the game. This function probably doesn't need to be here.
+		/// </summary>
+		public async void PlayMusic()
+		{
+			await GameTask.Delay( 2000 );
+			TSSGame.Current.StartMusic();
+			TSSGame.Current.PlayIntro();
+		}
+
+		/// <summary>
+		/// Starts the sound and animation for the transition from the white void to the ending speech
+		/// </summary>
 		[ClientRpc]
-		public void InitiateEnding()
+		public void StartEndingClient()
 		{
 			ClearAnimation();
 			SetAnimBool( "Ending", true );
@@ -241,55 +286,88 @@ namespace TSS
 			SickoMode?.SetPosition( 3, 0 );
 		}
 
-
-		[ClientRpc]
-		public void StopSoda()
-		{
-			SetAnimBool( "Drink", false );
-		}
-
 		/// <summary>
-		/// This method can be called from the server to initiate the soda drinking animation.
+		/// This begins the fade out between the white void animation and the transition to the final speech
 		/// </summary>
-		public void DrinkSoda()
-		{
-			if ( Barbell.IsValid() )
-			{
-				Barbell.EnableDrawing = false;
-			}
-			if ( SodaCan.IsValid() )
-			{
-				SodaCan.EnableDrawing = true;
-			}
-
-			TimeSinceSoda = 0;
-			InitiateSoda();
-		}
-
-
-		public void StartEnding()
-		{
-			if ( Barbell.IsValid() )
-			{
-				Barbell.EnableDrawing = false;
-			}
-			Barbell?.Delete();
-
-			TimeSinceEnding = 0;
-			InitiateEnding();
-			EndingInitiated = true;
-
-			TSSGame.Current.Silence();
-		}
-
 		[ClientRpc]
-		public void GoToEnding()
+		public void StartEndingTransition()
 		{
 			EndingPanel.Instance.Alph = 2f;
 			EndingPanel.Instance.FinalBlackout = true;
 			TSSGame.Current.PlayRantInstrumental();
 		}
 
+		/// <summary>
+		/// A method called which starts the animation which will transition from the white void to the ending speech
+		/// </summary>
+		public void StartEnding()
+		{
+
+			//Delete the barbell
+			if ( Barbell.IsValid() )
+			{
+				Barbell.EnableDrawing = false;
+			}
+			Barbell?.Delete();
+
+			//Reset the timer used to tell when the ending has occurred
+			TimeSinceEnding = 0;
+			//Start the ending on the client
+			StartEndingClient();
+			//Set this variable to true
+			//TODO: Check and see if this can be replaced by an exercise event
+			EndingInitiated = true;
+
+			TSSGame.Current.Silence();
+		}
+		#endregion
+
+		#region Soda
+		/// <summary>
+		/// Set the anim bool to drink the soda can
+		/// </summary>
+		[ClientRpc]
+		public void InitiateSoda()
+		{
+			SetAnimBool( "Drink", true );
+		}
+
+		/// <summary>
+		/// Resets the soda anim bool to false
+		/// TODO: Check to see if we can just do this in the animgraph itself, this is wonky
+		/// </summary>
+		[ClientRpc]
+		public void StopSoda()
+		{
+			SetAnimBool( "Drink", false );
+		}
+
+
+		/// <summary>
+		/// This method can be called from the server to initiate the soda drinking animation.
+		/// </summary>
+		public void DrinkSoda()
+		{
+			//Disable drawing the barbell
+			if ( Barbell.IsValid() )
+			{
+				Barbell.EnableDrawing = false;
+			}
+			//Enable drawing the soda can
+			if ( SodaCan.IsValid() )
+			{
+				SodaCan.EnableDrawing = true;
+			}
+
+			//Reset the timer used to track the soda animation
+			TimeSinceSoda = 0;
+
+			//Start the soda animation
+			InitiateSoda();
+		}
+		#endregion
+
+		#endregion
 
 
 		/// <summary>
@@ -329,7 +407,7 @@ namespace TSS
 			//Initiate the new pawn after the ending sound has played
 			if(TimeSinceEnding > 13.278f && EndingInitiated)
 			{
-				GoToEnding();
+				StartEndingTransition();
 				if ( IsServer )
 				{
 					var pl = new BuffPawn();
@@ -543,7 +621,6 @@ namespace TSS
 			}
 		}
 
-
 		/// <summary>
 		/// This is basically a rough function that will switch the exercises as you reach a certain number of points
 		/// Eventually after ever exercise has been discovered, we should just cycle between them at random
@@ -654,13 +731,6 @@ namespace TSS
 		}
 
 
-
-
-		public override void OnKilled()
-		{
-			base.OnKilled();
-
-			EnableDrawing = false;
-		}
+		
 	}
 }
