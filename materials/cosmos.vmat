@@ -1,0 +1,9 @@
+// THIS FILE IS AUTO-GENERATED
+
+Layer0
+{
+	shader "black_unlit.vfx"
+
+	//---- Fog ----
+	g_bFogEnabled "1"
+}

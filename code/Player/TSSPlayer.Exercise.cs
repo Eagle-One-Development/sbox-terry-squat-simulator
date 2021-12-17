@@ -21,7 +21,7 @@ namespace TSS
 
 		protected Sound treadmillSound { get; set; }
 
-		public int HeavenThreshold { get; set; } = 500;
+		public int HeavenThreshold => 1;
 
 		public int YogaCount = 0;
 
