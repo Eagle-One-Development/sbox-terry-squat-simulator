@@ -75,7 +75,7 @@ PS
 	PixelOutput MainPs( PixelInput i )
 	{
 		PixelOutput o;
-        o.vColor.rgb = TexCube(g_tCubemapColor, i.vPositionWithOffsetWs - g_vCameraPositionWs).rgb;
+        o.vColor.rgb = TexCube(g_tCubemapColor, i.vPositionWithOffsetWs).rgb;
         o.vColor.a = 1.0f;
 		return o;
 	}
