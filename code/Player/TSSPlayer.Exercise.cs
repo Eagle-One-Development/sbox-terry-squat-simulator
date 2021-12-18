@@ -73,6 +73,15 @@ namespace TSS
 		}
 
 
+		/// <summary>
+		/// A variable representing how fast or often we are exercising. This decays over timeand controls things like the camera movement
+		/// </summary>
+		public float CurrentExerciseSpeed;
+		/// <summary>
+		/// This is a target value which current sped move towards.
+		/// </summary>
+		private float TargetExerciseSpeed;
+
 		#region Squatting
 		/// <summary>
 		/// A value to drive whether or not we're in the 'up' or 'down' squat position. Used to drive animation and figure out when we've completed a full squat.
@@ -207,6 +216,54 @@ namespace TSS
 		}
 
 		/// <summary>
+		/// Once the player has been ragdolled, they blink back into existence for a couple of seconds.
+		/// </summary>
+		private void HandleInvincibilityBlink()
+		{
+			float alph = 0f;
+			if ( TimeSinceRagdolled < 3f )
+			{
+				EnableDrawing = false;
+				TimeSinceExerciseStopped = 0f;
+
+				if ( TimeSinceRagdolled > 1f )
+				{
+					EnableDrawing = true;
+					float sin = MathF.Sin( TimeSinceRagdolled * 10f );
+					if ( sin > 0 )
+					{
+						alph = 1f;
+					}
+					else
+					{
+						alph = 0.5f;
+					}
+				}
+				else
+				{
+					alph = 0.5f;
+				}
+			}
+			else
+			{
+				alph = 1f;
+			}
+			Color co = Color.White;
+			co.a = alph;
+			RenderColor = co;
+
+			foreach ( ModelEntity m in Children.OfType<ModelEntity>().ToList() )
+			{
+
+				if ( m.GetModelName() != SodaCan.GetModelName() )
+				{
+					m.EnableDrawing = this.EnableDrawing;
+					m.RenderColor = co;
+				}
+			}
+		}
+
+		/// <summary>
 		/// Create the particle that acts as the heaven void towards the end of the game. Creates the particle and sets its positions
 		/// </summary>
 		[ClientRpc]
@@ -223,6 +280,29 @@ namespace TSS
 			SickoModePositionTar = pos + dir * 200f;
 			SickoModePosition = SickoModePositionTar;
 			SickoMode = Particles.Create( "particles/sicko_mode/sicko_mode.vpcf", pos + dir * 200f );
+		}
+
+		/// <summary>
+		/// A method that handles the positioning of the white void particle at the end of the game
+		/// </summary>
+		public void HandleNearEndParticle()
+		{
+			if ( IsClient )
+			{
+				if ( SickoMode != null )
+				{
+					var localCam = (Camera as TSSCamera);
+					var pos = ExercisePosition + Vector3.Up * 45f;
+					var dir = (pos - localCam.Position).Normal;
+					SickoModePositionTar = pos + dir * 200f;
+					SickoModePosition = Vector3.Lerp( SickoModePosition, SickoModePositionTar, Time.Delta * 8f );
+					SickoMode.SetPosition( 0, SickoModePositionTar );
+					float sin = (MathF.Sin( Time.Now * 2f ) + 1) / 2f;
+					var beams = new Vector3( sin * 0.75f, 0, 0 );
+					SickoMode.SetPosition( 3, beams );
+				}
+
+			}
 		}
 
 		/// <summary>
@@ -260,7 +340,72 @@ namespace TSS
 			_ = new ModelEntity( "models/clothes/fitness/hair_head.vmdl", this );
 			_ = new ModelEntity( "models/clothes/fitness/hair_body.vmdl", this );
 		}
+
+		/// <summary>
+		/// A method run on simulate which helps us manage our particle effects.
+		/// </summary>
+		public void ParticleEffects()
+		{
+			//For client simulated particles
+			if ( IsClient )
+			{
+				//Here we have a sweat value
+				float sweatValue = 150f;
+
+				//First lets only start sweating once we've got exercise points and if we're exercising fast enough
+				float val = (TimeSinceExerciseStopped / 3f).Clamp( 0, 1 );
+				//Basically give us more sweat as we approach 500 exercise points
+				float val2 = ((ExercisePoints - 150) / 350f).Clamp( 0, 1f );
+
+				//Then we set our sweat value
+				SweatSystem.SetPosition( 1, new Vector3( sweatValue * MathF.Pow( val2, 0.32f ) * (1f - val), 0, 0 ) );
+			}
+		}
+		
+		/// <summary>
+		/// Sets the scale of the counter for extra juice when getting points
+		/// </summary>
+		/// <param name="f">The scale to set the counter to</param>
+		public async void CounterBump( float f )
+		{
+			await GameTask.DelaySeconds( 0.1f );
+			if ( (Camera as TSSCamera).SCounter != null )
+			{
+				var c = (Camera as TSSCamera).SCounter;
+				c.TextScale += f * CurrentExerciseSpeed;
+			}
+		}
+
+
+		/// <summary>
+		/// Sets the scale of the player for extra juice when getting points
+		/// </summary>
+		/// <param name="f">The scale to set the player</param>
+		public async void SetScale( float f )
+		{
+			await GameTask.DelaySeconds( 0.1f );
+			Scale = f;
+		}
+
 		#endregion
+
+		/// <summary>
+		/// Does the handling of the 'exercise speed' variables which drive various animations and events.
+		/// </summary>
+		public void HandleExerciseSpeed()
+		{
+			//Clamp our exercise speeds
+			TargetExerciseSpeed = TargetExerciseSpeed.Clamp( 0, 1 );
+			CurrentExerciseSpeed = CurrentExerciseSpeed.Clamp( 0, 1 );
+			var mult = MathX.LerpInverse( TimeSinceExerciseStopped, 0, 1 );
+			if ( CurrentExercise == Exercise.Run )
+			{
+				mult = MathX.LerpInverse( TimeSinceRun, 0, 1 );
+			}
+
+			TargetExerciseSpeed = TargetExerciseSpeed.LerpTo( 0f, Time.Delta * 0.25f * (mult * 4f) );
+			CurrentExerciseSpeed = CurrentExerciseSpeed.LerpTo( TargetExerciseSpeed, Time.Delta * 2f );
+		}
 
 		/// <summary>
 		/// Changes the current exercise and moves the player to a given position and rotation
@@ -340,6 +485,29 @@ namespace TSS
 		}
 		#endregion
 
+		#region Animation
+		/// <summary>
+		/// This function checks to see if we've finished the soda animation
+		/// TODO: Move this to some sort of animation and event system.
+		/// </summary>
+		private void EvaluateSodaAnim()
+		{
+			if ( TimeSinceSoda > 1.7f )
+			{
+				if ( Barbell.IsValid() )
+				{
+					Barbell.EnableDrawing = true;
+				}
+				if ( SodaCan.IsValid() )
+				{
+					SodaCan.EnableDrawing = false;
+				}
+
+				StopSoda();
+			}
+		}
+		#endregion
+
 		/// <summary>
 		/// Initialize the squatting exercise state
 		/// </summary>
@@ -367,13 +535,13 @@ namespace TSS
 		/// <param name="cam"></param>
 		public void SimulateRunning( TSSCamera cam )
 		{
-			SetAnimFloat( "move_x", MathX.LerpTo( 0, 350f, (curSpeed * 4f).Clamp( 0, 1f ) ) );
+			SetAnimFloat( "move_x", MathX.LerpTo( 0, 350f, (CurrentExerciseSpeed * 4f).Clamp( 0, 1f ) ) );
 
 			//We're going to set our position to the RunPosition + some offset
 			Position = ExercisePosition + Rotation.Forward * -RunPositionOffset;
 
 			//Basically we're going to use our curSpeed, a value which determines how fast we are running, to determine if we're moving forward or backward on the treadmill
-			float treadSpeed = (curSpeed / 0.28f).Clamp(0f,1f);
+			float treadSpeed = (CurrentExerciseSpeed / 0.28f).Clamp(0f,1f);
 			//Basically check and see if we're exercising fast enough, if not, uptick the run position offset to make us 
 			if(treadSpeed >= 0.6f )
 			{
@@ -390,7 +558,7 @@ namespace TSS
 			{
 				BecomeRagdollOnClient( (Rotation.Forward * -1f + Vector3.Up).Normal * 250f, 0 );
 				RunPositionOffset = 0f;
-				curSpeed = 1f;
+				CurrentExerciseSpeed = 1f;
 				TimeSinceExerciseStopped = 0f;
 				TimeSinceRagdolled = 0f;
 			}
@@ -417,7 +585,7 @@ namespace TSS
 			{
 				if ( Squat == 0 )
 				{
-					tCurSpeed += 0.1f;
+					TargetExerciseSpeed += 0.1f;
 					CreatePoint( 1 );
 					SetScale( 1.2f );
 					CounterBump( 0.5f );
@@ -471,6 +639,35 @@ namespace TSS
 				ConsoleSystem.Run( "create_punch" );
 			}
 		}
+
+		/// <summary>
+		/// Makes the player punch and moves the 'squat' variable so it alternated between left and right punches
+		/// </summary>
+		public void Punch()
+		{
+			ExercisePoints += 3;
+			TargetExerciseSpeed += 0.1f;
+			CreatePoint( 3 );
+			Scale = 1.2f;
+			CounterBump( 0.5f );
+			TimeSinceExerciseStopped = 0;
+
+			//var sound = PlaySound( $"squat_0{Rand.Int( 1, 7 )}" );
+			//sound.SetPitch( (300f / (50 + Math.Max( 1f, ExercisePoints ))).Clamp( 0.5f, 1.0f ) );
+
+			if ( Squat == 0 )
+			{
+				Squat = 1;
+				return;
+			}
+
+			if ( Squat == 1 )
+			{
+				Squat = 0;
+				return;
+			}
+		}
+
 
 		/// <summary>
 		/// Simulate the yoga exercise state
@@ -544,7 +741,7 @@ namespace TSS
 				{
 
 					ExercisePoints++;
-					tCurSpeed += 0.1f;
+					TargetExerciseSpeed += 0.1f;
 					CreatePoint( 1 );
 					SetScale( 1.2f );
 					CounterBump( 0.5f );

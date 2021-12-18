@@ -19,7 +19,7 @@ namespace TSS
 			CounterBump( 0.5f );
 			ExercisePoints += i;
 			TimeSinceExerciseStopped = 0;
-			tCurSpeed += 0.1f;
+			TargetExerciseSpeed += 0.1f;
 			CreatePoint( Math.Sign(i) * 1, true, Math.Abs(i) );
 		}
 
@@ -35,7 +35,7 @@ namespace TSS
 			CounterBump( 0.5f );
 			ExercisePoints += i;
 			TimeSinceExerciseStopped = 0;
-			tCurSpeed += 0.1f;
+			TargetExerciseSpeed += 0.1f;
 			CreatePointAtPosition( Math.Sign( i ) * 1, pos, fall, Math.Abs(i) );
 		}
 

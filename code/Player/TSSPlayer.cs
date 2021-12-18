@@ -18,7 +18,7 @@ namespace TSS
 	/// This is a class intended to replace the abuse of "do this" booleans in the main player class.
 	/// The main idea here is that when a certain exercise point threshhold is met, it will run a function
 	/// </summary>
-	public class ExerciseEvent
+	public class ExerciseEvent : BaseNetworkable
 	{
 		/// <summary>
 		/// Whether or not we've triggered this event
@@ -31,20 +31,19 @@ namespace TSS
 		public Action Action { get; protected set; }
 
 		/// <summary>
-		/// The value our given action will trigger at.
-		/// I.e: At 200 exercise points trigger this action
-		/// TODO: Abstract this system later to take a bool func so that people can determine their own conditions for an event
+		/// The condition that is required to be met to trigger this exercise event
 		/// </summary>
-		public int PointThresh { get; protected set; }
+		public Func<bool> Condition { get; protected set; }
+
 
 		/// <summary>
 		/// The constructor for our exercise event
 		/// </summary>
-		/// <param name="thresh"></param>
-		/// <param name="a"></param>
-		public ExerciseEvent(int thresh, Action a )
+		/// <param name="con">Condition</param>
+		/// <param name="a">Action</param>
+		public ExerciseEvent(Func<bool> con, Action a )
 		{
-			PointThresh = thresh;
+			Condition = con;
 			Action = a;
 		}
 
@@ -58,7 +57,7 @@ namespace TSS
 			if ( !Triggered )
 			{
 				//And the incoming points is equal to our point thresh
-				if(points == PointThresh )
+				if(Condition())
 				{
 					Triggered = true;
 					Action();
@@ -121,6 +120,10 @@ namespace TSS
 
 		#endregion
 
+		#region Private Members
+
+		#endregion
+
 		#region Pre-Timeline Variables
 		//A set of variables that likely can be replaced with exercise events
 
@@ -175,9 +178,8 @@ namespace TSS
 		#endregion
 
 		#region Uncategorized Members
-		private TimeSince aTime;
-		public float curSpeed;
-		private float tCurSpeed;
+
+
 		private bool titleCardActive;
 		private UI.CreditPanel titleCard;
 		[Net]
@@ -320,6 +322,25 @@ namespace TSS
 
 			TSSGame.Current.Silence();
 		}
+
+		/// <summary>
+		/// This runs a trace which will click on a food item in the world and consume or destroy it.
+		/// </summary>
+		public void DetectClick()
+		{
+			if ( Input.Pressed( InputButton.Attack1 ) )
+			{
+				TraceResult clickTrace = Trace.Ray( Input.Cursor, 1000f ).HitLayer( CollisionLayer.All, true ).Run();
+
+				if ( clickTrace.Hit )
+				{
+					if ( IsServer && clickTrace.Entity is Food food )
+					{
+						food.Click();
+					}
+				}
+			}
+		}
 		#endregion
 
 		#region Soda
@@ -367,6 +388,35 @@ namespace TSS
 		}
 		#endregion
 
+		#region Ending
+		public void HandleEnding()
+		{
+			if ( IsServer )
+			{
+				if ( ExercisePoints >= HeavenThreshold + 65 && !EndingConditionMet )
+				{
+					StartEnding();
+
+					EndingConditionMet = true;
+					ExercisePoints++;
+				}
+			}
+
+			//Initiate the new pawn after the ending sound has played
+			if ( TimeSinceEnding > 13.278f && EndingInitiated )
+			{
+				StartEndingTransition();
+				if ( IsServer )
+				{
+					var pl = new BuffPawn();
+					Client.Pawn = pl;
+					pl.Respawn();
+					Delete();
+				}
+			}
+		}
+		#endregion
+
 		#endregion
 
 
@@ -377,21 +427,10 @@ namespace TSS
 		{
 			base.Simulate( cl );
 
-			TSSCamera cam = (Camera as TSSCamera);
+			
 
-			if ( TimeSinceSoda > 1.7f )
-			{
-				if ( Barbell.IsValid() )
-				{
-					Barbell.EnableDrawing = true;
-				}
-				if ( SodaCan.IsValid() )
-				{
-					SodaCan.EnableDrawing = false;
-				}
-
-				StopSoda();
-			}
+			//Basically stop the soda animation once it's reached it's end.
+			EvaluateSodaAnim();
 
 
 			//This will play the intro once you press the left click
@@ -404,19 +443,10 @@ namespace TSS
 				}
 			}
 
-			//Initiate the new pawn after the ending sound has played
-			if(TimeSinceEnding > 13.278f && EndingInitiated)
-			{
-				StartEndingTransition();
-				if ( IsServer )
-				{
-					var pl = new BuffPawn();
-					Client.Pawn = pl;
-					pl.Respawn();
-					Delete();
-				}
-			}
+			HandleEnding();
 
+			
+			//Basically if the ending animation
 			if ( EndingInitiated )
 			{
 				return;
@@ -426,35 +456,10 @@ namespace TSS
 			ClearAnimation();
 			ParticleEffects();
 
-			if ( IsClient )
-			{
-				if(SickoMode != null )
-				{
-					var localCam = (Camera as TSSCamera);
-					var pos = ExercisePosition + Vector3.Up * 45f;
-					var dir = (pos - localCam.Position).Normal;
-					SickoModePositionTar = pos + dir * 200f;
-					SickoModePosition = Vector3.Lerp( SickoModePosition, SickoModePositionTar, Time.Delta * 8f );
-					SickoMode.SetPosition( 0, SickoModePositionTar );
-					float sin = (MathF.Sin( Time.Now * 2f ) + 1) / 2f;
-					var beams = new Vector3( sin * 0.75f, 0, 0 );
-					SickoMode.SetPosition( 3, beams );
-					//DebugOverlay.Sphere( pos + dir * 200f, 1f, Color.Yellow,false,1);
-					
-				}
+			HandleNearEndParticle();
 
-			}
-
-			if ( IsServer )
-			{
-				if(ExercisePoints >= HeavenThreshold + 65 && !EndingConditionMet )
-				{
-					StartEnding();
-					
-					EndingConditionMet = true;
-					ExercisePoints++;
-				}
-			}
+			//Get a reference to the camera
+			TSSCamera cam = (Camera as TSSCamera);
 
 			switch ( CurrentExercise )
 			{
@@ -472,69 +477,16 @@ namespace TSS
 					break;
 			}
 
-			AdvanceExerciseState();
+			HandleTimeline();
 
-			// Basically curSpeed increases based on how fast the player is squatting etc
-
-			float f = (TimeSinceExerciseStopped - 1f) / 3f;
-			f = MathF.Pow( f.Clamp( 0, 1f ), 3f );
-
-			tCurSpeed = tCurSpeed.Clamp( 0, 1 );
-			curSpeed = curSpeed.Clamp( 0, 1 );
-			var mult = MathX.LerpInverse( TimeSinceExerciseStopped, 0, 1 );
-			if ( CurrentExercise == Exercise.Run )
-			{
-				mult = MathX.LerpInverse( TimeSinceRun, 0, 1 );
-			}
-
-			tCurSpeed = tCurSpeed.LerpTo( 0f, Time.Delta * 0.25f * (mult * 4f) );
-			curSpeed = curSpeed.LerpTo( tCurSpeed, Time.Delta * 2f );
+			//Handle the exercise speed variables
+			HandleExerciseSpeed();
 
 			Scale = Scale.LerpTo( 1, Time.Delta * 10f );
 
 			//This block of code is going to cause the player to blink in and and out of existence after ragdolling
 			//This indicates that the player has a period of invulnerability
-			float alph = 0f;
-			if (TimeSinceRagdolled < 3f )
-			{
-				EnableDrawing = false;
-				TimeSinceExerciseStopped = 0f;
-
-				if ( TimeSinceRagdolled > 1f )
-				{
-					EnableDrawing = true;
-					float sin = MathF.Sin( TimeSinceRagdolled * 10f );
-					if ( sin > 0 )
-					{
-						alph = 1f;
-					}
-					else
-					{
-						alph = 0.5f;
-					}
-				}
-				else
-				{
-					alph = 0.5f;
-				}
-			}
-			else
-			{
-				alph = 1f;
-			}
-			Color co = Color.White;
-			co.a = alph;
-			RenderColor = co; 
-
-			foreach(ModelEntity m in Children.OfType<ModelEntity>().ToList() )
-			{
-				
-				if ( m.GetModelName() != SodaCan.GetModelName())
-				{
-					m.EnableDrawing = this.EnableDrawing;
-					m.RenderColor = co;
-				}
-			}
+			HandleInvincibilityBlink();
 
 
 
@@ -542,37 +494,16 @@ namespace TSS
 			{
 				var c = cam.SCounter;
 				c.l?.SetText( ExercisePoints.ToString() );
-				c.Opacity += Time.Delta * curSpeed * 0.4f;
+				c.Opacity += Time.Delta * currentExerciseSpeed * 0.4f;
 				
 
-				c.TextScale = cam.SCounter.TextScale.LerpTo( 1.5f * MathX.Clamp( curSpeed + 0.8f, 0, 1 ), Time.Delta * 2f );
-				float anim = MathF.Sin( aTime );
-				c.Rotation = Rotation.From( 0, 90, anim * curSpeed * 1f * (ExercisePoints / 100f) );
+				c.TextScale = cam.SCounter.TextScale.LerpTo( 1.5f * MathX.Clamp( currentExerciseSpeed + 0.8f, 0, 1 ), Time.Delta * 2f );
+				float anim = MathF.Sin( Time.Now );
+				c.Rotation = Rotation.From( 0, 90, anim * currentExerciseSpeed * 1f * (ExercisePoints / 100f) );
 			}
 
 
 			SimulateActiveChild( cl, ActiveChild );
-		}
-
-		/// <summary>
-		/// A method run on simulate which helps us manage our particle effects.
-		/// </summary>
-		public void ParticleEffects()
-		{
-			//For client simulated particles
-			if ( IsClient )
-			{
-				//Here we have a sweat value
-				float sweatValue = 150f;
-
-				//First lets only start sweating once we've got exercise points and if we're exercising fast enough
-				float val = (TimeSinceExerciseStopped / 3f).Clamp( 0, 1 );
-				//Basically give us more sweat as we approach 500 exercise points
-				float val2 = ((ExercisePoints - 150) / 350f).Clamp(0,1f);
-
-				//Then we set our sweat value
-				SweatSystem.SetPosition( 1, new Vector3( sweatValue * MathF.Pow(val2,0.32f) * (1f - val), 0, 0 ) );
-			}
 		}
 
 		public override void FrameSimulate( Client cl )
@@ -602,31 +533,14 @@ namespace TSS
 			}
 		}
 
-		/// <summary>
-		/// This runs a trace which will click on a food item in the world and consume or destroy it.
-		/// </summary>
-		public void DetectClick()
-		{
-			if ( Input.Pressed( InputButton.Attack1 ) )
-			{
-				TraceResult clickTrace = Trace.Ray( Input.Cursor, 1000f ).HitLayer( CollisionLayer.All, true ).Run();
-
-				if ( clickTrace.Hit )
-				{
-					if ( IsServer && clickTrace.Entity is Food food )
-					{
-						food.Click();
-					}
-				}
-			}
-		}
+		
 
 		/// <summary>
 		/// This is basically a rough function that will switch the exercises as you reach a certain number of points
 		/// Eventually after ever exercise has been discovered, we should just cycle between them at random
 		/// TODO: Move this to a better system
 		/// </summary>
-		public void AdvanceExerciseState()
+		public void HandleTimeline()
 		{
 
 			//Switch to the running exercise state
@@ -678,59 +592,5 @@ namespace TSS
 			}
 		}
 
-		/// <summary>
-		/// Sets the scale of the counter for extra juice when getting points
-		/// </summary>
-		/// <param name="f">The scale to set the counter to</param>
-		public async void CounterBump( float f )
-		{
-			await GameTask.DelaySeconds( 0.1f );
-			if ( (Camera as TSSCamera).SCounter != null )
-			{
-				var c = (Camera as TSSCamera).SCounter;
-				c.TextScale += f * curSpeed;
-			}
-		}
-
-		/// <summary>
-		/// Sets the scale of the player for extra juice when getting points
-		/// </summary>
-		/// <param name="f">The scale to set the player</param>
-		public async void SetScale( float f )
-		{
-			await GameTask.DelaySeconds( 0.1f );
-			Scale = f;
-		}
-
-		/// <summary>
-		/// Makes the player punch and moves the 'squat' variable so it alternated between left and right punches
-		/// </summary>
-		public void Punch()
-		{
-			ExercisePoints += 3;
-			tCurSpeed += 0.1f;
-			CreatePoint( 3 );
-			Scale = 1.2f;
-			CounterBump( 0.5f );
-			TimeSinceExerciseStopped = 0;
-
-			//var sound = PlaySound( $"squat_0{Rand.Int( 1, 7 )}" );
-			//sound.SetPitch( (300f / (50 + Math.Max( 1f, ExercisePoints ))).Clamp( 0.5f, 1.0f ) );
-
-			if ( Squat == 0 )
-			{
-				Squat = 1;
-				return;
-			}
-
-			if ( Squat == 1 )
-			{
-				Squat = 0;
-				return;
-			}
-		}
-
-
-		
 	}
 }
