@@ -427,12 +427,6 @@ namespace TSS
 		{
 			base.Simulate( cl );
 
-			
-
-			//Basically stop the soda animation once it's reached it's end.
-			EvaluateSodaAnim();
-
-
 			//This will play the intro once you press the left click
 			if ( IsClient )
 			{
@@ -443,24 +437,25 @@ namespace TSS
 				}
 			}
 
+			//Determine if we need to move to the ending or not
 			HandleEnding();
 
-			
-			//Basically if the ending animation
+			//Basically if the ending animation is occuring don't simulate the ending
 			if ( EndingInitiated )
 			{
 				return;
 			}
 
+			//Handle clicking on food
 			DetectClick();
-			ClearAnimation();
-			ParticleEffects();
 
-			HandleNearEndParticle();
+			//Handles visual effects like the sweating and white void particle
+			HandleEffectsAndAnims();
 
 			//Get a reference to the camera
 			TSSCamera cam = (Camera as TSSCamera);
 
+			//Simulate the current exercise based on the current exercise variable
 			switch ( CurrentExercise )
 			{
 				case Exercise.Squat:
@@ -477,30 +472,21 @@ namespace TSS
 					break;
 			}
 
+			//Handling timeline is where we handle the progression of the game
 			HandleTimeline();
 
 			//Handle the exercise speed variables
 			HandleExerciseSpeed();
 
+			//Lerps our scale back down to 1 so we can do effects to make terry 'bump'
 			Scale = Scale.LerpTo( 1, Time.Delta * 10f );
 
 			//This block of code is going to cause the player to blink in and and out of existence after ragdolling
 			//This indicates that the player has a period of invulnerability
 			HandleInvincibilityBlink();
 
-
-
-			if ( cam.SCounter != null )
-			{
-				var c = cam.SCounter;
-				c.l?.SetText( ExercisePoints.ToString() );
-				c.Opacity += Time.Delta * currentExerciseSpeed * 0.4f;
-				
-
-				c.TextScale = cam.SCounter.TextScale.LerpTo( 1.5f * MathX.Clamp( currentExerciseSpeed + 0.8f, 0, 1 ), Time.Delta * 2f );
-				float anim = MathF.Sin( Time.Now );
-				c.Rotation = Rotation.From( 0, 90, anim * currentExerciseSpeed * 1f * (ExercisePoints / 100f) );
-			}
+			//Handles the score counter behind the player
+			HandleCounter();
 
 
 			SimulateActiveChild( cl, ActiveChild );

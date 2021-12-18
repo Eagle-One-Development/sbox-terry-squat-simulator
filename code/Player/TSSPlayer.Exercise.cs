@@ -344,7 +344,7 @@ namespace TSS
 		/// <summary>
 		/// A method run on simulate which helps us manage our particle effects.
 		/// </summary>
-		public void ParticleEffects()
+		public void HandleEffectsAndAnims()
 		{
 			//For client simulated particles
 			if ( IsClient )
@@ -360,6 +360,15 @@ namespace TSS
 				//Then we set our sweat value
 				SweatSystem.SetPosition( 1, new Vector3( sweatValue * MathF.Pow( val2, 0.32f ) * (1f - val), 0, 0 ) );
 			}
+
+			//If the end white void particle exists, update its position and rotation
+			HandleNearEndParticle();
+
+			//Basically stop the soda animation once it's reached it's end.
+			EvaluateSodaAnim();
+
+			//Clear the animation parameters every frame to avoid conflicts
+			ClearAnimation();
 		}
 		
 		/// <summary>
@@ -376,6 +385,24 @@ namespace TSS
 			}
 		}
 
+		/// <summary>
+		/// Handled various aspects of the counter like its opacity
+		/// </summary>
+		public void HandleCounter()
+		{
+			TSSCamera cam = (Camera as TSSCamera);
+			if ( cam.SCounter != null )
+			{
+				var c = cam.SCounter;
+				c.l?.SetText( ExercisePoints.ToString() );
+				c.Opacity += Time.Delta * CurrentExerciseSpeed * 0.4f;
+
+
+				c.TextScale = cam.SCounter.TextScale.LerpTo( 1.5f * MathX.Clamp( CurrentExerciseSpeed + 0.8f, 0, 1 ), Time.Delta * 2f );
+				float anim = MathF.Sin( Time.Now );
+				c.Rotation = Rotation.From( 0, 90, anim * CurrentExerciseSpeed * 1f * (ExercisePoints / 100f) );
+			}
+		}
 
 		/// <summary>
 		/// Sets the scale of the player for extra juice when getting points
