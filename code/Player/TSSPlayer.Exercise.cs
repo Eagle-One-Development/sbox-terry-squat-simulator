@@ -60,17 +60,7 @@ namespace TSS
 		public int PointCeiling { get; set; } = 500;
 
 
-		/// <summary>
-		/// Just a variable to introduce if we've introduced all the exercise or not
-		/// TODO: Work this in with the exercise timeline system.
-		/// </summary>
-		public bool ExercisesIntroduced
-		{
-			get
-			{
-				return IntroRunning && IntroPunching && IntroYoga;
-			}
-		}
+		
 
 
 		/// <summary>

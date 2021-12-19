@@ -35,7 +35,6 @@ namespace TSS
 		/// </summary>
 		public Func<bool> Condition { get; protected set; }
 
-
 		/// <summary>
 		/// The constructor for our exercise event
 		/// </summary>
@@ -50,8 +49,7 @@ namespace TSS
 		/// <summary>
 		/// A function that will determine if the points passed in will trigger our event
 		/// </summary>
-		/// <param name="points"></param>
-		public void Simulate( int points )
+		public void Simulate( )
 		{
 			//If we aren't triggered
 			if ( !Triggered )
@@ -111,17 +109,13 @@ namespace TSS
 
 		#endregion
 
-		/// <summary>
-		/// A singleton instance referring to the player
-		/// TODO: Replace calls to this with client.pawn
-		/// </summary>
-		[Net]
-		public static TSSPlayer Instance { get; set; }
-
 		#endregion
 
 		#region Private Members
 
+		#region Timeline
+		private List<ExerciseEvent> Timeline { get; set; }
+		#endregion
 		#endregion
 
 		#region Pre-Timeline Variables
@@ -202,9 +196,7 @@ namespace TSS
 
 		public override void Respawn()
 		{
-			//Set the instance
-			//TODO: Replace calls to this with call to client.pawn
-			Instance = this;
+			
 
 			//Enable various drawing stuff
 			EnableAllCollisions = true;
@@ -263,6 +255,80 @@ namespace TSS
 			EnableDrawing = false;
 		}
 
+		public override void Spawn()
+		{
+			InitializeTimeline();
+			base.Spawn();
+		}
+
+		public override void Simulate( Client cl )
+		{
+			base.Simulate( cl );
+
+			//This will play the intro once you press the left click
+			if ( IsClient )
+			{
+				if ( !IntroPlayed && Input.Pressed( InputButton.Attack1 ) && TimeSinceRagdolled > 12f )
+				{
+					IntroPlayed = true;
+					PlayMusic();
+				}
+			}
+
+			//Determine if we need to move to the ending or not
+			HandleEnding();
+
+			//Basically if the ending animation is occuring don't simulate the ending
+			if ( EndingInitiated )
+			{
+				return;
+			}
+
+			//Handle clicking on food
+			DetectClick();
+
+			//Handles visual effects like the sweating and white void particle
+			HandleEffectsAndAnims();
+
+			//Get a reference to the camera
+			TSSCamera cam = (Camera as TSSCamera);
+
+			//Simulate the current exercise based on the current exercise variable
+			switch ( CurrentExercise )
+			{
+				case Exercise.Squat:
+					SimulateSquatting( cam );
+					break;
+				case Exercise.Run:
+					SimulateRunning( cam );
+					break;
+				case Exercise.Punch:
+					SimulatePunching( cam );
+					break;
+				case Exercise.Yoga:
+					SimulateYoga( cam );
+					break;
+			}
+
+			//Handling timeline is where we handle the progression of the game
+			HandleTimeline();
+
+			//Handle the exercise speed variables
+			HandleExerciseSpeed();
+
+			//Lerps our scale back down to 1 so we can do effects to make terry 'bump'
+			Scale = Scale.LerpTo( 1, Time.Delta * 10f );
+
+			//This block of code is going to cause the player to blink in and and out of existence after ragdolling
+			//This indicates that the player has a period of invulnerability
+			HandleInvincibilityBlink();
+
+			//Handles the score counter behind the player
+			HandleCounter();
+
+
+			SimulateActiveChild( cl, ActiveChild );
+		}
 		#endregion
 
 		#region Uncategorized
@@ -417,80 +483,67 @@ namespace TSS
 		}
 		#endregion
 
-		#endregion
-
-
-		/// <summary>
-		/// Called every tick, clientside and serverside.
-		/// </summary>
-		public override void Simulate( Client cl )
+		#region Timeline
+		public void InitializeTimeline()
 		{
-			base.Simulate( cl );
+			Timeline = new List<ExerciseEvent>();
 
-			//This will play the intro once you press the left click
-			if ( IsClient )
+			//Introduce the running exercise
+			Timeline.Add( new ExerciseEvent( () => (ExercisePoints >= 200), () => {
+				ChangeExercise( Exercise.Run );
+				TSSGame.Current.SetTarVolume( 1 );
+				TSSGame.Current.SetTarVolume( 7 );
+				TimeSinceRun = 0f;
+			} ));
+
+			//Add som new music
+			Timeline.Add( new ExerciseEvent( () => (ExercisePoints >= 100), () => {
+				TSSGame.Current.SetTarVolume( 3 );
+				TSSGame.Current.SetTarVolume( 2 );
+			} ) );
+
+			//Introduce the punch exercise
+			Timeline.Add( new ExerciseEvent( () => (ExercisePoints >= 300), () => {
+				ChangeExercise( Exercise.Punch );
+			} ) );
+
+			//Introduce the yoga exercise
+			Timeline.Add( new ExerciseEvent( () => (ExercisePoints >= 400), () => {
+				ChangeExercise( Exercise.Yoga );
+			} ) );
+		}
+		
+		/// <summary>
+		/// Handles the timeline of events plus a few other re-occurring pieces of code that are reliant on the exercise points.
+		/// Simulates the timeline
+		/// </summary>
+		public void HandleTimeline()
+		{
+			if ( Timeline != null )
 			{
-				if(!IntroPlayed && Input.Pressed( InputButton.Attack1 ) && TimeSinceRagdolled > 12f)
+				for ( int i = 0; i < Timeline.Count; i++ )
 				{
-					IntroPlayed = true;
-					PlayMusic();
+					Timeline[i].Simulate();
 				}
 			}
 
-			//Determine if we need to move to the ending or not
-			HandleEnding();
-
-			//Basically if the ending animation is occuring don't simulate the ending
-			if ( EndingInitiated )
+			//Basically once our exercise points are above a certain point ceiling, switch randomly to other gamemodes.
+			if ( ExercisePoints >= PointCeiling )
 			{
-				return;
+				PointCeiling = ExercisePoints + Rand.Int( 20, 50 );
+				var exercises = new Exercise[] { Exercise.Squat, Exercise.Run, Exercise.Punch, Exercise.Yoga }.Where( ( e ) => e != CurrentExercise ).ToArray();
+				ChangeExercise( exercises[Rand.Int( 0, exercises.Count() - 1 )] );
 			}
 
-			//Handle clicking on food
-			DetectClick();
-
-			//Handles visual effects like the sweating and white void particle
-			HandleEffectsAndAnims();
-
-			//Get a reference to the camera
-			TSSCamera cam = (Camera as TSSCamera);
-
-			//Simulate the current exercise based on the current exercise variable
-			switch ( CurrentExercise )
+			//Basically, if we have more than 50 exercise points make Terry make an angry/determined facial pose.
+			if ( ExercisePoints > 50 )
 			{
-				case Exercise.Squat:
-					SimulateSquatting( cam );
-					break;
-				case Exercise.Run:
-					SimulateRunning( cam );
-					break;
-				case Exercise.Punch:
-					SimulatePunching( cam );
-					break;
-				case Exercise.Yoga:
-					SimulateYoga( cam );
-					break;
+				SetAnimBool( "Angry", TimeSinceExerciseStopped < 4f );
 			}
-
-			//Handling timeline is where we handle the progression of the game
-			HandleTimeline();
-
-			//Handle the exercise speed variables
-			HandleExerciseSpeed();
-
-			//Lerps our scale back down to 1 so we can do effects to make terry 'bump'
-			Scale = Scale.LerpTo( 1, Time.Delta * 10f );
-
-			//This block of code is going to cause the player to blink in and and out of existence after ragdolling
-			//This indicates that the player has a period of invulnerability
-			HandleInvincibilityBlink();
-
-			//Handles the score counter behind the player
-			HandleCounter();
-
-
-			SimulateActiveChild( cl, ActiveChild );
 		}
+		#endregion
+
+		#endregion
 
 		public override void FrameSimulate( Client cl )
 		{
@@ -520,63 +573,6 @@ namespace TSS
 		}
 
 		
-
-		/// <summary>
-		/// This is basically a rough function that will switch the exercises as you reach a certain number of points
-		/// Eventually after ever exercise has been discovered, we should just cycle between them at random
-		/// TODO: Move this to a better system
-		/// </summary>
-		public void HandleTimeline()
-		{
-
-			//Switch to the running exercise state
-			if ( ExercisePoints >= 200 && !IntroRunning)
-			{
-
-				ChangeExercise( Exercise.Run );
-				TSSGame.Current.SetTarVolume( 1 );
-				TSSGame.Current.SetTarVolume( 7 );
-				TimeSinceRun = 0f;
-				IntroRunning = true;
-				return;
-			}
-			//Introduce the punching exercise state
-			if ( ExercisePoints >= 300 && !IntroPunching)
-			{
-				ChangeExercise( Exercise.Punch );
-				IntroPunching = true;
-				return;
-			}
-			//Introduce the yoga mini game
-			if ( ExercisePoints >= 400 && !IntroYoga)
-			{
-				ChangeExercise( Exercise.Yoga );
-				IntroYoga = true;
-				return;
-			}
-
-			//Basically once our exercise points are above a certain point ceiling, switch randomly to other gamemodes.
-			if (ExercisePoints >= PointCeiling)
-			{
-				PointCeiling = ExercisePoints + Rand.Int(20,50);
-				var exercises = new Exercise[] { Exercise.Squat, Exercise.Run, Exercise.Punch, Exercise.Yoga }.Where((e) => e != CurrentExercise).ToArray();
-				ChangeExercise( exercises[Rand.Int(0, exercises.Count() - 1)] );
-			}
-
-			//Basically, at 100 exercise points introduce some new music layers
-			if (ExercisePoints >= 100 && !TimeLines[0])
-			{
-				TSSGame.Current.SetTarVolume( 3 );
-				TSSGame.Current.SetTarVolume( 2 );
-				TimeLines[0] = true;
-			}
-
-			//Basically, if we have more than 50 exercise points make Terry make an angry/determined facial pose.
-			if ( ExercisePoints > 50 )
-			{
-				SetAnimBool( "Angry", TimeSinceExerciseStopped < 4f );
-			}
-		}
 
 	}
 }

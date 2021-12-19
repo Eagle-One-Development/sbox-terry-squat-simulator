@@ -136,7 +136,7 @@ namespace TSS
 
 			if ( TSS != null && IntroComplete && !pawn.IntroRunning )
 			{
-				TSS.Opacity -= Time.Delta * pawn.currentExerciseSpeed * 0.5f;
+				TSS.Opacity -= Time.Delta * pawn.CurrentExerciseSpeed * 0.5f;
 
 				if ( TSS.Opacity <= 0f )
 				{

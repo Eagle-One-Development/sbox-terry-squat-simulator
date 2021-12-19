@@ -17,21 +17,24 @@ namespace TSS
 		[ServerCmd( "heaven" )]
 		public static void GoToHeaven()
 		{
-			//Find the spawn with the tpye heaven
-			var ent = All.OfType<TSSSpawn>().ToList().Find( x => x.SpawnType == SpawnType.Heaven );
-			//Set our exercise position to that ents position
-			TSSPlayer.Instance.ExercisePosition = ent.Transform.Position;
-			//Move our player there
-			TSSPlayer.Instance.Position = ent.Transform.Position;
-			TSSPlayer.Instance.Rotation = ent.Transform.Rotation;
-			//Create the particle that goes behind the player
-			TSSPlayer.Instance.CreateNearEndParticle( To.Single( TSSPlayer.Instance ) );
-			//Set a variable tracking if we've gone to heaven or not to true
-			TSSPlayer.Instance.CanGoToHeaven = true;
-			//Set the exercise to the squat exercise
-			TSSPlayer.Instance.ChangeExercise( Exercise.Squat );
+			if ( ConsoleSystem.Caller.Pawn is TSSPlayer player )
+			{
+				//Find the spawn with the tpye heaven
+				var ent = All.OfType<TSSSpawn>().ToList().Find( x => x.SpawnType == SpawnType.Heaven );
+				//Set our exercise position to that ents position
+				player.ExercisePosition = ent.Transform.Position;
+				//Move our player there
+				player.Position = ent.Transform.Position;
+				player.Rotation = ent.Transform.Rotation;
+				//Create the particle that goes behind the player
+				player.CreateNearEndParticle( To.Single( player ) );
+				//Set a variable tracking if we've gone to heaven or not to true
+				player.CanGoToHeaven = true;
+				//Set the exercise to the squat exercise
+				player.ChangeExercise( Exercise.Squat );
 
-			TSSPlayer.Instance.PointCeiling = TSSPlayer.Instance.ExercisePoints + 300;
+				player.PointCeiling = player.ExercisePoints + 300;
+			}
 
 		}
 
@@ -42,11 +45,14 @@ namespace TSS
 		[ServerCmd( "create_punch" )]
 		public static void CreatePunchQT()
 		{
-			var pt = new PunchQT();
-			pt.Player = Instance;
-			pt.TargetTime = 1f;
-			pt.MyTime = (60f / 140f) * 2f;
-			pt.Type = Rand.Int( 0, 3 );
+			if ( ConsoleSystem.Caller.Pawn is TSSPlayer player )
+			{
+				var pt = new PunchQT();
+				pt.Player = player;
+				pt.TargetTime = 1f;
+				pt.MyTime = (60f / 140f) * 2f;
+				pt.Type = Rand.Int( 0, 3 );
+			}
 
 		}
 
@@ -57,17 +63,16 @@ namespace TSS
 		[ServerCmd( "yoga_pose" )]
 		public static void SetPose( int i )
 		{
-			if ( Instance.CurrentExercise != Exercise.Yoga )
+			if ( ConsoleSystem.Caller.Pawn is TSSPlayer player )
 			{
-				return;
+				if ( player.CurrentExercise != Exercise.Yoga )
+				{
+					return;
+				}
+
+				player.CurrentYogaPosition = i;
+				player.GivePoints( 5 );
 			}
-
-			var pawn = TSSGame.Pawn;
-
-
-			Instance.CurrentYogaPosition = i;
-			Instance.GivePoints( 5 );
-
 
 		}
 	}
