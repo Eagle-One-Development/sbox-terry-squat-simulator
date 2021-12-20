@@ -135,35 +135,10 @@ namespace TSS
 		public bool EndingInitiated { get; set; }
 
 		/// <summary>
-		/// I don't know what the difference between this and ending initiated are. I need to investigate
-		/// </summary>
-		[Net]
-		public bool EndingConditionMet { get; set; }
-
-
-		/// <summary>
 		/// Whether we've introduced running or not
 		/// </summary>
 		[Net]
 		public bool IntroRunning { get; set; }
-
-		/// <summary>
-		/// Whether we've introduced the punching mini-game or not
-		/// </summary>
-		[Net]
-		public bool IntroPunching { get; set; }
-		/// <summary>
-		/// Whether we've introduced the yoga game or not
-		/// </summary>
-		[Net]
-		public bool IntroYoga { get; set; }
-
-		/// <summary>
-		/// This is an array of booleans used to check if various things are true. Unsure what's being used,
-		/// but these need to be replaced with the exercise events where relevant
-		/// </summary>
-		[Net]
-		public bool[] TimeLines { get; set; } = new bool[20];
 
 		/// <summary>
 		/// Wether the intro has been played or not
@@ -457,17 +432,6 @@ namespace TSS
 		#region Ending
 		public void HandleEnding()
 		{
-			if ( IsServer )
-			{
-				if ( ExercisePoints >= HeavenThreshold + 65 && !EndingConditionMet )
-				{
-					StartEnding();
-
-					EndingConditionMet = true;
-					ExercisePoints++;
-				}
-			}
-
 			//Initiate the new pawn after the ending sound has played
 			if ( TimeSinceEnding > 13.278f && EndingInitiated )
 			{
@@ -511,6 +475,12 @@ namespace TSS
 			Timeline.Add( new ExerciseEvent( () => (ExercisePoints >= 400), () => {
 				ChangeExercise( Exercise.Yoga );
 			} ) );
+
+			//Initiate the ending
+			Timeline.Add( new ExerciseEvent( () => (ExercisePoints >= HeavenThreshold + 65), () => {
+				StartEnding();
+			} ) );
+
 		}
 		
 		/// <summary>
