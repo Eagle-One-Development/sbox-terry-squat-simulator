@@ -59,9 +59,8 @@ namespace TSS
 		[Net]
 		public int PointCeiling { get; set; } = 500;
 
-
-		
-
+		[Net]
+		public ExerciseComponent CurrentExerciseComponent { get; set; }
 
 		/// <summary>
 		/// A variable representing how fast or often we are exercising. This decays over timeand controls things like the camera movement
@@ -70,66 +69,22 @@ namespace TSS
 		/// <summary>
 		/// This is a target value which current sped move towards.
 		/// </summary>
-		private float TargetExerciseSpeed;
+		public float TargetExerciseSpeed;
 
-		#region Squatting
-		/// <summary>
-		/// A value to drive whether or not we're in the 'up' or 'down' squat position. Used to drive animation and figure out when we've completed a full squat.
-		/// </summary>
-		[Net, Predicted]
-		public int Squat { get; set; }
 
-		/// <summary>
-		/// A reference to the barbell model
-		/// </summary>
-		public ModelEntity Barbell;
-		#endregion
+		public void InitializeComponenets()
+		{
+			Components.Create<SquatComponenet>();
+			Components.Create<RunComponent>();
+			Components.Create<PunchComponent>();
+			Components.Create<YogaComponent>();
 
-		#region Running
-		/// <summary>
-		/// The time since we stopped running. 
-		/// TODO: Review for redundancy with TimeSinceExerciseStopped
-		/// </summary>
-		[Net, Predicted]
-		public TimeSince TimeSinceRun { get; set; }
+			foreach (var e in Components.GetAll<ExerciseComponent>() )
+			{
+				e.Initialize();
+			}
+		}
 
-		/// <summary>
-		/// A vector3 representing the player slipping off the treadmill.
-		/// </summary>
-		[Net]
-		public float RunPositionOffset { get; set; }
-
-		#endregion
-
-		#region Punching
-		/// <summary>
-		/// The time since we last punch
-		/// TODO: Review for redundancy with TimeSinceExerciseStopped
-		/// </summary>
-		[Net, Predicted]
-		public TimeSince TimeSincePunch { get; set; }
-
-		/// <summary>
-		/// The time between punches. Lets us know when to spawn another punch quick time event
-		/// </summary>
-		[Net]
-		public float TimeToNextPunch { get; set; }
-		#endregion
-
-		#region Yoga
-		/// <summary>
-		/// The time since we last did a yoga pose.
-		/// TODO: Review for redundancy with TimeSinceExerciseStopped
-		/// </summary>
-		[Net]
-		public TimeSince TimeSinceYoga { get; set; }
-
-		/// <summary>
-		/// The current 'position' our player is posing in for yoga
-		/// </summary>
-		[Net]
-		public int CurrentYogaPosition { get; set; } = -1;
-		#endregion
 
 		#region Soda
 		/// <summary>
@@ -400,7 +355,7 @@ namespace TSS
 		/// <param name="f">The scale to set the player</param>
 		public async void SetScale( float f )
 		{
-			await GameTask.DelaySeconds( 0.1f );
+			await GameTask.DelaySeconds( 0.05f );
 			Scale = f;
 		}
 
@@ -415,10 +370,7 @@ namespace TSS
 			TargetExerciseSpeed = TargetExerciseSpeed.Clamp( 0, 1 );
 			CurrentExerciseSpeed = CurrentExerciseSpeed.Clamp( 0, 1 );
 			var mult = MathX.LerpInverse( TimeSinceExerciseStopped, 0, 1 );
-			if ( CurrentExercise == Exercise.Run )
-			{
-				mult = MathX.LerpInverse( TimeSinceRun, 0, 1 );
-			}
+			
 
 			TargetExerciseSpeed = TargetExerciseSpeed.LerpTo( 0f, Time.Delta * 0.25f * (mult * 4f) );
 			CurrentExerciseSpeed = CurrentExerciseSpeed.LerpTo( TargetExerciseSpeed, Time.Delta * 2f );
@@ -433,6 +385,8 @@ namespace TSS
 			//Define an entity who's transform represents the position and rotation of the given exercise
 			Entity ent = null;
 
+			CurrentExerciseComponent = Components.GetAll<ExerciseComponent>().Where( x => x.ExerciseType == exercise ).First();
+
 			//Perform various pieces of code to clean up the previous exercise
 			//TODO: Probably can be its own function
 			if ( CurrentExercise != exercise )
@@ -440,15 +394,19 @@ namespace TSS
 				switch ( CurrentExercise )
 				{
 					case Exercise.Squat:
-						Barbell?.Delete();
-						Barbell = null;
 						break;
 					case Exercise.Yoga:
-						CurrentYogaPosition = 0;
+						;
 						break;
 					case Exercise.Run:
 						break;
 				}
+			
+			}
+
+			foreach(var e in Components.GetAll<ExerciseComponent>() )
+			{
+				e.Cleanup();
 			}
 
 			//Look at each exercise and set ent to the appropriate TSS spawn with the requested spawn type
@@ -465,7 +423,8 @@ namespace TSS
 					break;
 				case Exercise.Squat:
 					ent = All.OfType<TSSSpawn>().ToList().Find( x => x.SpawnType == SpawnType.Squat );
-					StartSquatting();
+					var squat = Components.GetAll<SquatComponenet>().First();
+					squat.StartSquatting();
 					break;
 				case Exercise.Punch:
 					ent = All.OfType<TSSSpawn>().ToList().Find( x => x.SpawnType == SpawnType.Punch );
@@ -509,11 +468,13 @@ namespace TSS
 		/// </summary>
 		private void EvaluateSodaAnim()
 		{
+			var squat = Components.GetAll<SquatComponenet>().First();
+
 			if ( TimeSinceSoda > 1.7f )
 			{
-				if ( Barbell.IsValid() )
+				if ( squat.Barbell.IsValid() )
 				{
-					Barbell.EnableDrawing = true;
+					squat.Barbell.EnableDrawing = true;
 				}
 				if ( SodaCan.IsValid() )
 				{
@@ -525,266 +486,13 @@ namespace TSS
 		}
 		#endregion
 
-		/// <summary>
-		/// Initialize the squatting exercise state
-		/// </summary>
-		public void StartSquatting()
-		{
-			Barbell?.Delete();
-			Barbell = new ModelEntity( "models/dumbbll/dumbbell.vmdl" );
-			Barbell.Position = (Vector3)GetAttachment( "dumbbell" )?.Position;
-			Barbell.SetParent( this, "head" );
-			Barbell.Rotation = Rotation * Rotation.From( 0, 0, 90 );
-			Squat = 0;
-		}
 
-		/// <summary>
-		/// Initializes the punch exercise state
-		/// </summary>
-		public void StartPunching()
-		{
-			TimeToNextPunch = 1.1f;
-		}
+		
+		
 
-		/// <summary>
-		/// The running exercise
-		/// </summary>
-		/// <param name="cam"></param>
-		public void SimulateRunning( TSSCamera cam )
-		{
-			SetAnimFloat( "move_x", MathX.LerpTo( 0, 350f, (CurrentExerciseSpeed * 4f).Clamp( 0, 1f ) ) );
-
-			//We're going to set our position to the RunPosition + some offset
-			Position = ExercisePosition + Rotation.Forward * -RunPositionOffset;
-
-			//Basically we're going to use our curSpeed, a value which determines how fast we are running, to determine if we're moving forward or backward on the treadmill
-			float treadSpeed = (CurrentExerciseSpeed / 0.28f).Clamp(0f,1f);
-			//Basically check and see if we're exercising fast enough, if not, uptick the run position offset to make us 
-			if(treadSpeed >= 0.6f )
-			{
-				RunPositionOffset -= Time.Delta * 25f;
-			}
-			else
-			{
-				RunPositionOffset += Time.Delta * (1f - treadSpeed) * 50f;
-			}
-			RunPositionOffset = RunPositionOffset.Clamp( -10f, 45f );
-			
-
-			if(RunPositionOffset >= 45f )
-			{
-				BecomeRagdollOnClient( (Rotation.Forward * -1f + Vector3.Up).Normal * 250f, 0 );
-				RunPositionOffset = 0f;
-				CurrentExerciseSpeed = 1f;
-				TimeSinceExerciseStopped = 0f;
-				TimeSinceRagdolled = 0f;
-			}
-			
-
-			if ( cam == null )
-			{
-				return;
-			}
-
-			
-
-			if ( TimeSinceRun < 3f && Squat != -1 )
-			{
-				cam.Progress += Time.Delta * 0.35f;
-			}
-
-			if ( Input.Pressed( InputButton.Right ) && Input.Pressed( InputButton.Left ) )
-			{
-				return;
-			}
-
-			if ( Input.Pressed( InputButton.Right ) && (Squat == 0 || Squat == -1) && TimeSinceDownPressed > TSSGame.QUARTER_NOTE_DURATION )
-			{
-				if ( Squat == 0 )
-				{
-					TargetExerciseSpeed += 0.1f;
-					CreatePoint( 1 );
-					SetScale( 1.2f );
-					CounterBump( 0.5f );
-					TimeSinceExerciseStopped = 0;
-					ExercisePoints++;
-					if ( cam.Up != null )
-						cam.Up.TextScale += 0.3f;
-				}
-				Squat = 1;
-				TimeSinceUpPressed = 0;
-			}
-
-			if ( Input.Pressed( InputButton.Left ) && (Squat == 1 || Squat == -1) && TimeSinceUpPressed > TSSGame.QUARTER_NOTE_DURATION )
-			{
-				Squat = 0;
-				TimeSinceDownPressed = 0;
-				if ( cam.Down != null )
-					cam.Down.TextScale += 0.3f;
-			}
-		}
-
-		/// <summary>
-		/// The punching exercise
-		/// </summary>
-		/// <param name="cam"></param>
-		public void SimulatePunching( TSSCamera cam )
-		{
-			if ( cam == null )
-			{
-				return;
-			}
-
-			SetAnimInt( "punch", Squat );
-
-			if ( TimeSincePunch > TimeToNextPunch )
-			{
-				TimeSincePunch = 0;
-
-			}
-		}
-
-		[Event( "OtherBeat" )]
-		public void PunchBeat()
-		{
-			if ( EndingInitiated )
-			{
-				return;
-			}
-			if ( CurrentExercise == Exercise.Punch )
-			{
-				ConsoleSystem.Run( "create_punch" );
-			}
-		}
-
-		/// <summary>
-		/// Makes the player punch and moves the 'squat' variable so it alternated between left and right punches
-		/// </summary>
-		public void Punch()
-		{
-			ExercisePoints += 3;
-			TargetExerciseSpeed += 0.1f;
-			CreatePoint( 3 );
-			Scale = 1.2f;
-			CounterBump( 0.5f );
-			TimeSinceExerciseStopped = 0;
-
-			//var sound = PlaySound( $"squat_0{Rand.Int( 1, 7 )}" );
-			//sound.SetPitch( (300f / (50 + Math.Max( 1f, ExercisePoints ))).Clamp( 0.5f, 1.0f ) );
-
-			if ( Squat == 0 )
-			{
-				Squat = 1;
-				return;
-			}
-
-			if ( Squat == 1 )
-			{
-				Squat = 0;
-				return;
-			}
-		}
+		
 
 
-		/// <summary>
-		/// Simulate the yoga exercise state
-		/// </summary>
-		/// <param name="cam"></param>
-		public void SimulateYoga( TSSCamera cam )
-		{
-			SetAnimInt( "YogaPoses", CurrentYogaPosition );
-			SetAnimBool( "b_grounded", CurrentYogaPosition == 0 );
 
-			if ( cam == null )
-			{
-				return;
-			}
-
-			if ( TimeSinceYoga > 3.05f )
-			{
-				TimeSinceYoga = 0;
-
-				if ( IsClient )
-				{
-					// Prevent duplicate yoga qt panels appearing when alt-tabbed.
-					if (All.OfType<YogaQT>().Count() == 0)
-					{
-						var pt = new YogaQT();
-						pt.Player = this;
-					}
-				}
-			}
-		}
-
-		/// <summary>
-		/// The Squatting exercise
-		/// </summary>
-		/// <param name="cam"></param>
-		public void SimulateSquatting( TSSCamera cam )
-		{
-			if ( cam == null )
-			{
-				return;
-			}
-
-			if ( Barbell != null )
-			{
-				//Barbell.LocalPosition = Vector3.Zero + Barbell.Transform.Rotation.Right * 15.5f;
-			}
-
-			SetAnimInt( "squat", Squat );
-
-			if ( TimeSinceExerciseStopped < 3f && Squat != -1 && !cam.IntroComplete )
-			{
-				float f = (TimeSinceExerciseStopped - 1f) / 3f;
-				f = MathF.Pow( f.Clamp( 0, 1f ), 3f );
-				cam.Progress += Time.Delta * 0.025f * (1 - f);
-			}
-
-			if ( TimeSinceExerciseStopped < 3f && Squat != -1 && cam.IntroComplete )
-			{
-				cam.Progress += Time.Delta * 0.35f;
-			}
-
-			if ( Input.Pressed( InputButton.Forward ) && Input.Pressed( InputButton.Back ) )
-			{
-				return;
-			}
-
-			if ( Input.Pressed( InputButton.Forward ) && (Squat == 0 || Squat == -1) && TimeSinceDownPressed > TSSGame.QUARTER_NOTE_DURATION )
-			{
-
-				if ( Squat == 0 )
-				{
-
-					ExercisePoints++;
-					TargetExerciseSpeed += 0.1f;
-					CreatePoint( 1 );
-					SetScale( 1.2f );
-					CounterBump( 0.5f );
-					TimeSinceExerciseStopped = 0;
-
-
-					if ( cam.Up != null )
-						cam.Up.TextScale += 0.3f;
-				}
-				Squat = 1;
-				TimeSinceUpPressed = 0;
-				//var sound = PlaySound( $"squat_0{Rand.Int( 1, 7 )}" );
-				//sound.SetPitch( (100f / (50 + Math.Max( 1f, ExercisePoints ))).Clamp( 0.5f, 1.0f ));
-
-			}
-
-			if ( Input.Pressed( InputButton.Back ) && (Squat == 1 || Squat == -1) && TimeSinceUpPressed > TSSGame.QUARTER_NOTE_DURATION )
-			{
-				Squat = 0;
-				TimeSinceDownPressed = 0;
-				if ( cam.Down != null )
-					cam.Down.TextScale += 0.3f;
-
-				//var sound = PlaySound( $"squat_0{Rand.Int(1, 7)}" );
-				//sound.SetPitch( (100f / (50 + Math.Max( 1f, ExercisePoints ))).Clamp( 0.5f, 1.0f ) );
-			}
-		}
 	}
 }

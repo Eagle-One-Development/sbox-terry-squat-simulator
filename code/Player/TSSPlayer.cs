@@ -135,12 +135,6 @@ namespace TSS
 		public bool EndingInitiated { get; set; }
 
 		/// <summary>
-		/// Whether we've introduced running or not
-		/// </summary>
-		[Net]
-		public bool IntroRunning { get; set; }
-
-		/// <summary>
 		/// Wether the intro has been played or not
 		/// </summary>
 		public bool IntroPlayed;
@@ -171,8 +165,8 @@ namespace TSS
 
 		public override void Respawn()
 		{
-			
 
+			InitializeComponenets();
 			//Enable various drawing stuff
 			EnableAllCollisions = true;
 			EnableDrawing = true;
@@ -188,6 +182,7 @@ namespace TSS
 
 			//Set the initial exercise to squat
 			ChangeExercise( Exercise.Squat );
+			CurrentExerciseComponent = Components.GetAll<SquatComponenet>().First();
 
 			//Set this to 4 seconds so that the camera already starts 'stopped'
 			TimeSinceExerciseStopped = 4f;
@@ -268,22 +263,8 @@ namespace TSS
 			//Get a reference to the camera
 			TSSCamera cam = (Camera as TSSCamera);
 
-			//Simulate the current exercise based on the current exercise variable
-			switch ( CurrentExercise )
-			{
-				case Exercise.Squat:
-					SimulateSquatting( cam );
-					break;
-				case Exercise.Run:
-					SimulateRunning( cam );
-					break;
-				case Exercise.Punch:
-					SimulatePunching( cam );
-					break;
-				case Exercise.Yoga:
-					SimulateYoga( cam );
-					break;
-			}
+			//Simulate our current exercise
+			Components.GetAll<ExerciseComponent>().Where( x => x.ExerciseType == CurrentExercise ).First().Simulate(cl);
 
 			//Handling timeline is where we handle the progression of the game
 			HandleTimeline();
@@ -292,7 +273,7 @@ namespace TSS
 			HandleExerciseSpeed();
 
 			//Lerps our scale back down to 1 so we can do effects to make terry 'bump'
-			Scale = Scale.LerpTo( 1, Time.Delta * 10f );
+			Scale = Scale.LerpTo( 1f, Time.Delta * 10f );
 
 			//This block of code is going to cause the player to blink in and and out of existence after ragdolling
 			//This indicates that the player has a period of invulnerability
@@ -300,7 +281,6 @@ namespace TSS
 
 			//Handles the score counter behind the player
 			HandleCounter();
-
 
 			SimulateActiveChild( cl, ActiveChild );
 		}
@@ -345,13 +325,13 @@ namespace TSS
 		/// </summary>
 		public void StartEnding()
 		{
-
+			var squat = Components.GetAll<SquatComponenet>().First();
 			//Delete the barbell
-			if ( Barbell.IsValid() )
+			if ( squat.Barbell.IsValid() )
 			{
-				Barbell.EnableDrawing = false;
+				squat.Barbell.EnableDrawing = false;
 			}
-			Barbell?.Delete();
+			squat.Barbell?.Delete();
 
 			//Reset the timer used to tell when the ending has occurred
 			TimeSinceEnding = 0;
@@ -410,11 +390,14 @@ namespace TSS
 		/// </summary>
 		public void DrinkSoda()
 		{
+			var squat = Components.GetAll<SquatComponenet>().First();
+			
 			//Disable drawing the barbell
-			if ( Barbell.IsValid() )
+			if ( squat.Barbell.IsValid() )
 			{
-				Barbell.EnableDrawing = false;
+				squat.Barbell.EnableDrawing = false;
 			}
+
 			//Enable drawing the soda can
 			if ( SodaCan.IsValid() )
 			{
@@ -455,15 +438,12 @@ namespace TSS
 			//Introduce the running exercise
 			Timeline.Add( new ExerciseEvent( () => (ExercisePoints >= 200), () => {
 				ChangeExercise( Exercise.Run );
-				TSSGame.Current.SetTarVolume( 1 );
-				TSSGame.Current.SetTarVolume( 7 );
-				TimeSinceRun = 0f;
+				
 			} ));
 
 			//Add som new music
 			Timeline.Add( new ExerciseEvent( () => (ExercisePoints >= 100), () => {
-				TSSGame.Current.SetTarVolume( 3 );
-				TSSGame.Current.SetTarVolume( 2 );
+				TSSGame.Current.QueueTrack( "layer3" );
 			} ) );
 
 			//Introduce the punch exercise

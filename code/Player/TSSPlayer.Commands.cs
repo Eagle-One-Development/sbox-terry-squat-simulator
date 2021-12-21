@@ -38,6 +38,12 @@ namespace TSS
 
 		}
 
+		[ServerCmd("queue_random_track")]
+		public static void QueueRandomTrack()
+		{
+			int i = Rand.Int( 0, 3 );
+			TSSGame.Current.QueueTrack( $"layer{i}" );
+		}
 
 		/// <summary>
 		/// Command for creating the punch QT event
@@ -65,12 +71,13 @@ namespace TSS
 		{
 			if ( ConsoleSystem.Caller.Pawn is TSSPlayer player )
 			{
+				var component = player.Components.GetAll<YogaComponent>().First();
 				if ( player.CurrentExercise != Exercise.Yoga )
 				{
 					return;
 				}
 
-				player.CurrentYogaPosition = i;
+				component.CurrentYogaPosition = i;
 				player.GivePoints( 5 );
 			}
 

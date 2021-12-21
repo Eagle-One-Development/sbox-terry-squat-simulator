@@ -134,7 +134,7 @@ namespace TSS
 			TimedProgress = TimedProgress.LerpTo( TimeSinceState / 5f, Time.Delta * 8f );
 			TimedProgress = TimedProgress.Clamp( 0f, 1f );
 
-			if ( TSS != null && IntroComplete && !pawn.IntroRunning )
+			if ( TSS != null && IntroComplete && pawn.CurrentExercise != Exercise.Run )
 			{
 				TSS.Opacity -= Time.Delta * pawn.CurrentExerciseSpeed * 0.5f;
 
@@ -152,30 +152,31 @@ namespace TSS
 
 			#region Run Tutorial Prompt
 			//Spawn a tutorial prompt for running
-			if ( pawn.IntroRunning)
-			{
-				if ( !RunTutorial && pawn.CurrentExercise == Exercise.Run)
-				{
-					Down?.Delete();
-					Up?.Delete();
-					Down = null;
-					Up = null;
-					Up ??= new CreditPanel( Input.GetKeyWithBinding( "+iv_right" ).ToUpper(), 200, 200 );
-					Down ??= new CreditPanel( Input.GetKeyWithBinding( "+iv_left" ).ToUpper(), 200, 200 );
-					
-				
-					RunTutorial = true;
-				}
 
+			if ( !RunTutorial && pawn.CurrentExercise == Exercise.Run)
+			{
+				Down?.Delete();
+				Up?.Delete();
+				Down = null;
+				Up = null;
+				Up ??= new CreditPanel( Input.GetKeyWithBinding( "+iv_right" ).ToUpper(), 200, 200 );
+				Down ??= new CreditPanel( Input.GetKeyWithBinding( "+iv_left" ).ToUpper(), 200, 200 );
+				
+			
+				RunTutorial = true;
 			}
+
 
 			//Basically fade these out after a few seconds.
 			if ( RunTutorial && !RunTutorialComplete)
 			{
 				float runTutAlph = 0f;
-				if(pawn.TimeSinceRun > 8f )
+
+				var component = pawn.Components.GetAll<RunComponent>().First();
+
+				if ( component.TimeSinceRun > 8f )
 				{
-					runTutAlph = ((pawn.TimeSinceRun - 8f) / 3f).Clamp( 0, 1f );
+					runTutAlph = ((component.TimeSinceRun - 8f) / 3f).Clamp( 0, 1f );
 				}
 
 				if ( Up != null && Down != null )
@@ -191,7 +192,7 @@ namespace TSS
 					Down.Rotation = pawn.Rotation;
 					Down.Opacity = 1 - runTutAlph;
 
-					if ( pawn.TimeSinceRun > 15f )
+					if ( component.TimeSinceRun > 15f )
 					{
 						RunTutorialComplete = true;
 						Down?.Delete();
@@ -221,7 +222,7 @@ namespace TSS
 
 			if ( Progress > 0.01f )
 			{
-				TSSGame.Current.SetTarVolume( 6 );
+				TSSGame.Current.SetSingleTarVolume( 0 );
 			}
 
 			if ( Progress < 0.25f )
@@ -315,7 +316,7 @@ namespace TSS
 				Position = center + Rotation.FromYaw( yaw ).Forward * CamDistance;
 				Rotation = Rotation.LookAt( center - Position, Vector3.Up );
 
-				TSSGame.Current.SetTarVolume( 0 );
+				//TSSGame.Current.SetSingleTarVolume( 1 );
 
 			}
 
@@ -348,7 +349,7 @@ namespace TSS
 				Position = center + pawn.Rotation.Forward * CamDistance;
 				Rotation = Rotation.LookAt( (center - Position), Vector3.Up );
 
-				TSSGame.Current.SetTarVolume( 5 );
+
 			}
 
 			if ( Progress >= 0.75f && Progress <= 1f )
@@ -364,7 +365,7 @@ namespace TSS
 				TSS.Opacity = p * 2f;
 				TSS.Bop = true;
 
-				TSSGame.Current.SetTarVolume( 4 );
+				//TSSGame.Current.SetSingleTarVolume( 2 );
 
 
 				var center = pawn.ExercisePosition + Vector3.Up * IntroCamHeight;
@@ -385,6 +386,8 @@ namespace TSS
 					TSS?.Delete();
 					TSS = null;
 				}
+
+				
 
 				SCounter ??= new CreditPanel( "Squats: 0", 3200, 3200 );
 				SCounter.Position = pawn.ExercisePosition + Vector3.Up * 30f + pawn.Rotation.Forward * -50f;

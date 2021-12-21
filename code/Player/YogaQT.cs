@@ -71,8 +71,6 @@ namespace TSS
 
 			bool b = CheckType( type );
 
-
-
 			if ( CheckFailure( type ) )
 			{
 				Panel.Failed = true;

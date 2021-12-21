@@ -4,7 +4,7 @@
 	{
 		sounds = 
 		[
-			"sounds/tracks/layer 4 organs.vsnd",
+			"sounds/tracks/test layers/layer 4.vsnd",
 		]
 		ui = true
 		volume = 1.0

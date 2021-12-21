@@ -4,7 +4,7 @@
 	{
 		sounds = 
 		[
-			"sounds/tracks/layer 1 echo piano.vsnd",
+			"sounds/tracks/test layers/layer 1.vsnd",
 		]
 		ui = true
 		volume = 1.0

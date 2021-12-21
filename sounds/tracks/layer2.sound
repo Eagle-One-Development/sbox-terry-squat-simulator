@@ -4,7 +4,7 @@
 	{
 		sounds = 
 		[
-			"sounds/tracks/layer 3 electric piano.vsnd",
+			"sounds/tracks/test layers/layer 3.vsnd",
 		]
 		ui = true
 		volume = 1.0
