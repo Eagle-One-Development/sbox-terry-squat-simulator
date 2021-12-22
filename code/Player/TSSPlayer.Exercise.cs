@@ -440,6 +440,7 @@ namespace TSS
 			if ( ExercisePoints > HeavenThreshold && CanGoToHeaven )
 			{
 				ent = All.OfType<TSSSpawn>().ToList().Find( x => x.SpawnType == SpawnType.Heaven );
+				TSSGame.Current.QueueTrack( "queue4" );
 			}
 
 			//If the ent isn't null, then set our exercise position and transform to that entity.

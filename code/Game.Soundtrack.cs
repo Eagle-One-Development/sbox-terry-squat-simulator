@@ -245,12 +245,12 @@ namespace TSS
 			Tracks = new List<MusicLayer>();
 			Tracks.Clear();
 
-			volumes = new float[4];
-			tarVolumes = new float[4];
+			volumes = new float[7];
+			tarVolumes = new float[7];
 
-			for ( int i = 0; i < 4; i++ )
+			for ( int i = 0; i < 7; i++ )
 			{
-				string str = $"layer{i}";
+				string str = $"intro{i}";
 
 				Music.Add( Sound.FromScreen( str ) );
 				volumes[i] = 0;

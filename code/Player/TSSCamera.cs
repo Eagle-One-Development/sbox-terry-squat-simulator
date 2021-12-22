@@ -222,12 +222,14 @@ namespace TSS
 
 			if ( Progress > 0.01f )
 			{
-				TSSGame.Current.SetSingleTarVolume( 0 );
+				TSSGame.Current.SetTarVolume( 1 );
+				TSSGame.Current.SetTarVolume( 0 );
+
 			}
 
 			if ( Progress < 0.25f )
 			{
-
+				
 				JoshWilson ??= new CreditPanel( "Josh Wilson", 3200, 3200 );
 				JoshWilson.Position = pawn.ExercisePosition + Vector3.Up * 10f + pawn.Rotation.Forward * -20f;
 				JoshWilson.Rotation = Rotation.From( 0, 90, 0 );
@@ -317,7 +319,8 @@ namespace TSS
 				Rotation = Rotation.LookAt( center - Position, Vector3.Up );
 
 				//TSSGame.Current.SetSingleTarVolume( 1 );
-
+				TSSGame.Current.SetTarVolume( 2 );
+				TSSGame.Current.SetTarVolume( 3 );
 			}
 
 			if ( Progress >= 0.5f )
@@ -349,6 +352,8 @@ namespace TSS
 				Position = center + pawn.Rotation.Forward * CamDistance;
 				Rotation = Rotation.LookAt( (center - Position), Vector3.Up );
 
+				TSSGame.Current.SetTarVolume( 5 );
+
 
 			}
 
@@ -366,6 +371,7 @@ namespace TSS
 				TSS.Bop = true;
 
 				//TSSGame.Current.SetSingleTarVolume( 2 );
+				TSSGame.Current.SetTarVolume( 4 );
 
 
 				var center = pawn.ExercisePosition + Vector3.Up * IntroCamHeight;
@@ -387,7 +393,7 @@ namespace TSS
 					TSS = null;
 				}
 
-				
+				TSSGame.Current.SetTarVolume( 6 );
 
 				SCounter ??= new CreditPanel( "Squats: 0", 3200, 3200 );
 				SCounter.Position = pawn.ExercisePosition + Vector3.Up * 30f + pawn.Rotation.Forward * -50f;

@@ -438,22 +438,25 @@ namespace TSS
 			//Introduce the running exercise
 			Timeline.Add( new ExerciseEvent( () => (ExercisePoints >= 200), () => {
 				ChangeExercise( Exercise.Run );
-				
+				TSSGame.Current.QueueTrack( "queue1" );
 			} ));
 
 			//Add som new music
 			Timeline.Add( new ExerciseEvent( () => (ExercisePoints >= 100), () => {
-				TSSGame.Current.QueueTrack( "layer3" );
+				TSSGame.Current.QueueTrack( "queue0" );
 			} ) );
 
 			//Introduce the punch exercise
 			Timeline.Add( new ExerciseEvent( () => (ExercisePoints >= 300), () => {
 				ChangeExercise( Exercise.Punch );
+				TSSGame.Current.QueueTrack( "queue2" );
+
 			} ) );
 
 			//Introduce the yoga exercise
 			Timeline.Add( new ExerciseEvent( () => (ExercisePoints >= 400), () => {
 				ChangeExercise( Exercise.Yoga );
+				TSSGame.Current.QueueTrack( "queue3" );
 			} ) );
 
 			//Initiate the ending
