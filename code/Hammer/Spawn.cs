@@ -13,7 +13,8 @@ public enum SpawnType
 	Yoga,
 	Heaven,
 	Void,
-	Nature
+	Nature,
+	NatureExercise
 }
 
 [Hammer.EditorModel( "models/dev/playerstart_tint.vmdl" )]
