@@ -4,7 +4,7 @@
 	{
 		sounds = 
 		[
-			"sounds/tracks/additional layers/queue0.vsnd",
+			"sounds/tracks/additionallayers/queue0.vsnd",
 		]
 		ui = true
 		volume = 1.0

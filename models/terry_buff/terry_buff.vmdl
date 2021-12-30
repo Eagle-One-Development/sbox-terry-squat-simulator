@@ -1242,6 +1242,98 @@
 								[
 									{
 										_class = "AnimFile"
+										name = "Airborne_Flail_Up_delta"
+										children = 
+										[
+											{
+												_class = "AnimSmoothLoop"
+												frames_from_start = 2
+												frames_from_end = 2
+											},
+											{
+												_class = "AnimSubtract"
+												anim_name = "Airborne_Up"
+												frame = 0
+											},
+										]
+										activity_name = ""
+										activity_weight = 1
+										weight_list_name = ""
+										fade_in_time = 0.2
+										fade_out_time = 0.2
+										looping = true
+										delta = false
+										worldSpace = false
+										hidden = false
+										anim_markup_ordered = false
+										disable_compression = false
+										source_filename = "models/citizen/animations/citizen@airborne_flail_up.fbx"
+										start_frame = -1
+										end_frame = -1
+										framerate = -1.0
+										take = 0
+										reverse = false
+									},
+									{
+										_class = "AnimFile"
+										name = "Airborne_Flail_Neutral_delta"
+										children = 
+										[
+											{
+												_class = "AnimSubtract"
+												anim_name = "IdlePose_Default"
+												frame = 0
+											},
+										]
+										activity_name = ""
+										activity_weight = 1
+										weight_list_name = ""
+										fade_in_time = 0.2
+										fade_out_time = 0.2
+										looping = true
+										delta = false
+										worldSpace = false
+										hidden = false
+										anim_markup_ordered = false
+										disable_compression = false
+										source_filename = "models/citizen/animations/citizen@airborne_flail_neutral.fbx"
+										start_frame = -1
+										end_frame = -1
+										framerate = -1.0
+										take = 0
+										reverse = false
+									},
+									{
+										_class = "AnimFile"
+										name = "Airborne_Flail_Down_delta"
+										children = 
+										[
+											{
+												_class = "AnimSubtract"
+												anim_name = "IdlePose_Default"
+												frame = 0
+											},
+										]
+										activity_name = ""
+										activity_weight = 1
+										weight_list_name = ""
+										fade_in_time = 0.2
+										fade_out_time = 0.2
+										looping = true
+										delta = false
+										worldSpace = false
+										hidden = false
+										anim_markup_ordered = false
+										disable_compression = false
+										source_filename = "models/citizen/animations/citizen@airborne_flail_down.fbx"
+										start_frame = -1
+										end_frame = -1
+										framerate = -1.0
+										take = 0
+										reverse = false
+									},
+									{
+										_class = "AnimFile"
 										name = "Airborne_C"
 										activity_name = ""
 										activity_weight = 1

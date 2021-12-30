@@ -23,7 +23,7 @@ partial class BuffPawn : Player
 		//
 		// Use StandardPlayerAnimator  (you can make your own PlayerAnimator for 100% control)
 		//
-		Animator = new StandardPlayerAnimator();
+		Animator = new BuffAnimator();
 
 		//
 		// Use ThirdPersonCamera (you can make your own Camera for 100% control)
