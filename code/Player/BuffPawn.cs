@@ -11,14 +11,19 @@ partial class BuffPawn : Player
 	Particles PortalPartic;
 	public TimeSince timeInSpace;
 
+	[Net] public TSSSpawn EndPoint { get; set; }
+
+	[Net] public bool CreditsStarted { get; set; }
+
+	[ClientRpc]
+	public void StartCredits()
+	{
+		EndingPanel.Instance.StartCredits();
+	}
+
 	public override void Respawn()
 	{
 		SetModel( "models/terry_buff/terry_buff.vmdl" );
-
-		//
-		// Use WalkController for movement (you can make your own PlayerController for 100% control)
-		//
-		//Controller = new WalkController();
 
 		//
 		// Use StandardPlayerAnimator  (you can make your own PlayerAnimator for 100% control)
@@ -37,11 +42,13 @@ partial class BuffPawn : Player
 		EnableHideInFirstPerson = true;
 		EnableShadowInFirstPerson = true;
 
-		//Transmit = TransmitType.Always;
-
 		var ent = All.OfType<TSSSpawn>().ToList().Find( x => x.SpawnType == SpawnType.Void );
 		Position = ent.Position;
 		Rotation = ent.Rotation;
+
+		EndPoint = All.OfType<TSSSpawn>().ToList().Find( x => x.SpawnType == SpawnType.NatureExercise );
+		
+		
 
 		CreatePortal( To.Single( this ) );
 		timeInSpace = 0f;
@@ -81,6 +88,17 @@ partial class BuffPawn : Player
 		TSSGame.Current.StartNature();
 	}
 
+	[ServerCmd( "credits" )]
+	public static void ChangePawn()
+	{
+		var pl = new TSSPlayer();
+		var oldPawn = ConsoleSystem.Caller.Pawn;
+		ConsoleSystem.Caller.Pawn = pl;
+		pl.SkipIntro = true;
+		pl.Respawn();
+		oldPawn.Delete();
+	}
+
 
 
 	/// <summary>
@@ -102,6 +120,27 @@ partial class BuffPawn : Player
 		if ( !InSpace )
 		{
 			timeInSpace = 0f;
+		}
+
+		if ( EndPoint != null )
+		{
+			DebugOverlay.Sphere( EndPoint.Position, 200f, Color.White, false, 0 );
+
+
+			if ( !IsClient )
+			{
+
+				if ( Vector3.DistanceBetween( Position, EndPoint.Position ) < 200f )
+				{
+					if ( !CreditsStarted )
+					{
+						StartCredits();
+						CreditsStarted = true;
+						Log.Info( "BEGIN THE CREDITS" );
+					}
+					
+				}
+			}
 		}
 
 		if ( !IsClient && InSpace )

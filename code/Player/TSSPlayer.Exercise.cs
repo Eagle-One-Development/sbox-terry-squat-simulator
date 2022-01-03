@@ -134,14 +134,6 @@ namespace TSS
 
 			ent.PhysicsGroup.AddVelocity( force );
 
-			_ = new ModelEntity( "models/clothes/fitness/shorts_fitness.vmdl", ent );
-			_ = new ModelEntity( "models/clothes/fitness/shirt_fitness.vmdl", ent );
-			_ = new ModelEntity( "models/clothes/fitness/shoes_sneakers.vmdl", ent );
-			_ = new ModelEntity( "models/clothes/fitness/sweatband_wrists.vmdl", ent );
-			_ = new ModelEntity( "models/clothes/fitness/sweatband_head.vmdl", ent );
-			_ = new ModelEntity( "models/clothes/fitness/hair_head.vmdl", ent );
-			_ = new ModelEntity( "models/clothes/fitness/hair_body.vmdl", ent );
-
 			if ( forceBone >= 0 )
 			{
 				var body = ent.GetBonePhysicsBody( forceBone );
@@ -156,8 +148,6 @@ namespace TSS
 			}
 
 			Corpse = ent;
-
-
 		}
 
 		/// <summary>
@@ -437,10 +427,15 @@ namespace TSS
 			//Basically if our exercise points are greater than the threshold, we move the player to the heaven void. This is done so we can switch exercises in this void
 			//and not have them jump back to the gym
 			//TODO: Do this better, or at least replace can go to heaven with an exercise event
-			if ( ExercisePoints > HeavenThreshold && CanGoToHeaven )
+			if ( ExercisePoints > HeavenThreshold && CanGoToHeaven && !SkipIntro)
 			{
 				ent = All.OfType<TSSSpawn>().ToList().Find( x => x.SpawnType == SpawnType.Heaven );
 				TSSGame.Current.QueueTrack( "queue4" );
+			}
+
+			if ( SkipIntro )
+			{
+				ent = All.OfType<TSSSpawn>().ToList().Find( x => x.SpawnType == SpawnType.NatureExercise );
 			}
 
 			//If the ent isn't null, then set our exercise position and transform to that entity.

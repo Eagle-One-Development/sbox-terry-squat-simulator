@@ -68,6 +68,9 @@ namespace TSS
 	{
 		#region Public Members
 
+		[Net]
+		public bool SkipIntro { get; set; } = false;
+
 		#region Visuals
 		/// <summary>
 		/// The "scale" of terry. Used client side to make him "bump", which sets this value to a specific level. It goes down to 1 via a lerp
@@ -179,6 +182,7 @@ namespace TSS
 
 			Animator = new TSSPlayerAnimator();
 			Camera = new TSSCamera();
+			(Camera as TSSCamera).SkipIntro = SkipIntro;
 
 			//Set the initial exercise to squat
 			ChangeExercise( Exercise.Squat );
@@ -198,6 +202,16 @@ namespace TSS
 
 			//This is to prevent blinking at the beginning of the game
 			TimeSinceRagdolled = 10f;
+
+			if ( SkipIntro )
+			{
+				ExercisePoints = HeavenThreshold + 65;
+			}
+
+			if ( !SkipIntro )
+			{
+				InitializeTimeline();
+			}
 
 			base.Respawn();
 		}
@@ -227,7 +241,7 @@ namespace TSS
 
 		public override void Spawn()
 		{
-			InitializeTimeline();
+			
 			base.Spawn();
 		}
 
@@ -238,7 +252,7 @@ namespace TSS
 			//This will play the intro once you press the left click
 			if ( IsClient )
 			{
-				if ( !IntroPlayed && Input.Pressed( InputButton.Attack1 ) && TimeSinceRagdolled > 12f )
+				if ( !IntroPlayed && Input.Pressed( InputButton.Attack1 ) && TimeSinceRagdolled > 12f && !SkipIntro )
 				{
 					IntroPlayed = true;
 					PlayMusic();
@@ -292,7 +306,7 @@ namespace TSS
 		/// </summary>
 		public async void PlayMusic()
 		{
-			await GameTask.Delay( 2000 );
+			await GameTask.Delay( 1000 );
 			TSSGame.Current.StartMusic();
 			TSSGame.Current.PlayIntro();
 		}
@@ -315,9 +329,12 @@ namespace TSS
 		[ClientRpc]
 		public void StartEndingTransition()
 		{
-			EndingPanel.Instance.Alph = 2f;
-			EndingPanel.Instance.FinalBlackout = true;
-			TSSGame.Current.PlayRantInstrumental();
+			if ( !SkipIntro )
+			{
+				EndingPanel.Instance.Alph = 2f;
+				EndingPanel.Instance.FinalBlackout = true;
+				TSSGame.Current.PlayRantInstrumental();
+			}
 		}
 
 		/// <summary>

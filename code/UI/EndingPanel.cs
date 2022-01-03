@@ -44,6 +44,16 @@ namespace TSS.UI
 		/// </summary>
 		public float Alph;
 
+		public bool CanEndTheGame;
+		public bool CreditsStarted;
+		public TimeSince TimeSinceEnded;
+
+		public void StartCredits()
+		{
+			TimeSinceEnded = 0f;
+			CanEndTheGame = true;
+		}
+
 		
 
 		public bool CanGoToNature;
@@ -107,12 +117,19 @@ namespace TSS.UI
 					c = Color.Black;
 					Alph = 1f;
 				}
-				
+
+				if ( player.SkipIntro )
+				{
+					a = 0f;
+				}
+
 				TransitionPanel.Style.Opacity = a;
 				TransitionPanel.Style.BackgroundColor = c;
+				
+			
 			}
 
-			if ( FinalBlackout )
+			if ( FinalBlackout && !CanEndTheGame )
 			{
 				TransitionPanel.Style.Opacity = Alph;
 				if(Alph >= 0 )
@@ -150,7 +167,35 @@ namespace TSS.UI
 				TimeSinceNatureTransition = 0f;
 			}
 
-			
+			if ( CanEndTheGame )
+			{
+				float f = 0f;
+
+				if ( TimeSinceEnded < 2f )
+				{
+					f = TimeSinceEnded / 2f;
+				}
+
+				if ( TimeSinceEnded > 2f )
+				{
+					if ( !CreditsStarted )
+					{
+						ConsoleSystem.Run( "credits" );
+						CreditsStarted = true;
+					}
+					f = 1f - ((TimeSinceEnded - 2f) / 5f);
+				}
+
+				TransitionPanel2.Style.BackgroundColor = Color.White;
+				TransitionPanel2.Style.Opacity = f;
+
+			}
+			else
+			{
+				TimeSinceEnded = 0f;
+			}
+
+
 		}
 	}
 

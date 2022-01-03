@@ -28,6 +28,7 @@ namespace TSS
 		float yawTar;
 		public bool IntroComplete;
 		public float TimeSinceState;
+		public bool SkipIntro;
 
 		//Credit Panels (Definitely a better way to do this but this is just for the intro)
 		private CreditPanel JoshWilson;
@@ -66,12 +67,29 @@ namespace TSS
 			base.Activated();
 			if ( !Active )
 			{
-				CamState = CameraState.Intro;
-				IntroComplete = false;
-				JoshWilson = null;
-				TimeSinceStart = 0;
-				Active = true;
-				Log.Info( "WHAT THE FUCK MAN" );
+				if ( !SkipIntro )
+				{
+					CamState = CameraState.Intro;
+					IntroComplete = false;
+					JoshWilson = null;
+					TimeSinceStart = 0;
+					Active = true;
+					Log.Info( "WHAT THE FUCK MAN" );
+				}
+				else
+				{
+					var pawn = Local.Pawn as TSSPlayer;
+					IntroComplete = true;
+					CamState = CameraState.Static;
+					Progress = 0f;
+					TimeSinceState = 0f;
+					SCounter ??= new CreditPanel( "Squats: 0", 3200, 3200 );
+					SCounter.Position = pawn.ExercisePosition + Vector3.Up * 30f + pawn.Rotation.Forward * -50f;
+					SCounter.Rotation = Rotation.From( 0, 90, 0 );
+					SCounter.Opacity = 0.0f;
+					SCounter.TextScale = 1.0f;
+					Active = true;
+				}
 			}
 		}
 
