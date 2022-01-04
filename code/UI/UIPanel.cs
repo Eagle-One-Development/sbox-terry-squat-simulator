@@ -30,6 +30,11 @@ namespace TSS.UI
 					SetClass( "inactive", false );
 				}
 			}
+
+			if(Local.Pawn is BuffPawn b )
+			{
+				SetClass( "inactive", true );
+			}
 		}
 	}
 }

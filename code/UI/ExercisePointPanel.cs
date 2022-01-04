@@ -66,6 +66,14 @@ namespace TSS.UI
 		{
 			base.Tick();
 
+			if ( Local.Pawn is TSSPlayer pl )
+			{
+				if ( pl.CanGoToHeaven )
+				{
+					l.Style.FontColor = Color.Black;
+				}
+			}
+
 			Style.Opacity = Opacity;
 			if ( TimeSinceAlive > Life )
 			{

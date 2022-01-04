@@ -14,33 +14,16 @@
 ]
 
 //
-// PunchSpawn
+// EndPortal
 //
-@PointClass base(BaseProperties_Terry_Squat_Simulator) editormodel( "models/editor/playerstart.vmdl" ) 
+@PointClass base(BaseProperties_Terry_Squat_Simulator) editormodel( "models/terry_buff/terry_buff.vmdl" ) 
 metadata
 {
-	entity_tool_name = "Punch Spawn"
+	entity_tool_name = "End Portal"
 	entity_tool_group = "Terry Squat Simulator"
-	entity_tool_tip = "Spawn point for punching something at the gym"
+	entity_tool_tip = "Spawn point for the player"
 }
-= tss_punch_spawn : ""
-[
-	enable_shadows(boolean) { group = "Rendering" } : "Shadow Casting" : 1 : "Whether this entity should cast shadows or not"
-
-	input SetColor(string) : "Sets the color of this entity. Format is '255 255 255 255'."
-]
-
-//
-// RunSpawn
-//
-@PointClass base(BaseProperties_Terry_Squat_Simulator) editormodel( "models/editor/playerstart.vmdl" ) 
-metadata
-{
-	entity_tool_name = "Run Spawn"
-	entity_tool_group = "Terry Squat Simulator"
-	entity_tool_tip = "Spawn point for running on the treadmill at the gym"
-}
-= tss_run_spawn : ""
+= tss_end_portal : ""
 [
 	enable_shadows(boolean) { group = "Rendering" } : "Shadow Casting" : 1 : "Whether this entity should cast shadows or not"
 
@@ -65,17 +48,28 @@ metadata
 ]
 
 //
-// SquatSpawn
+// TSSSpawn
 //
-@PointClass base(BaseProperties_Terry_Squat_Simulator) editormodel( "models/editor/playerstart.vmdl" ) 
+@PointClass base(BaseProperties_Terry_Squat_Simulator) editormodel( "models/dev/playerstart_tint.vmdl" ) 
 metadata
 {
-	entity_tool_name = "Squat Spawn"
+	entity_tool_name = "Player Spawn"
 	entity_tool_group = "Terry Squat Simulator"
-	entity_tool_tip = "Spawn point for squats at the gym"
+	entity_tool_tip = "Spawn point for the player"
 }
-= tss_squat_spawn : ""
+= tss_player_spawn : ""
 [
+	spawn_type(choices) : "Spawn Type" : 0 : "Spawn Type" =
+	[
+		0 : "Squat"
+		1 : "Run"
+		2 : "Punch"
+		3 : "Yoga"
+		4 : "Heaven"
+		5 : "Void"
+		6 : "Nature"
+		7 : "Nature Exercise"
+	]
 	enable_shadows(boolean) { group = "Rendering" } : "Shadow Casting" : 1 : "Whether this entity should cast shadows or not"
 
 	input SetColor(string) : "Sets the color of this entity. Format is '255 255 255 255'."

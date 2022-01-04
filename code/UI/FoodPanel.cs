@@ -12,14 +12,14 @@ namespace TSS.UI
 		public Label Top;
 		public Label Bottom;
 
-		public FoodPanel( Vector2 size, Color color, string text )
+		public FoodPanel( Vector2 size, Color color, string text, int points )
 		{
 			StyleSheet.Load( "/ui/FoodPanel.scss" );
 			float width = size.x;
 			float height = size.y;
 			PanelBounds = new Rect( -(width / 2), -height, width, height );
 			Bottom = Add.Label( text, "text" );
-			Top = Add.Label( "+5", "text" );
+			Top = Add.Label( points.ToString(), "text" );
 			Top.SetClass( "top", true );
 		}
 

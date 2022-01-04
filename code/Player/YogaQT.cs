@@ -36,7 +36,6 @@ namespace TSS
 		public override void Spawn()
 		{
 			base.Spawn();
-			Log.Info( "SPAWN" );
 
 			pose = Rand.Int( 0, 4 );
 
@@ -72,28 +71,20 @@ namespace TSS
 
 			bool b = CheckType( type );
 
-
-
 			if ( CheckFailure( type ) )
 			{
-
-				Log.Info( "FAILED OR WRONG KEY PRESS YOU MORON" );
 				Panel.Failed = true;
 				Panel.TimeSinceFinished = 0;
 				Delete();
-
-
 			}
 
 			if ( b )
 			{
-				Log.Info( "YOU HAVE PRESSED THE CORRECT KEY" );
 				index++;
 			}
 
 			if ( index >= currentCombo.Length )
 			{
-				Log.Info( "FINISHED" );
 				Panel.Finished = true;
 				Panel.TimeSinceFinished = 0;
 				ConsoleSystem.Run( "yoga_pose", pose + 1 );

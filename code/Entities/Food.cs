@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Sandbox;
 using TSS;
 using TSS.UI;
@@ -25,7 +21,7 @@ public partial class Food : ModelEntity {
 	public TSSPlayer Player { get; set; }
 
 	[Net]
-	public bool ConsumeOnCollide { get; set; }
+	public bool ConsumeOnCollide { get; set; } = true;
 
 	SceneObject FoodModel;
 	public PickupTrigger PickupTrigger { get; protected set; }
@@ -37,10 +33,7 @@ public partial class Food : ModelEntity {
 
 		TimeSinceSpawned = 0;
 		Player = TSSGame.Pawn;
-		Position = Player.Position + 
-			Player.Rotation.Forward * 256 + 
-			Player.Rotation.Down * Rand.Int( -64, 64 ) +
-			Player.Rotation.Left * Rand.Int( -64, 64 );
+		Position = GetInitialPosition();
 		Transmit = TransmitType.Always;
 		SetupPhysicsFromSphere( PhysicsMotionType.Keyframed, Vector3.Zero + Vector3.Up * 2.5f, 5f );
 		SetInteractsAs( CollisionLayer.Player);
@@ -63,41 +56,53 @@ public partial class Food : ModelEntity {
 	[ClientRpc]
 	public virtual void CreatePanel()
 	{
-		FoodPan = new FoodPanel( new Vector2( 300, 150 ), Color.White, "FOOD" );
+		FoodPan = new FoodPanel( GetPanelSize(), Color.White, "FOOD", GetClickPoints() );
 		
+	}
+
+	public virtual Vector2 GetPanelSize()
+	{
+		return new Vector2( 300, 150 );
+	}
+
+	public virtual string GetFoodModel()
+	{
+		return "models/sbox_props/burger_box/burger_box.vmdl";
+	}
+
+	public virtual int GetClickPoints()
+	{
+		return 5;
+	}
+
+	public virtual Vector3 GetInitialPosition()
+	{
+		return Player.Position +
+			Player.Rotation.Forward * 256 +
+			Player.Rotation.Down * Rand.Int( -64, 64 ) +
+			Player.Rotation.Left * Rand.Int( -64, 64 );
 	}
 
 	public override void Touch( Entity other )
 	{
 		base.Touch( other );
 
-
-		
-
 		if(other is TSSPlayer && TimeSinceSpawned > 0.5f)
 		{
 			if ( ConsumeOnCollide )
 			{
-				Consume();
+				OnConsume();
 			}
 			RemoveModel();
 			FoodModel = null;
-			Log.Info( "CONSUMED" );
 			if ( IsServer ){ Delete(); }
 		}
 	}
 
-
-
 	public override void ClientSpawn()
 	{
 		base.ClientSpawn();
-		FoodModel = new SceneObject( Model.Load( "models/sbox_props/burger_box/burger_box.vmdl"), this.Transform);
-	}
-
-	public virtual void Consume()
-	{
-		Player.GivePointsAtPosition( 5, Position, true );
+		FoodModel = new SceneObject( Model.Load( GetFoodModel()), Transform);
 	}
 
 	[ClientRpc]
@@ -107,11 +112,21 @@ public partial class Food : ModelEntity {
 		FoodPan.Delete( true );
 	}
 
-	public void RemoveFood()
+	public void Click()
 	{
-		Consume();
+		OnClick();
 		RemoveModel();
 		Delete();
+	}
+
+	protected virtual void OnClick()
+	{
+
+	}
+
+	protected virtual void OnConsume()
+	{
+
 	}
 
 	[Event.Tick]
@@ -120,7 +135,7 @@ public partial class Food : ModelEntity {
 		if ( IsServer )
 		{
 			if ( MoveToPlayer ) {
-				Vector3 dir = ((Player.Position + Vector3.Up * 48f)- Position).Normal;
+				Vector3 dir = (Player.Position + Vector3.Up * 48f - Position).Normal;
 				Position += dir * 0.5f;
 			}
 		}
@@ -135,8 +150,8 @@ public partial class Food : ModelEntity {
 		}
 		FoodModel.Position = Vector3.Lerp( FoodModel.Position, Transform.Position, Time.Delta * 20f );
 		FoodModel.Rotation = FoodModel.Rotation.RotateAroundAxis( Vector3.Up, Time.Delta * RotationSpeed );
-		FoodModel.Transform = new Transform(FoodModel.Position,FoodModel.Rotation, Out( TimeSinceSpawned / 0.5f ));
-		FoodPan.Position = this.Position;
+		FoodModel.Transform = new Transform(FoodModel.Position, FoodModel.Rotation, Out( TimeSinceSpawned / 0.5f ));
+		FoodPan.Position = Position;
 	}
 
 	public float Out( float k )

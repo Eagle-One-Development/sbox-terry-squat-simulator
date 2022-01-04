@@ -40,8 +40,6 @@ namespace TSS.UI
 				var lab = pan.Add.Label( GetKey( combo[i] ), "label" );
 				Letters.Add( lab );
 				Scales.Add( 0f );
-
-				Log.Info( "PANEL ADDED" );
 			}
 
 			TimeSinceSpawned = 0f;
@@ -98,6 +96,13 @@ namespace TSS.UI
 				{
 					Scales[i] = Scales[i].LerpTo( 1f, Time.Delta * 8f );
 					letter.Style.FontColor = Color.White;
+					if ( Local.Pawn is TSSPlayer pl2 )
+					{
+						if ( pl2.CanGoToHeaven )
+						{
+							letter.Style.FontColor = Color.Black;
+						}
+					}
 				}
 				else
 				{
@@ -131,7 +136,7 @@ namespace TSS.UI
 
 				if ( TimeSinceFinished > 0.5f )
 				{
-					Delete();
+					Delete(true);
 				}
 			}
 
@@ -142,13 +147,16 @@ namespace TSS.UI
 				back.Style.Opacity = 1.1f - (TimeSinceFinished / 0.5f);
 				foreach ( var l in Letters )
 				{
-					l.Parent.Style.Opacity = 1.1f - (TimeSinceFinished / 0.5f);
-					l.Style.FontColor = Color.White;
+					if (l != null && l.Parent != null )
+					{
+						l.Parent.Style.Opacity = 1.1f - (TimeSinceFinished / 0.5f);
+						l.Style.FontColor = Color.White;
+					}
 				}
 
 				if ( TimeSinceFinished > 0.5f )
 				{
-					Delete();
+					Delete(true);
 				}
 			}
 
@@ -159,6 +167,13 @@ namespace TSS.UI
 			}
 
 			timer.Style.Width = Length.Fraction( MyQT.TimeSinceSpawned / 3f );
+			if ( Local.Pawn is TSSPlayer pl )
+			{
+				if ( pl.CanGoToHeaven )
+				{
+					timer.Style.BackgroundColor = Color.Black;
+				}
+			}
 
 
 		}

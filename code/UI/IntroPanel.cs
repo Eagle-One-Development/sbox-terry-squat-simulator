@@ -18,6 +18,7 @@ namespace TSS.UI
 		public Panel Back;
 		public Label Play;
 		public Label date;
+		public Label Click;
 		public IntroPanel()
 		{
 			Instance = this;
@@ -27,6 +28,7 @@ namespace TSS.UI
 			Play = p.Add.Label( "> PLAY", "text" );
 			date = p.Add.Label( "OOO", "date" );
 			Terry = AddChild<TerryRenderScene>("scene");
+			Click = Add.Label( $"Press {Input.GetKeyWithBinding( "+iv_attack" )} to begin.", "prompt" );
 
 		}
 
@@ -37,6 +39,11 @@ namespace TSS.UI
 			{
 				Terry.TimeSinceIntroStarted = 0f;
 				TimeSinceIntroStarted = 0f;
+			}
+
+			if ( Input.Pressed( InputButton.Attack1 ) )
+			{
+				Click.Delete( true );
 			}
 
 			if ( Terry != null && Terry.TimeSinceIntroStarted > 23.161f )

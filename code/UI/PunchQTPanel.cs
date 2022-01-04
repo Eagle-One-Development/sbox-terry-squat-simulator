@@ -28,6 +28,7 @@ namespace TSS.UI
 			Measure = Add.Panel( "measure" );
 
 			Finished = false;
+			TimeSinceSpawned = 0f;
 		}
 
 		public override void Tick()
@@ -38,24 +39,30 @@ namespace TSS.UI
 
 			pt.AddTranslateX( Length.Pixels( (Screen.Width / 2) + Pos.x ) );
 			pt.AddTranslateY( Length.Pixels( (Screen.Height / 2) + Pos.y ) );
+			float growth = (1f - MathF.Pow( (TimeSinceSpawned / 0.9f).Clamp( 0, 1f ), 3.0f ));
 
-			float growth = (1f - MathF.Pow( (TimeSinceSpawned / 0.3f).Clamp( 0, 1f ), 3.0f ));
-
-			if ( !Finished )
+			if ( Local.Pawn is TSSPlayer pl )
 			{
-				TimeSinceSpawned = 0;
-				Back.Style.Opacity = 0;
+				if ( pl.CanGoToHeaven )
+				{
+					Style.BorderColor = Color.Black;
+					Key.Style.FontColor = Color.Black;
+					Measure.Style.BackgroundColor = Color.Black;
+				}
 			}
-			else
+
+			if ( Finished )
 			{
 				Back.Style.Opacity = growth;
 				Key.Style.Opacity = 0f;
-				Style.Opacity = growth;
+				Style.Opacity = 2 * growth;
 				Measure.Style.Opacity = 0f;
-				if ( Failed )
-				{
-					Back.Style.BackgroundColor = Color.Red;
-				}
+				Back.Style.BackgroundColor = (Failed) ? Color.Red : Color.Green;
+
+			}
+			else
+			{
+				Back.Style.Opacity = 0;
 			}
 
 			Key.Style.Dirty();
@@ -65,7 +72,7 @@ namespace TSS.UI
 				Delete(true);
 			}
 
-			Style.Opacity = growth;
+			Style.Opacity = 1f;
 			Style.Transform = pt;
 			Style.Dirty();
 

@@ -1,4 +1,4 @@
-﻿
+﻿using System.Linq;
 using Sandbox;
 
 namespace TSS
@@ -17,7 +17,6 @@ namespace TSS
 			if ( ConsoleSystem.Caller.Pawn is TSSPlayer player )
 			{
 				player.ExercisePoints += p;
-				//player.IntroComplete = true;
 			}
 		}
 
@@ -26,8 +25,8 @@ namespace TSS
 		{
 			if ( ConsoleSystem.Caller.Pawn is TSSPlayer player )
 			{
-				player.Punch();
-
+				var component = player.Components.GetAll<PunchComponent>().First();
+				component.Punch();
 			}
 		}
 	}

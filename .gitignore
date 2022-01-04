@@ -11,6 +11,11 @@ materials/default
 *.vp
 *.vsnd_c
 *.vtex_c
+*.vmat_c
+*.vmdl_c
+*.vp
+*.vsnd_c
+*.vtex_c
 *.zip
 *.vpk
 *.fgd
@@ -34,3 +39,5 @@ tools_asset_info.bin
 _bakeresourcecache
 tools_thumbnail_cache.bin
 *.vsnd_c
+
+!/materials/particles/*.vtex_c
