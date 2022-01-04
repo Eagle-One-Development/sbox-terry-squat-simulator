@@ -334,6 +334,7 @@
 					m_vDomainMaxs = [ 0.0, 0.0 ]
 				}
 			}
+			m_bLocalSpace = false
 		},
 		{
 			_class = "C_INIT_InitVec"
