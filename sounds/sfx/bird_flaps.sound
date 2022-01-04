@@ -1,0 +1,21 @@
+<!-- kv3 encoding:text:version{e21c7f3c-8a33-41c5-9977-a76d3a32aa0d} format:generic:version{7412167c-06e9-4698-aff2-e63eb59037e7} -->
+{
+	data = 
+	{
+		ui = false
+		volume = 1.0
+		volumerandom = 0.2
+		pitch = 1.0
+		pitchrandom = 0.1
+		distancemax = 2000.0
+		sounds = 
+		[
+			"sounds/sfx/bird_wing-01.vsnd",
+			"sounds/sfx/bird_wing-02.vsnd",
+			"sounds/sfx/bird_wing-03.vsnd",
+			"sounds/sfx/bird_wing-04.vsnd",
+			"sounds/sfx/bird_wing-05.vsnd",
+		]
+		selectionmode = "3"
+	}
+}
