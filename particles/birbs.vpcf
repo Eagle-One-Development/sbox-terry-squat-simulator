@@ -2,7 +2,7 @@
 {
 	_class = "CParticleSystemDefinition"
 	m_nBehaviorVersion = 10
-	m_flConstantLifespan = 5.0
+	m_flConstantLifespan = 20.0
 	m_controlPointConfigurations = 
 	[
 		{
