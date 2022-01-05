@@ -93,10 +93,18 @@ partial class BuffPawn : Player
 	{
 		var pl = new TSSPlayer();
 		var oldPawn = ConsoleSystem.Caller.Pawn;
+		(oldPawn as BuffPawn).CreateCredits();
+		TSSGame.Current.PlayCredits();
 		ConsoleSystem.Caller.Pawn = pl;
 		pl.SkipIntro = true;
 		pl.Respawn();
 		oldPawn.Delete();
+	}
+
+	[ClientRpc]
+	public void CreateCredits()
+	{
+		
 	}
 
 

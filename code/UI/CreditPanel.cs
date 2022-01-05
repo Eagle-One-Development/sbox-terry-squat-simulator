@@ -13,6 +13,8 @@ namespace TSS.UI
 		public float TextScale;
 		public bool Bop;
 		private float Bump;
+		public bool FloatUp;
+		public float offset;
 		public CreditPanel( string s, int x, int y )
 		{
 			Opacity = 1f;
@@ -25,6 +27,8 @@ namespace TSS.UI
 			Bump = 1f;
 			StyleSheet.Load( "/ui/CreditPanel.scss" );
 		}
+
+
 
 		[Event( "OtherBeat" )]
 		public void BopToTheBeat()
@@ -52,6 +56,21 @@ namespace TSS.UI
 
 			Style.Dirty();
 			l.Style.FontSize = Length.Pixels( FontSize * TextScale * Bump );
+
+			if ( FloatUp )
+			{
+				if(Local.Pawn is TSSPlayer pl )
+				{
+					Position = pl.ExercisePosition + pl.Rotation.Forward * -300f + Vector3.Up * offset + pl.Rotation.Right * 100f;
+					Rotation = pl.Rotation;
+					offset += Time.Delta * 10f;
+					l.SetClass( "top", true );
+				}
+				else
+				{
+					l.SetClass( "top", false );
+				}
+			}
 
 		}
 	}

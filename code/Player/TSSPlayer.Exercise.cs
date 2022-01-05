@@ -124,8 +124,13 @@ namespace TSS
 
 			ent.SetModel( this.GetModel() );
 
-			//.SetBodyGroup(1, BodyGroup);
-			//ent.RenderColor = PlayerColor;
+			_ = new ModelEntity( "models/clothes/fitness/shorts_fitness.vmdl", ent );
+			_ = new ModelEntity( "models/clothes/fitness/shirt_fitness.vmdl", ent );
+			_ = new ModelEntity( "models/clothes/fitness/shoes_sneakers.vmdl", ent );
+			_ = new ModelEntity( "models/clothes/fitness/sweatband_wrists.vmdl", ent );
+			_ = new ModelEntity( "models/clothes/fitness/sweatband_head.vmdl", ent );
+			_ = new ModelEntity( "models/clothes/fitness/hair_head.vmdl", ent );
+			_ = new ModelEntity( "models/clothes/fitness/hair_body.vmdl", ent );
 
 			ent.CopyBonesFrom( this );
 			ent.TakeDecalsFrom( this );

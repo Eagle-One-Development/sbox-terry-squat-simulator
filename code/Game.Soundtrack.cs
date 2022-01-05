@@ -199,6 +199,12 @@ namespace TSS
 		}
 
 		[ClientRpc]
+		public void PlayCredits()
+		{
+			Sound.FromScreen( "end_song" );
+		}
+
+		[ClientRpc]
 		public void PlayIntro()
 		{
 			Log.Info( "PLAYING INTRO SOUND" );
