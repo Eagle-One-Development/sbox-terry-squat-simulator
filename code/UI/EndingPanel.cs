@@ -114,8 +114,7 @@ namespace TSS.UI
 		public override void OnHotloaded()
 		{
 			base.OnHotloaded();
-			Credits.Text = CreditsString();
-			offset = 100f;
+
 			
 		}
 

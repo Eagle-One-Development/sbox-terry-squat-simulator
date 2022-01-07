@@ -295,9 +295,9 @@ namespace TSS
 			if ( Progress >= 0.25f && Progress < 0.5f )
 			{
 
-				Assoc ??= new CreditPanel( "and", 3200, 1600 );
+				Assoc ??= new CreditPanel( "", 350, 350, "materials/ui/eo_logo.png" );
 				Assoc.Rotation = Rotation.From( 0, 90, 0 );
-				Assoc.Position = pawn.ExercisePosition + pawn.Rotation.Forward * 12f;
+				Assoc.Position = pawn.ExercisePosition + pawn.Rotation.Forward * 15f + Vector3.Up * 24f;
 				Assoc.Opacity = 1f;
 				Assoc.Bop = true;
 				Assoc.FontSize = 100f;

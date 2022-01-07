@@ -15,7 +15,10 @@ namespace TSS.UI
 		private float Bump;
 		public bool FloatUp;
 		public float offset;
-		public CreditPanel( string s, int x, int y )
+
+		public Image image;
+
+		public CreditPanel( string s, int x, int y, string i = "" )
 		{
 			Opacity = 1f;
 			FontSize = 200f;
@@ -26,7 +29,13 @@ namespace TSS.UI
 			l = Add.Label( s, "title" );
 			Bump = 1f;
 			StyleSheet.Load( "/ui/CreditPanel.scss" );
+			if ( i != "" )
+			{
+				image = Add.Image( i, "image" );
+			}
 		}
+
+		
 
 
 
