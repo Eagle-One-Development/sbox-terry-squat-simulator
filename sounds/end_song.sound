@@ -4,7 +4,7 @@
 	{
 		sounds = 
 		[
-			"sounds/jake_endsong.vsnd",
+			"sounds/jake_endsong_mp3.vsnd",
 		]
 		ui = true
 		volume = 1.0
