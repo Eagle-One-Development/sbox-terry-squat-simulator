@@ -297,8 +297,16 @@ namespace TSS
 				//Basically give us more sweat as we approach 500 exercise points
 				float val2 = ((ExercisePoints - 150) / 350f).Clamp( 0, 1f );
 
+
+				//Adding this here so we don't sweat when we're ragdolles
+				float mult = 1f;
+
+				if(TimeSinceRagdolled < 3f  ){
+					mult = 0f;
+				}
+
 				//Then we set our sweat value
-				SweatSystem.SetPosition( 1, new Vector3( sweatValue * MathF.Pow( val2, 0.32f ) * (1f - val), 0, 0 ) );
+				SweatSystem.SetPosition( 1, new Vector3( mult * sweatValue * MathF.Pow( val2, 0.32f ) * (1f - val), 0, 0 ) );
 			}
 
 			//If the end white void particle exists, update its position and rotation

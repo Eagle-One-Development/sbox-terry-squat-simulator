@@ -177,8 +177,15 @@ namespace TSS
 			EnableShadowInFirstPerson = true;
 
 			//Set the model and dress it
-			SetModel( "models/terry/terry.vmdl" );
-			Dress();
+			if ( !SkipIntro )
+			{
+				SetModel( "models/terry/terry.vmdl" );
+				Dress();
+			}
+			else
+			{
+				SetModel( "models/terry_buff/terry_buff.vmdl" );
+			}
 
 			Animator = new TSSPlayerAnimator();
 			Camera = new TSSCamera();
