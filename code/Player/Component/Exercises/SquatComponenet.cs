@@ -35,6 +35,7 @@ namespace TSS
 			base.Simulate( client );
 			var cam = Entity.Camera as TSSCamera;
 			SimulateSquatting( cam );
+
 		}
 
 		public override void Cleanup()

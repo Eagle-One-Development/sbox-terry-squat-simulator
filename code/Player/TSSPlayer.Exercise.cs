@@ -471,28 +471,7 @@ namespace TSS
 		#endregion
 
 		#region Animation
-		/// <summary>
-		/// This function checks to see if we've finished the soda animation
-		/// TODO: Move this to some sort of animation and event system.
-		/// </summary>
-		private void EvaluateSodaAnim()
-		{
-			var squat = Components.GetAll<SquatComponenet>().First();
-
-			if ( TimeSinceSoda > 1.7f )
-			{
-				if ( squat.Barbell.IsValid() )
-				{
-					squat.Barbell.EnableDrawing = true;
-				}
-				if ( SodaCan.IsValid() )
-				{
-					SodaCan.EnableDrawing = false;
-				}
-
-				StopSoda();
-			}
-		}
+		
 		#endregion
 
 

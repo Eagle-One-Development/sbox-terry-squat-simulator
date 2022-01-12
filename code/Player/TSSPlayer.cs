@@ -71,6 +71,8 @@ namespace TSS
 		[Net]
 		public bool SkipIntro { get; set; } = false;
 
+		public TimeSince TimeSinceIntro;
+
 		#region Visuals
 		/// <summary>
 		/// The "scale" of terry. Used client side to make him "bump", which sets this value to a specific level. It goes down to 1 via a lerp
@@ -257,13 +259,26 @@ namespace TSS
 			base.Simulate( cl );
 
 			//This will play the intro once you press the left click
-			if ( IsClient )
+			if ( !IntroPlayed && Input.Pressed( InputButton.Attack1 ) && TimeSinceRagdolled > 12f && !SkipIntro )
 			{
-				if ( !IntroPlayed && Input.Pressed( InputButton.Attack1 ) && TimeSinceRagdolled > 12f && !SkipIntro )
-				{
-					IntroPlayed = true;
-					PlayMusic();
-				}
+				IntroPlayed = true;
+				TimeSinceIntro = 0f;
+				PlayMusic();
+			}
+
+			if(TimeSinceIntro < 23.16f )
+			{
+				return;
+			}
+
+			
+
+			var squat = Components.GetAll<SquatComponenet>().First();
+			//Delete the barbell
+			if ( squat.Barbell.IsValid() )
+			{
+				Log.Info( "hmmmm" );
+				squat.Barbell.EnableDrawing = false;
 			}
 
 			//Determine if we need to move to the ending or not
@@ -420,6 +435,7 @@ namespace TSS
 			if ( squat.Barbell.IsValid() )
 			{
 				squat.Barbell.EnableDrawing = false;
+				Log.Info( "HMMM" );
 			}
 
 			//Enable drawing the soda can
@@ -433,6 +449,29 @@ namespace TSS
 
 			//Start the soda animation
 			InitiateSoda();
+		}
+
+		/// <summary>
+		/// This function checks to see if we've finished the soda animation
+		/// TODO: Move this to some sort of animation and event system.
+		/// </summary>
+		private void EvaluateSodaAnim()
+		{
+			var squat = Components.GetAll<SquatComponenet>().First();
+
+			if ( TimeSinceSoda > 1.7f )
+			{
+				if ( squat.Barbell.IsValid() )
+				{
+					//squat.Barbell.EnableDrawing = true;
+				}
+				if ( SodaCan.IsValid() )
+				{
+					SodaCan.EnableDrawing = false;
+				}
+
+				StopSoda();
+			}
 		}
 		#endregion
 
