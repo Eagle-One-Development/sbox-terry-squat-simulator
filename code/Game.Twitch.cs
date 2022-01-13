@@ -68,11 +68,13 @@ namespace TSS
 
 				if ( Queue.TryDequeue( out var msg ) )
 				{
+					Log.Info( "HMMM" );
 					if ( msg.Message.Contains( "!soda" ) )
 					{
 						//Pawn.DrinkSoda();
 					} else if ( msg.Message.Contains( "!burger" ) )
 					{
+						Log.Info( "HEY!" );
 						if ( TSSGame.Current.TimeSinceFood > 1f )
 						{
 							_ = new Burger();

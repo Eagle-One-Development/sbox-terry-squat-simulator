@@ -9,7 +9,7 @@ public partial class Sandwhich : Food
 
 	public override Vector2 GetPanelSize()
 	{
-		return new Vector2( 300, 150 );
+		return new Vector2( 300, 200f );
 	}
 
 	public override void Spawn()
@@ -18,21 +18,23 @@ public partial class Sandwhich : Food
 		MoveToPlayer = false;
 	}
 
+	public override float Life => 5f;
+
 	public override string GetFoodModel()
 	{
-		return "models/food/burger.vmdl";
+		return "models/food/sandwich.vmdl";
 	}
 
 	[ClientRpc]
 	public override void CreatePanel()
 	{
-		FoodPan = new FoodPanel( GetPanelSize(), Color.White, "SANDWHICH", "+15" );
+		FoodPan = new FoodPanel( GetPanelSize(), Color.White, "SANDWHICH", "+10" );
 
 	}
 
 	public override Vector3 GetInitialPosition()
 	{
-		return Player.Position + Vector3.Up * Rand.Float( 32f, 64f ) + new Angles( 0, Rand.Float( 0, 180 ), 0 ).Direction * 100f;
+		return Player.Position + Vector3.Up * Rand.Float( 32f, 64f ) + new Angles( 0, Rand.Float( 0, 180 ), 0 ).Direction * 65f;
 	}
 
 	public override int GetClickPoints()

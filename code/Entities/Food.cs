@@ -143,6 +143,7 @@ public partial class Food : ModelEntity {
 
 			if(TimeSinceSpawned > Life )
 			{
+				RemoveModel();
 				Delete();
 			}
 		}
