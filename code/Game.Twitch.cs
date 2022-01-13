@@ -17,6 +17,7 @@ namespace TSS
 
 		public TimeSince TimeSinceExerciseChange;
 		public TimeSince TimeSinceFood;
+		public TimeSince TimeSinceKilled;
 		public static float FoodCoolDown = 3f;
 
 		[Event.Streamer.ChatMessage]
@@ -64,21 +65,22 @@ namespace TSS
 
 		public async static void DequeueLoop()
 		{
-
-			var pawn = Entity.All.OfType<TSSPlayer>().First();
+			await GameTask.DelaySeconds( 10f );
+			var pawn = Entity.All.OfType<TSSPlayer>().FirstOrDefault();
 
 			while(true)
 			{
 				await GameTask.Delay( 100 );
-				
-				if ( Queue.TryDequeue( out var msg ) && Pawn.ExercisePoints > 450f)
+
+				if ( Queue.TryDequeue( out var msg ) && !pawn.EndingInitiated && pawn.IntroPlayed && pawn.TimeSinceIntro > 25f)
 				{
+					Log.Info( "HMMM" );
 					if ( msg.Message.Contains( "!soda" ) )
 					{
 						//Pawn.DrinkSoda();
 					} else if ( msg.Message.Contains( "!burger" ) )
 					{
-						Log.Info( "HEY!" );
+						
 						if ( TSSGame.Current.TimeSinceFood > TSSGame.FoodCoolDown)
 						{
 							_ = new Burger();
@@ -104,6 +106,15 @@ namespace TSS
 						{
 							_ = new Sandwhich();
 							TSSGame.Current.TimeSinceFood = 0f;
+						}
+
+					}
+					else if ( msg.Message.Contains( "!kill" ) )
+					{
+						if ( TSSGame.Current.TimeSinceKilled > 10f && pawn.ExercisePoints > 110f)
+						{
+							pawn.KillTerry(Vector3.Zero);
+							TSSGame.Current.TimeSinceKilled = 0f;
 						}
 
 					}

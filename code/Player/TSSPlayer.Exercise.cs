@@ -160,6 +160,17 @@ namespace TSS
 		}
 
 		/// <summary>
+		/// Causes Terry to ragdoll
+		/// </summary>
+		public void KillTerry(Vector3 force)
+		{
+			BecomeRagdollOnClient( To.Single( Client ), force, 0 );
+			CurrentExerciseSpeed = 1f;
+			TimeSinceExerciseStopped = 0f;
+			TimeSinceRagdolled = 0f;
+		}
+
+		/// <summary>
 		/// Once the player has been ragdolled, they blink back into existence for a couple of seconds.
 		/// </summary>
 		private void HandleInvincibilityBlink()

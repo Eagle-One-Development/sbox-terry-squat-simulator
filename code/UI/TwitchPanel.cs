@@ -18,10 +18,12 @@ namespace TSS.UI
 			var container = AddChild<Panel>( "container" );
 
 			container.Add.Label( "Twitch Commands", "title" );
-			container.Add.Label( "!soda - Give Terry an Energy Boost!", "command" );
 			container.Add.Label( "!burger - Send a Cheeseburger Flying at Terry.", "command" );
+			container.Add.Label( "!fries - Send some fries to terry.", "command" );
+			container.Add.Label( "!sandwhich - Give terry a healthy sandwhich.", "command" );
 			container.Add.Label( "!cheer - Give Terry some inspiration!", "command" );
 			container.Add.Label( "!exercise - Set a random workout.", "command" );
+			container.Add.Label( "!kill - Make Terry Collapse From Exhaustion.", "command" );
 		}
 
 		public override void Tick()
