@@ -40,6 +40,7 @@ public partial class Soda : Food
 		return 5;
 	}
 
+	
 	protected override void OnConsume()
 	{
 		

@@ -26,12 +26,14 @@ public partial class Food : ModelEntity {
 	SceneObject FoodModel;
 	public PickupTrigger PickupTrigger { get; protected set; }
 
+	public virtual float Life => 10f;
+
 	public override void Spawn()
 	{
 
 		base.Spawn();
 
-		TimeSinceSpawned = 0;
+		TimeSinceSpawned = 0f;
 		Player = TSSGame.Pawn;
 		Position = GetInitialPosition();
 		Transmit = TransmitType.Always;
@@ -138,6 +140,11 @@ public partial class Food : ModelEntity {
 				Vector3 dir = (Player.Position + Vector3.Up * 48f - Position).Normal;
 				Position += dir * 0.5f;
 			}
+
+			if(TimeSinceSpawned > Life )
+			{
+				Delete();
+			}
 		}
 	}
 
@@ -150,7 +157,14 @@ public partial class Food : ModelEntity {
 		}
 		FoodModel.Position = Vector3.Lerp( FoodModel.Position, Transform.Position, Time.Delta * 20f );
 		FoodModel.Rotation = FoodModel.Rotation.RotateAroundAxis( Vector3.Up, Time.Delta * RotationSpeed );
-		FoodModel.Transform = new Transform(FoodModel.Position, FoodModel.Rotation, Out( TimeSinceSpawned / 0.5f ));
+		if ( TimeSinceSpawned < Life - 0.5f )
+		{
+			FoodModel.Transform = new Transform( FoodModel.Position, FoodModel.Rotation, Out( TimeSinceSpawned / 0.5f ) );
+		}
+		else
+		{
+			FoodModel.Transform = new Transform( FoodModel.Position, FoodModel.Rotation, Out( 1f - (TimeSinceSpawned - (Life - 0.5f) / 0.5f ) ));
+		}
 		FoodPan.Position = Position;
 	}
 

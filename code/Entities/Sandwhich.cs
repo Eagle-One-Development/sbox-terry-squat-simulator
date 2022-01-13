@@ -4,7 +4,7 @@ using Sandbox;
 using TSS;
 using TSS.UI;
 
-public partial class Burger : Food
+public partial class Sandwhich : Food
 {
 
 	public override Vector2 GetPanelSize()
@@ -15,7 +15,7 @@ public partial class Burger : Food
 	public override void Spawn()
 	{
 		base.Spawn();
-		MoveToPlayer = true;
+		MoveToPlayer = false;
 	}
 
 	public override string GetFoodModel()
@@ -26,27 +26,27 @@ public partial class Burger : Food
 	[ClientRpc]
 	public override void CreatePanel()
 	{
-		FoodPan = new FoodPanel( GetPanelSize(), Color.White, "BURGER", "-20" );
+		FoodPan = new FoodPanel( GetPanelSize(), Color.White, "SANDWHICH", "+15" );
 
 	}
 
 	public override Vector3 GetInitialPosition()
 	{
-		return Player.Position + Vector3.Up * Rand.Float( 32f, 64f ) + new Angles( 0, Rand.Float( 0, 180 ), 0 ).Direction * 150f;
+		return Player.Position + Vector3.Up * Rand.Float( 32f, 64f ) + new Angles( 0, Rand.Float( 0, 180 ), 0 ).Direction * 100f;
 	}
 
 	public override int GetClickPoints()
 	{
-		return 5;
+		return 10;
 	}
 
 	protected override void OnConsume()
 	{
-		Player.GivePoints( -20, true );
+		Player.GivePoints( 10, true );
 	}
 
 	protected override void OnClick()
 	{
-		Player.GivePointsAtPosition( 5, Position, true );
+		Player.GivePointsAtPosition( 10, Position, true );
 	}
 }

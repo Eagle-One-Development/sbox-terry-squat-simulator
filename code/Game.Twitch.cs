@@ -15,6 +15,7 @@ namespace TSS
 		public static Queue<GenericMessage> Queue = new Queue<GenericMessage>();
 
 		public TimeSince TimeSinceExerciseChange;
+		public TimeSince TimeSinceFood;
 
 		[Event.Streamer.ChatMessage]
 		public static void OnStreamMessage( StreamChatMessage message )
@@ -72,14 +73,35 @@ namespace TSS
 						//Pawn.DrinkSoda();
 					} else if ( msg.Message.Contains( "!burger" ) )
 					{
-						_ = new Burger();
+						if ( TSSGame.Current.TimeSinceFood > 1f )
+						{
+							_ = new Burger();
+							TSSGame.Current.TimeSinceFood = 0f;
+						}
+
+
 					} else if ( msg.Message.Contains( "!cheer" ) )
 					{
 						Sound.FromScreen( $"cheering_0{Rand.Int( 1, 3 )}" );
 					} else if ( msg.Message.Contains( "!fries" ) )
 					{
-						_ = new FrenchFries();
-					} else if ( msg.Message.Contains( "!exercise" ) )
+						if ( TSSGame.Current.TimeSinceFood > 1f )
+						{
+							_ = new FrenchFries();
+							TSSGame.Current.TimeSinceFood = 0f;
+						}
+
+					}
+					else if ( msg.Message.Contains( "!sandwhich" ) )
+					{
+						if ( TSSGame.Current.TimeSinceFood > 1f )
+						{
+							_ = new Sandwhich();
+							TSSGame.Current.TimeSinceFood = 0f;
+						}
+
+					}
+					else if ( msg.Message.Contains( "!exercise" ) )
 					{
 						Log.Info( "Random Exercise" );
 						if ( TSSGame.Current.TimeSinceExerciseChange > 10f )

@@ -18,6 +18,15 @@
 						flip_bone_forward = false
 						swap_left_and_right_bones = false
 					},
+					{
+						_class = "ModelModifier_ScaleAndMirror"
+						scale = 4.0
+						mirror_x = false
+						mirror_y = false
+						mirror_z = false
+						flip_bone_forward = false
+						swap_left_and_right_bones = false
+					},
 				]
 			},
 			{
