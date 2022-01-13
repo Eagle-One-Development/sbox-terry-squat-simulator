@@ -468,6 +468,22 @@ namespace TSS
 				SetTitleCardActive();
 			}
 		}
+
+		/// <summary>
+		/// Moves the player to a random exercise
+		/// </summary>
+		[Event("rand_exercise")]
+		public void RandomExercise()
+		{
+			if(TimeSinceIntro < 23.16f )
+			{
+				return;
+			}
+
+			PointCeiling = ExercisePoints + Rand.Int( 20, 50 );
+			var exercises = new Exercise[] { Exercise.Squat, Exercise.Run, Exercise.Punch, Exercise.Yoga }.Where( ( e ) => e != CurrentExercise ).ToArray();
+			ChangeExercise( exercises[Rand.Int( 0, exercises.Count() - 1 )] );
+		}
 		#endregion
 
 		#region Animation

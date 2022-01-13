@@ -25,6 +25,13 @@ public partial class FrenchFries : Food {
 		return 5;
 	}
 
+	[ClientRpc]
+	public override void CreatePanel()
+	{
+		FoodPan = new FoodPanel( GetPanelSize(), Color.White, "FRIES", "-10" );
+
+	}
+
 	protected override void OnConsume()
 	{
 		Player.GivePoints( -10, true );

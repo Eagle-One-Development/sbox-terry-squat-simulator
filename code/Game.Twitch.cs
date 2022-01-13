@@ -14,6 +14,8 @@ namespace TSS
 	{
 		public static Queue<GenericMessage> Queue = new Queue<GenericMessage>();
 
+		public TimeSince TimeSinceExerciseChange;
+
 		[Event.Streamer.ChatMessage]
 		public static void OnStreamMessage( StreamChatMessage message )
 		{
@@ -63,20 +65,28 @@ namespace TSS
 			{
 				await GameTask.Delay( 100 );
 
-				if (Queue.TryDequeue( out var msg ) )
+				if ( Queue.TryDequeue( out var msg ) )
 				{
-					if (msg.Message.Contains("!soda"))
+					if ( msg.Message.Contains( "!soda" ) )
 					{
-						Pawn.DrinkSoda();
-					} else if (msg.Message.Contains("!burger"))
+						//Pawn.DrinkSoda();
+					} else if ( msg.Message.Contains( "!burger" ) )
 					{
 						_ = new Burger();
-					} else if (msg.Message.Contains("!cheer"))
+					} else if ( msg.Message.Contains( "!cheer" ) )
 					{
-						Sound.FromScreen( $"cheering_0{Rand.Int( 1, 3)}" );
-					} else if(msg.Message.Contains("!fries"))
+						Sound.FromScreen( $"cheering_0{Rand.Int( 1, 3 )}" );
+					} else if ( msg.Message.Contains( "!fries" ) )
 					{
 						_ = new FrenchFries();
+					} else if ( msg.Message.Contains( "!exercise" ) )
+					{
+						Log.Info( "Random Exercise" );
+						if ( TSSGame.Current.TimeSinceExerciseChange > 10f )
+						{
+							TSSGame.Current.TimeSinceExerciseChange = 0f;
+							Event.Run( "rand_exercise" );
+						}
 					}
 					// tomato
 					// random excerise

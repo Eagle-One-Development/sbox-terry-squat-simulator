@@ -12,7 +12,7 @@ namespace TSS.UI
 		public Label Top;
 		public Label Bottom;
 
-		public FoodPanel( Vector2 size, Color color, string text, int points )
+		public FoodPanel( Vector2 size, Color color, string text, string points )
 		{
 			StyleSheet.Load( "/ui/FoodPanel.scss" );
 			float width = size.x;

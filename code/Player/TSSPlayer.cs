@@ -271,13 +271,10 @@ namespace TSS
 				return;
 			}
 
-			
-
 			var squat = Components.GetAll<SquatComponenet>().First();
 			//Delete the barbell
 			if ( squat.Barbell.IsValid() )
 			{
-				Log.Info( "hmmmm" );
 				squat.Barbell.EnableDrawing = false;
 			}
 
@@ -435,7 +432,6 @@ namespace TSS
 			if ( squat.Barbell.IsValid() )
 			{
 				squat.Barbell.EnableDrawing = false;
-				Log.Info( "HMMM" );
 			}
 
 			//Enable drawing the soda can

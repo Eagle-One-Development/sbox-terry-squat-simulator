@@ -12,9 +12,15 @@ public partial class Burger : Food
 		return new Vector2( 300, 150 );
 	}
 
+	public override void Spawn()
+	{
+		base.Spawn();
+		MoveToPlayer = false;
+	}
+
 	public override string GetFoodModel()
 	{
-		return "models/food/fries.vmdl";
+		return "models/food/burger.vmdl";
 	}
 
 	public override Vector3 GetInitialPosition()
@@ -29,7 +35,7 @@ public partial class Burger : Food
 
 	protected override void OnConsume()
 	{
-		Player.GivePoints( -5, true );
+		Player.GivePoints( 5, true );
 	}
 
 	protected override void OnClick()

@@ -56,7 +56,7 @@ public partial class Food : ModelEntity {
 	[ClientRpc]
 	public virtual void CreatePanel()
 	{
-		FoodPan = new FoodPanel( GetPanelSize(), Color.White, "FOOD", GetClickPoints() );
+		FoodPan = new FoodPanel( GetPanelSize(), Color.White, "FOOD", GetClickPoints().ToString() );
 		
 	}
 

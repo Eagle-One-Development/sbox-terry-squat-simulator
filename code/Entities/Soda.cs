@@ -26,7 +26,7 @@ public partial class Soda : Food
 	[ClientRpc]
 	public override void CreatePanel()
 	{
-		FoodPan = new FoodPanel( GetPanelSize(), Color.White, "SODA", 0);
+		FoodPan = new FoodPanel( GetPanelSize(), Color.White, "SODA", "");
 
 	}
 
