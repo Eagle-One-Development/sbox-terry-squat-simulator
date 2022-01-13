@@ -23,6 +23,8 @@ public partial class Food : ModelEntity {
 	[Net]
 	public bool ConsumeOnCollide { get; set; } = true;
 
+	public virtual string Description => "Gave some food";
+
 	SceneObject FoodModel;
 	public PickupTrigger PickupTrigger { get; protected set; }
 

@@ -9,7 +9,7 @@ using TSS.UI;
 [Hammer.Skip]
 public partial class Sandwhich : Food
 {
-
+	public override string Description => "gives a healthy sandwich.";
 	public override Vector2 GetPanelSize()
 	{
 		return new Vector2( 300, 200f );

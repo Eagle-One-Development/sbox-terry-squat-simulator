@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Twitch.Commands;
+using TSS.UI;
 
 namespace TSS
 {
@@ -54,6 +55,20 @@ namespace TSS
 			ProcessMessage( msg );
 		}
 
+		[ClientRpc]
+		public void AddHudMessage(string msg, string disp, string col)
+		{
+			var item = new GenericMessage()
+			{
+				Message = msg,
+				DisplayName = disp,
+				Color = col
+			};
+
+			TwitchPanel.Instance.AddMessage(item);
+
+
+		}
 
 		/// <summary>
 		/// A mock function to simulate twitch messages.
@@ -66,11 +81,14 @@ namespace TSS
 			if ( message.Contains( '\n' ) || message.Contains( '\r' ) ) 
 				return;
 
-			var msg = new GenericMessage() { 
-				Message = message, 
-				DisplayName = ConsoleSystem.Caller.Name, 
-				Username = ConsoleSystem.Caller.Name, 
+			var msg = new GenericMessage() {
+				Message = message,
+				DisplayName = ConsoleSystem.Caller.Name,
+				Username = ConsoleSystem.Caller.Name,
+				Color = Color.Random.ToString()
 			};
+
+			
 
 			ProcessMessage( msg );
 		}
@@ -104,6 +122,8 @@ namespace TSS
 					{
 						t.Evalulate( msg );
 					}
+
+					
 				}
 			}
 		}

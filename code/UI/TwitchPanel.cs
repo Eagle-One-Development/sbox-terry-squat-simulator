@@ -11,6 +11,8 @@ namespace TSS.UI
 {
 	public class TwitchPanel : Panel
 	{
+		public static TwitchPanel Instance;
+
 		public TwitchPanel()
 		{
 			StyleSheet.Load( "/ui/TwitchPanel.scss" );
@@ -24,6 +26,16 @@ namespace TSS.UI
 			container.Add.Label( "!cheer - Give Terry some inspiration!", "command" );
 			container.Add.Label( "!exercise - Set a random workout.", "command" );
 			container.Add.Label( "!kill - Make Terry Collapse From Exhaustion.", "command" );
+
+			Instance = this;
+		}
+
+		public void AddMessage( GenericMessage msg )
+		{
+			var _pan = AddChild<TwitchChatEntry>("twichchat");
+			_pan.Message = msg;
+			Log.Info( "CALLED?!" );
+
 		}
 
 		public override void Tick()
