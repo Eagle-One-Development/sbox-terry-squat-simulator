@@ -16,6 +16,7 @@ namespace TSS
 
 		public TimeSince TimeSinceExerciseChange;
 		public TimeSince TimeSinceFood;
+		public static float FoodCoolDown = 3f;
 
 		[Event.Streamer.ChatMessage]
 		public static void OnStreamMessage( StreamChatMessage message )
@@ -75,7 +76,7 @@ namespace TSS
 					} else if ( msg.Message.Contains( "!burger" ) )
 					{
 						Log.Info( "HEY!" );
-						if ( TSSGame.Current.TimeSinceFood > 1f )
+						if ( TSSGame.Current.TimeSinceFood > TSSGame.FoodCoolDown)
 						{
 							_ = new Burger();
 							TSSGame.Current.TimeSinceFood = 0f;
@@ -87,7 +88,7 @@ namespace TSS
 						Sound.FromScreen( $"cheering_0{Rand.Int( 1, 3 )}" );
 					} else if ( msg.Message.Contains( "!fries" ) )
 					{
-						if ( TSSGame.Current.TimeSinceFood > 1f )
+						if ( TSSGame.Current.TimeSinceFood > TSSGame.FoodCoolDown )
 						{
 							_ = new FrenchFries();
 							TSSGame.Current.TimeSinceFood = 0f;
@@ -96,7 +97,7 @@ namespace TSS
 					}
 					else if ( msg.Message.Contains( "!sandwhich" ) )
 					{
-						if ( TSSGame.Current.TimeSinceFood > 1f )
+						if ( TSSGame.Current.TimeSinceFood > TSSGame.FoodCoolDown )
 						{
 							_ = new Sandwhich();
 							TSSGame.Current.TimeSinceFood = 0f;
