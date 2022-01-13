@@ -122,15 +122,18 @@ namespace TSS
 			ent.SetInteractsWith( CollisionLayer.WORLD_GEOMETRY );
 			ent.SetInteractsExclude( CollisionLayer.Player | CollisionLayer.Debris );
 
-			ent.SetModel( this.GetModel() );
+			ent.Model = this.Model;
 
-			_ = new ModelEntity( "models/clothes/fitness/shorts_fitness.vmdl", ent );
-			_ = new ModelEntity( "models/clothes/fitness/shirt_fitness.vmdl", ent );
-			_ = new ModelEntity( "models/clothes/fitness/shoes_sneakers.vmdl", ent );
-			_ = new ModelEntity( "models/clothes/fitness/sweatband_wrists.vmdl", ent );
-			_ = new ModelEntity( "models/clothes/fitness/sweatband_head.vmdl", ent );
-			_ = new ModelEntity( "models/clothes/fitness/hair_head.vmdl", ent );
-			_ = new ModelEntity( "models/clothes/fitness/hair_body.vmdl", ent );
+			if ( !SkipIntro )
+			{
+				_ = new ModelEntity( "models/clothes/fitness/shorts_fitness.vmdl", ent );
+				_ = new ModelEntity( "models/clothes/fitness/shirt_fitness.vmdl", ent );
+				_ = new ModelEntity( "models/clothes/fitness/shoes_sneakers.vmdl", ent );
+				_ = new ModelEntity( "models/clothes/fitness/sweatband_wrists.vmdl", ent );
+				_ = new ModelEntity( "models/clothes/fitness/sweatband_head.vmdl", ent );
+				_ = new ModelEntity( "models/clothes/fitness/hair_head.vmdl", ent );
+				_ = new ModelEntity( "models/clothes/fitness/hair_body.vmdl", ent );
+			}
 
 			ent.CopyBonesFrom( this );
 			ent.TakeDecalsFrom( this );
