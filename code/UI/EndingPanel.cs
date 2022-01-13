@@ -85,6 +85,7 @@ namespace TSS.UI
 				{
 					HeavenTransitioned = true;
 					ConsoleSystem.Run( "heaven" );
+					
 				}
 			}
 

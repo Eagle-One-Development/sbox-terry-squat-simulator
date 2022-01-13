@@ -1,5 +1,6 @@
 ﻿using Sandbox;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace TSS
 {
@@ -63,13 +64,15 @@ namespace TSS
 
 		public async static void DequeueLoop()
 		{
+
+			var pawn = Entity.All.OfType<TSSPlayer>().First();
+
 			while(true)
 			{
 				await GameTask.Delay( 100 );
-
-				if ( Queue.TryDequeue( out var msg ) )
+				
+				if ( Queue.TryDequeue( out var msg ) && Pawn.ExercisePoints > 450f)
 				{
-					Log.Info( "HMMM" );
 					if ( msg.Message.Contains( "!soda" ) )
 					{
 						//Pawn.DrinkSoda();
@@ -106,8 +109,10 @@ namespace TSS
 					}
 					else if ( msg.Message.Contains( "!exercise" ) )
 					{
+						//Make sure we are past the point of having introduced all the exercises, gonna need to manually update this which sucks but
+						//I release this this weekend and this quick and dirty solution works
 						Log.Info( "Random Exercise" );
-						if ( TSSGame.Current.TimeSinceExerciseChange > 10f )
+						if ( TSSGame.Current.TimeSinceExerciseChange > 10f && pawn.ExercisePoints > 450f)
 						{
 							TSSGame.Current.TimeSinceExerciseChange = 0f;
 							Event.Run( "rand_exercise" );

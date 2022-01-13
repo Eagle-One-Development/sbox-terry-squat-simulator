@@ -33,6 +33,9 @@ namespace TSS
 				//Set the exercise to the squat exercise
 				player.ChangeExercise( Exercise.Squat );
 
+				//Give terry cool glasses
+				_ = new ModelEntity( "models/clothes/fitness/glasses_hdme.vmdl", player );
+
 				player.PointCeiling = player.ExercisePoints + 300;
 			}
 

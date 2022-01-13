@@ -133,6 +133,7 @@ namespace TSS
 				_ = new ModelEntity( "models/clothes/fitness/sweatband_head.vmdl", ent );
 				_ = new ModelEntity( "models/clothes/fitness/hair_head.vmdl", ent );
 				_ = new ModelEntity( "models/clothes/fitness/hair_body.vmdl", ent );
+				
 			}
 
 			ent.CopyBonesFrom( this );
@@ -282,6 +283,10 @@ namespace TSS
 			_ = new ModelEntity( "models/clothes/fitness/sweatband_head.vmdl", this );
 			_ = new ModelEntity( "models/clothes/fitness/hair_head.vmdl", this );
 			_ = new ModelEntity( "models/clothes/fitness/hair_body.vmdl", this );
+			if ( ExercisePoints > HeavenThreshold )
+			{
+				_ = new ModelEntity( "models/clothes/fitness/glasses_hdme.vmdl", this );
+			}
 		}
 
 		/// <summary>
