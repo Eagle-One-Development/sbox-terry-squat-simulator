@@ -15,6 +15,7 @@ namespace TSS
 				RootPanel.AddChild<UIPanel>();
 				RootPanel.AddChild<IntroPanel>();
 				RootPanel.AddChild<EndingPanel>();
+				RootPanel.AddChild<TwitchPanel>();
 			}
 		}
 	}
