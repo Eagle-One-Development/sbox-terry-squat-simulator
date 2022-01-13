@@ -4,6 +4,9 @@ using Sandbox;
 using TSS;
 using TSS.UI;
 
+
+[Library( "food_sandwhich" )]
+[Hammer.Skip]
 public partial class Sandwhich : Food
 {
 

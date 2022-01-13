@@ -1,6 +1,7 @@
 ﻿using Sandbox;
 using System.Collections.Generic;
 using System.Linq;
+using Twitch.Commands;
 
 namespace TSS
 {
@@ -9,6 +10,7 @@ namespace TSS
 		public string DisplayName;
 		public string Username;
 		public string Message;
+		public string Color;
 	}
 
 	public partial class TSSGame : Game
@@ -19,6 +21,21 @@ namespace TSS
 		public TimeSince TimeSinceFood;
 		public TimeSince TimeSinceKilled;
 		public static float FoodCoolDown = 3f;
+
+		public List<TwitchCommand> TwitchCommands;
+
+		public void InitializeCommands()
+		{
+			TwitchCommands = new List<TwitchCommand>();
+			var pawn = Entity.All.OfType<TSSPlayer>().FirstOrDefault();
+
+			TwitchCommands.Add( new FoodCommand("!burger",pawn,"food_burger") );
+			TwitchCommands.Add( new FoodCommand( "!sandwhich", pawn, "food_sandwhich" ) );
+			TwitchCommands.Add( new FoodCommand( "!fries", pawn, "food_fries" ) );
+			TwitchCommands.Add( new CheerCommand( "!cheer", pawn ));
+			TwitchCommands.Add( new KillCommand( "!kill", pawn ) );
+			TwitchCommands.Add( new ExerciseCommand( "!exercise", pawn ) );
+		}
 
 		[Event.Streamer.ChatMessage]
 		public static void OnStreamMessage( StreamChatMessage message )
@@ -31,8 +48,9 @@ namespace TSS
 				Message = message.Message,
 				DisplayName = message.DisplayName,
 				Username = message.Username,
+				Color = message.Color
 			};
-
+			
 			ProcessMessage( msg );
 		}
 
@@ -65,8 +83,14 @@ namespace TSS
 
 		public async static void DequeueLoop()
 		{
+			//Delay this ten seconds so the player has time to spawn
 			await GameTask.DelaySeconds( 10f );
+
+			//Get a reference to pawn
 			var pawn = Entity.All.OfType<TSSPlayer>().FirstOrDefault();
+
+			//Initialize the list of commands
+			TSSGame.Current.InitializeCommands();
 
 			while(true)
 			{
@@ -74,111 +98,14 @@ namespace TSS
 
 				if ( Queue.TryDequeue( out var msg ) && !pawn.EndingInitiated && pawn.IntroPlayed && pawn.TimeSinceIntro > 25f)
 				{
-					Log.Info( "HMMM" );
-					if ( msg.Message.Contains( "!soda" ) )
-					{
-						//Pawn.DrinkSoda();
-					} else if ( msg.Message.Contains( "!burger" ) )
-					{
-						
-						if ( TSSGame.Current.TimeSinceFood > TSSGame.FoodCoolDown)
-						{
-							_ = new Burger();
-							TSSGame.Current.TimeSinceFood = 0f;
-						}
+					var CommandList = TSSGame.Current.TwitchCommands;
 
-
-					} else if ( msg.Message.Contains( "!cheer" ) )
+					foreach(TwitchCommand t in CommandList )
 					{
-						Sound.FromScreen( $"cheering_0{Rand.Int( 1, 3 )}" );
-					} else if ( msg.Message.Contains( "!fries" ) )
-					{
-						if ( TSSGame.Current.TimeSinceFood > TSSGame.FoodCoolDown )
-						{
-							_ = new FrenchFries();
-							TSSGame.Current.TimeSinceFood = 0f;
-						}
-
+						t.Evalulate( msg );
 					}
-					else if ( msg.Message.Contains( "!sandwhich" ) )
-					{
-						if ( TSSGame.Current.TimeSinceFood > TSSGame.FoodCoolDown )
-						{
-							_ = new Sandwhich();
-							TSSGame.Current.TimeSinceFood = 0f;
-						}
-
-					}
-					else if ( msg.Message.Contains( "!kill" ) )
-					{
-						if ( TSSGame.Current.TimeSinceKilled > 10f && pawn.ExercisePoints > 110f)
-						{
-							pawn.KillTerry(Vector3.Zero);
-							TSSGame.Current.TimeSinceKilled = 0f;
-						}
-
-					}
-					else if ( msg.Message.Contains( "!exercise" ) )
-					{
-						//Make sure we are past the point of having introduced all the exercises, gonna need to manually update this which sucks but
-						//I release this this weekend and this quick and dirty solution works
-						Log.Info( "Random Exercise" );
-						if ( TSSGame.Current.TimeSinceExerciseChange > 10f && pawn.ExercisePoints > 450f)
-						{
-							TSSGame.Current.TimeSinceExerciseChange = 0f;
-							Event.Run( "rand_exercise" );
-						}
-					}
-					// tomato
-					// random excerise
-					// quicktime events
-					// medicine ball and ragdoll
-					// cheer
-					// gym hottie confusion
-					// pay gym subscription
-					// 
 				}
 			}
 		}
-
-		/// <summary>
-		/// Event called when a chat command comes in
-		/// </summary>
-		/*
-		public class OnChatCommand : LibraryMethod
-		{
-			public string TargetName { get; set; }
-
-			public static string User { get; internal set; }
-
-			public OnChatCommand( string targetName )
-			{
-				TargetName = targetName;
-			}
-		}
-		*/
-
-
-		/*
-		[Event.Streamer.JoinChat]
-		public static void OnStreamJoinEvent( string user )
-		{
-			if ( !Host.IsClient )
-				return;
-
-			Log.Info( $"{user} joined" );
-		}
-
-		[Event.Streamer.LeaveChat]
-		public static void OnStreamLeaveEvent( string user )
-		{
-			if ( !Host.IsClient )
-				return;
-
-			Log.Info( $"{user} left" );
-
-			//RemovePlayerCommand( user );
-		}
-		*/
 	}
 }

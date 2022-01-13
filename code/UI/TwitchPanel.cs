@@ -45,6 +45,11 @@ namespace TSS.UI
 			{
 				SetClass( "inactive", true );
 			}
+
+			if( !Streamer.IsActive )
+			{
+				SetClass( "inactive", true );
+			}
 		}
 	}
 }

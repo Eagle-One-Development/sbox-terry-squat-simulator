@@ -3,6 +3,10 @@ using System.Collections.Generic;using Sandbox;
 using TSS;
 using TSS.UI;
 
+
+
+[Library( "food_fries" )]
+[Hammer.Skip]
 public partial class FrenchFries : Food {
 
 	public override Vector2 GetPanelSize()
