@@ -1,4 +1,15 @@
 {
-    "sharedassets": "*.*",
-    "type": "game"
+  "SharedAssets": "*. *",
+  "Title": "Terry Squat Simulator",
+  "Type": "game",
+  "Org": "local",
+  "Ident": "terry-squat-simulator",
+  "FullIdent": "local.terry-squat-simulator",
+  "Schema": 1,
+  "NeedsUpgrade": false,
+  "HasAssets": true,
+  "AssetsPath": "",
+  "HasCode": true,
+  "CodePath": "code",
+  "RootNamespace": "Sandbox"
 }
