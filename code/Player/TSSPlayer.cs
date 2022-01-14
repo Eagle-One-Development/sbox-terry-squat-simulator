@@ -142,7 +142,8 @@ namespace TSS
 		/// <summary>
 		/// Wether the intro has been played or not
 		/// </summary>
-		public bool IntroPlayed;
+		[Net]
+		public bool IntroPlayed { get; set; }
 		#endregion
 
 		#region Uncategorized Members
@@ -261,9 +262,10 @@ namespace TSS
 			//This will play the intro once you press the left click
 			if ( !IntroPlayed && Input.Pressed( InputButton.Attack1 ) && TimeSinceRagdolled > 12f && !SkipIntro )
 			{
-				IntroPlayed = true;
 				TimeSinceIntro = 0f;
+				IntroPlayed = true;
 				PlayMusic();
+				
 			}
 
 			if(TimeSinceIntro < 23.16f )
@@ -326,8 +328,10 @@ namespace TSS
 		public async void PlayMusic()
 		{
 			await GameTask.Delay( 1000 );
+
 			TSSGame.Current.StartMusic();
 			TSSGame.Current.PlayIntro();
+
 		}
 
 		/// <summary>

@@ -6581,6 +6581,258 @@
 							},
 						]
 					},
+					{
+						_class = "AnimFile"
+						name = "Drink"
+						activity_name = ""
+						activity_weight = 1
+						weight_list_name = ""
+						fade_in_time = 0.2
+						fade_out_time = 0.2
+						looping = false
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/terry/terry.fbx"
+						start_frame = 0
+						end_frame = 51
+						framerate = -1.0
+						take = 7
+						reverse = false
+					},
+					{
+						_class = "AnimFile"
+						name = "Squat_Up"
+						activity_name = ""
+						activity_weight = 1
+						weight_list_name = ""
+						fade_in_time = 0.2
+						fade_out_time = 0.2
+						looping = true
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/terry/anims/Terry@Squat_Up.fbx"
+						start_frame = 0
+						end_frame = 3
+						framerate = -1.0
+						take = 2
+						reverse = false
+					},
+					{
+						_class = "AnimFile"
+						name = "Squat_Down"
+						activity_name = ""
+						activity_weight = 1
+						weight_list_name = ""
+						fade_in_time = 0.2
+						fade_out_time = 0.2
+						looping = true
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/terry/anims/Terry@Squat_Up.fbx"
+						start_frame = 0
+						end_frame = 1
+						framerate = -1.0
+						take = 1
+						reverse = false
+					},
+					{
+						_class = "AnimFile"
+						name = "Punch_Right"
+						activity_name = ""
+						activity_weight = 1
+						weight_list_name = ""
+						fade_in_time = 0.2
+						fade_out_time = 0.2
+						looping = false
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/terry/Terry.fbx"
+						start_frame = 0
+						end_frame = 10
+						framerate = -1.0
+						take = 6
+						reverse = false
+					},
+					{
+						_class = "AnimFile"
+						name = "Punch_Left"
+						activity_name = ""
+						activity_weight = 1
+						weight_list_name = ""
+						fade_in_time = 0.2
+						fade_out_time = 0.2
+						looping = false
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/terry/terry.fbx"
+						start_frame = 0
+						end_frame = 10
+						framerate = -1.0
+						take = 5
+						reverse = false
+					},
+					{
+						_class = "AnimFile"
+						name = "Yoga0"
+						activity_name = ""
+						activity_weight = 1
+						weight_list_name = ""
+						fade_in_time = 0.2
+						fade_out_time = 0.2
+						looping = false
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/terry/terry.fbx"
+						start_frame = 0
+						end_frame = 31
+						framerate = -1.0
+						take = 10
+						reverse = false
+					},
+					{
+						_class = "AnimFile"
+						name = "Yoga1"
+						activity_name = ""
+						activity_weight = 1
+						weight_list_name = ""
+						fade_in_time = 0.2
+						fade_out_time = 0.2
+						looping = false
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/terry/terry.fbx"
+						start_frame = 0
+						end_frame = 31
+						framerate = -1.0
+						take = 11
+						reverse = false
+					},
+					{
+						_class = "AnimFile"
+						name = "Yoga2"
+						activity_name = ""
+						activity_weight = 1
+						weight_list_name = ""
+						fade_in_time = 0.2
+						fade_out_time = 0.2
+						looping = false
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/terry/terry.fbx"
+						start_frame = 0
+						end_frame = 31
+						framerate = -1.0
+						take = 12
+						reverse = false
+					},
+					{
+						_class = "AnimFile"
+						name = "Yoga3"
+						activity_name = ""
+						activity_weight = 1
+						weight_list_name = ""
+						fade_in_time = 0.2
+						fade_out_time = 0.2
+						looping = false
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/terry/terry.fbx"
+						start_frame = 0
+						end_frame = 31
+						framerate = -1.0
+						take = 13
+						reverse = false
+					},
+					{
+						_class = "AnimFile"
+						name = "Yoga4"
+						activity_name = ""
+						activity_weight = 1
+						weight_list_name = ""
+						fade_in_time = 0.2
+						fade_out_time = 0.2
+						looping = false
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/terry/terry.fbx"
+						start_frame = 0
+						end_frame = 31
+						framerate = -1.0
+						take = 14
+						reverse = false
+					},
+					{
+						_class = "AnimFile"
+						name = "Crying"
+						activity_name = ""
+						activity_weight = 1
+						weight_list_name = ""
+						fade_in_time = 0.2
+						fade_out_time = 0.2
+						looping = true
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/terry/terry.fbx"
+						start_frame = 0
+						end_frame = 31
+						framerate = -1.0
+						take = 2
+						reverse = false
+					},
+					{
+						_class = "AnimFile"
+						name = "Ending"
+						activity_name = ""
+						activity_weight = 1
+						weight_list_name = ""
+						fade_in_time = 0.2
+						fade_out_time = 0.2
+						looping = true
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/terry/terry.fbx"
+						start_frame = 0
+						end_frame = 399
+						framerate = -1.0
+						take = 3
+						reverse = false
+					},
 				]
 				default_root_bone_name = ""
 			},

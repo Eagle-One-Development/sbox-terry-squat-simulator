@@ -113,15 +113,28 @@ namespace TSS
 			while(true)
 			{
 				await GameTask.Delay( 100 );
+				bool buff = Entity.All.OfType<BuffPawn>().Any();
 
-				if ( Queue.TryDequeue( out var msg ) && !pawn.EndingInitiated && pawn.IntroPlayed && pawn.TimeSinceIntro > 25f)
+				if ( Queue.TryDequeue( out var msg ) && ((!pawn.EndingInitiated && pawn.IntroPlayed && pawn.TimeSinceIntro > 25f) || buff) )
 				{
 					var CommandList = TSSGame.Current.TwitchCommands;
 
-					foreach(TwitchCommand t in CommandList )
+					if ( !buff )
 					{
-						t.Evalulate( msg );
+						foreach ( TwitchCommand t in CommandList )
+						{
+							t.Evalulate( msg );
+						}
 					}
+					else
+					{
+						Log.Info( "HMMM" );
+						TSSGame.Current.AddHudMessage( msg.Message, msg.DisplayName, msg.Color );
+					}
+
+
+
+					
 
 					
 				}

@@ -17,6 +17,10 @@
         border-radius: 0px;
         font-family: VCR_OSD_MONO;
         color: #fff;
+
+        &.inactive {
+            opacity: 0;
+        }
     }
 
     .twichchat {
@@ -44,11 +48,6 @@
             font-size: 30px;
             overflow: visible;
             top: 100%;
-
         }
-    }
-
-    &.inactive {
-        opacity: 0;
     }
 }

@@ -208,8 +208,11 @@ namespace TSS
 		public void PlayIntro()
 		{
 			Log.Info( "PLAYING INTRO SOUND" );
-			Sound.FromScreen( "Intro" );
-			IntroPanel.Instance.IntroStarted = true;
+			if ( !IntroPanel.Instance.IntroStarted )
+			{
+				Sound.FromScreen( "Intro" );
+				IntroPanel.Instance.IntroStarted = true;
+			}
 		}
 		
 		[ClientRpc]

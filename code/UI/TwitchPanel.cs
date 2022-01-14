@@ -12,20 +12,20 @@ namespace TSS.UI
 	public class TwitchPanel : Panel
 	{
 		public static TwitchPanel Instance;
-
+		public Panel Container;
 		public TwitchPanel()
 		{
 			StyleSheet.Load( "/ui/TwitchPanel.scss" );
 
-			var container = AddChild<Panel>( "container" );
+			Container = AddChild<Panel>( "container" );
 
-			container.Add.Label( "Twitch Commands", "title" );
-			container.Add.Label( "!burger - Send a Cheeseburger Flying at Terry.", "command" );
-			container.Add.Label( "!fries - Send some fries to terry.", "command" );
-			container.Add.Label( "!sandwhich - Give terry a healthy sandwhich.", "command" );
-			container.Add.Label( "!cheer - Give Terry some inspiration!", "command" );
-			container.Add.Label( "!exercise - Set a random workout.", "command" );
-			container.Add.Label( "!kill - Make Terry Collapse From Exhaustion.", "command" );
+			Container.Add.Label( "Twitch Commands", "title" );
+			Container.Add.Label( "!burger - Send a Cheeseburger Flying at Terry.", "command" );
+			Container.Add.Label( "!fries - Send some fries to terry.", "command" );
+			Container.Add.Label( "!sandwhich - Give terry a healthy sandwhich.", "command" );
+			Container.Add.Label( "!cheer - Give Terry some inspiration!", "command" );
+			Container.Add.Label( "!exercise - Set a random workout.", "command" );
+			Container.Add.Label( "!kill - Make Terry Collapse From Exhaustion.", "command" );
 
 			Instance = this;
 		}
@@ -51,12 +51,22 @@ namespace TSS.UI
 				{
 					SetClass( "inactive", false );
 				}
+
+				if ( p.ExercisePoints > p.HeavenThreshold && !p.SkipIntro)
+				{
+					Style.BorderColor = Color.Black;
+					Style.FontColor = Color.Black;
+					Container.Style.FontColor = Color.Black;
+					Container.Style.BorderColor = Color.Black;
+				}
 			}
 
 			if ( Local.Pawn is BuffPawn b )
 			{
-				SetClass( "inactive", true );
+				Container.SetClass( "inactive", true );
 			}
+
+
 
 			if( !Streamer.IsActive )
 			{

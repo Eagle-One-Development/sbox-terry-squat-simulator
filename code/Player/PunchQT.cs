@@ -52,6 +52,7 @@ namespace TSS
 					Panel.Key.Text = Input.GetKeyWithBinding( "+iv_right" ).ToUpper();
 					break;
 			}
+			MyTime = ((60f / 140f) * 1f);
 		}
 
 		[Event.Tick]
