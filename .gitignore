@@ -41,3 +41,4 @@ tools_thumbnail_cache.bin
 *.vsnd_c
 
 !/materials/particles/*.vtex_c
+maps/gym.vpk
