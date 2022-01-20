@@ -49,7 +49,10 @@ namespace TSS.UI
 				}
 				else
 				{
-					SetClass( "inactive", false );
+					if ( Streamer.IsActive )
+					{
+						SetClass( "inactive", false );
+					}
 				}
 
 				if ( p.ExercisePoints > p.HeavenThreshold && !p.SkipIntro)
@@ -68,10 +71,7 @@ namespace TSS.UI
 
 
 
-			if( !Streamer.IsActive )
-			{
-				SetClass( "inactive", true );
-			}
+			
 		}
 	}
 }

@@ -132,8 +132,6 @@ partial class BuffPawn : Player
 
 		if ( EndPoint != null )
 		{
-			DebugOverlay.Sphere( EndPoint.Position, 200f, Color.White, false, 0 );
-
 
 			if ( !IsClient )
 			{
