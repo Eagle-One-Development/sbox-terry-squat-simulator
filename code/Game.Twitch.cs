@@ -115,7 +115,7 @@ namespace TSS
 				await GameTask.Delay( 100 );
 				bool buff = Entity.All.OfType<BuffPawn>().Any();
 
-				if ( Queue.TryDequeue( out var msg ) && ((!pawn.EndingInitiated && pawn.IntroPlayed && pawn.TimeSinceIntro > 25f) || buff) )
+				if ( Queue.TryDequeue( out var msg ) && ((!pawn.EndingInitiated && pawn.IntroPlayed && pawn.TimeSinceIntro > 25f && pawn.ExercisePoints > 50f) || buff) )
 				{
 					var CommandList = TSSGame.Current.TwitchCommands;
 

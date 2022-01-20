@@ -108,7 +108,7 @@ namespace TSS.UI
 		public string CreditsString()
 		{
 			string credits = "TERRY\nSQUAT\nSIMULATOR\n\n\n";
-			credits += "Programming\nJosh Wilson\nJac0xb\nTaek Dev\nDoctor Gurke\n\n\nArt\nKabubu\n\n\nLevel Design\nGmo Man\n\nSound\nDawdle\nMungus\nJac0xb\n\n\nAnimation\nWhimsicalVR\nJosh Wilson\n\n\nVoice Acting\nMungus\nNavia Shetty\nPhar0\nGvarados\n\n\nSounds Provided\nFrom Freesound.Org\nInspectorJ";
+			credits += "Programming\nJosh Wilson\nJac0xb\nTaek\nDoctor Gurke\n\n\nArt\nKabubu\n\n\nLevel Design\nGmo Man\n\nSound\nDawdle\nMungus\nJac0xb\n\n\nAnimation\nWhimsicalVR\nJosh Wilson\n\n\nVoice Acting\nMungus\nNavia Shetty\nPhar0\nGvarados\n\n\nSounds Provided\nFrom Freesound.Org\nInspectorJ";
 			return credits;
 		}
 

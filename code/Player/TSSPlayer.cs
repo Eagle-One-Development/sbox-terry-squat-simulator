@@ -391,7 +391,7 @@ namespace TSS
 		{
 			if ( Input.Pressed( InputButton.Attack1 ) )
 			{
-				TraceResult clickTrace = Trace.Ray( Input.Cursor, 1000f ).HitLayer( CollisionLayer.All, true ).Run();
+				TraceResult clickTrace = Trace.Ray( Input.Cursor, 1000f ).HitLayer( CollisionLayer.All, true ).WithoutTags("wall").Run();
 
 				if ( clickTrace.Hit )
 				{
@@ -523,7 +523,7 @@ namespace TSS
 			} ) );
 
 			//Initiate the ending
-			Timeline.Add( new ExerciseEvent( () => (ExercisePoints >= HeavenThreshold + 65), () => {
+			Timeline.Add( new ExerciseEvent( () => (ExercisePoints >= HeavenThreshold + 101), () => {
 				StartEnding();
 			} ) );
 

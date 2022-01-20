@@ -103,7 +103,7 @@ namespace TSS
 		#endregion
 		#endregion
 
-		public int HeavenThreshold => 500;
+		public int HeavenThreshold => 800;
 
 		#region Methods
 

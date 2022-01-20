@@ -74,7 +74,7 @@ namespace Twitch.Commands
 
 		public override void Evaluation( GenericMessage msg )
 		{
-			if( TimeSinceExerciseLastChanged > 10f && Pl.ExercisePoints > 110f)
+			if( TimeSinceExerciseLastChanged > 10f && Pl.ExercisePoints > 400f)
 			{
 				Event.Run( "rand_exercise" );
 				TSSGame.Current.AddHudMessage( "shakes things up!", msg.DisplayName, msg.Color );

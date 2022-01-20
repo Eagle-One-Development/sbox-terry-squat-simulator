@@ -61,6 +61,13 @@ namespace TSS
 				return;
 			}
 
+			
+
+		}
+
+		[Event.BuildInput]
+		public void BuildYogaInput( InputBuilder input )
+		{
 			if ( currentCombo == null )
 			{
 				currentCombo = Rand.FromArray( combos );
@@ -69,9 +76,9 @@ namespace TSS
 			index = index.Clamp( 0, currentCombo.Length - 1 );
 			var type = currentCombo[index];
 
-			bool b = CheckType( type );
+			bool b = CheckType( type , input);
 
-			if ( CheckFailure( type ) )
+			if ( CheckFailure( type , input) )
 			{
 				Panel.Failed = true;
 				Panel.TimeSinceFinished = 0;
@@ -106,21 +113,20 @@ namespace TSS
 				Panel.TimeSinceFinished = 0;
 				Delete();
 			}
-
 		}
 
 
 		/// <summary>
 		/// In theory there's a way better way to do this, but I'm not really sure how
+		/// TODO: I'm sure there's some bitwise shit we could do to figure this out
 		/// </summary>
-		/// <param name="type"></param>
-		bool CheckFailure( char type )
+		bool CheckFailure( char type , InputBuilder input )
 		{
 
 			if ( type == '0' )
 			{
 
-				if ( Input.Pressed( InputButton.Right ) || Input.Pressed( InputButton.Left ) || Input.Pressed( InputButton.Back ) )
+				if ( input.Pressed( InputButton.Right ) || input.Pressed( InputButton.Left ) || input.Pressed( InputButton.Back ) )
 				{
 					return true;
 				}
@@ -128,7 +134,7 @@ namespace TSS
 
 			if ( type == '1' )
 			{
-				if ( Input.Pressed( InputButton.Right ) || Input.Pressed( InputButton.Left ) || Input.Pressed( InputButton.Forward ) )
+				if ( input.Pressed( InputButton.Right ) || input.Pressed( InputButton.Left ) || input.Pressed( InputButton.Forward ) )
 				{
 					return true;
 				}
@@ -136,7 +142,7 @@ namespace TSS
 
 			if ( type == '2' )
 			{
-				if ( Input.Pressed( InputButton.Back ) || Input.Pressed( InputButton.Left ) || Input.Pressed( InputButton.Forward ) )
+				if ( input.Pressed( InputButton.Back ) || input.Pressed( InputButton.Left ) || input.Pressed( InputButton.Forward ) )
 				{
 					return true;
 				}
@@ -144,7 +150,7 @@ namespace TSS
 
 			if ( type == '3' )
 			{
-				if ( Input.Pressed( InputButton.Back ) || Input.Pressed( InputButton.Right ) || Input.Pressed( InputButton.Forward ) )
+				if ( input.Pressed( InputButton.Back ) || input.Pressed( InputButton.Right ) || input.Pressed( InputButton.Forward ) )
 				{
 					return true;
 				}
@@ -153,18 +159,18 @@ namespace TSS
 			return false;
 		}
 
-		public bool CheckType( char c )
+		public bool CheckType( char c , InputBuilder input )
 		{
 			switch ( c )
 			{
 				case '0':
-					return Input.Pressed( InputButton.Forward );
+					return input.Pressed( InputButton.Forward );
 				case '1':
-					return Input.Pressed( InputButton.Back );
+					return input.Pressed( InputButton.Back );
 				case '2':
-					return Input.Pressed( InputButton.Right );
+					return input.Pressed( InputButton.Right );
 				case '3':
-					return Input.Pressed( InputButton.Left );
+					return input.Pressed( InputButton.Left );
 			}
 			return false;
 		}

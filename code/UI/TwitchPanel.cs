@@ -43,15 +43,19 @@ namespace TSS.UI
 			base.Tick();
 			if ( Local.Pawn is TSSPlayer p )
 			{
-				if ( !p.IntroPlayed || p.TimeSinceIntro < 25f  || p.EndingInitiated )
+				
+				if ( !p.IntroPlayed || p.TimeSinceIntro < 25f  || p.EndingInitiated || p.ExercisePoints < 50f)
 				{
-					SetClass( "inactive", true );
+					
+					Container.SetClass( "inactive", true );
 				}
 				else
 				{
+					
 					if ( Streamer.IsActive )
 					{
-						SetClass( "inactive", false );
+
+						Container.SetClass( "inactive", false );
 					}
 				}
 
