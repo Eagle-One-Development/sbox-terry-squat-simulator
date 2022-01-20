@@ -215,7 +215,7 @@ namespace TSS
 
 			if ( SkipIntro )
 			{
-				ExercisePoints = HeavenThreshold + 65;
+				ExercisePoints = HeavenThreshold + 201;
 			}
 
 			if ( !SkipIntro )
@@ -523,7 +523,7 @@ namespace TSS
 			} ) );
 
 			//Initiate the ending
-			Timeline.Add( new ExerciseEvent( () => (ExercisePoints >= HeavenThreshold + 101), () => {
+			Timeline.Add( new ExerciseEvent( () => (ExercisePoints >= HeavenThreshold + 201), () => {
 				StartEnding();
 			} ) );
 
