@@ -171,12 +171,15 @@ namespace TSS
 					Event.Run( "OtherBeat" );
 				}
 
+				if ( Beats % 4 == 0 )
+				{
+					Event.Run( "FourthBeat" );
+				}
+
 				if ( (Beats - 1)% 32 == 0 )
 				{
-					Log.Info( "8 MEASURES BITCH" );
 					if(TrackQueue.Count != 0 )
 					{
-						Log.Info( "DEQUEING TRACK" );
 						Silence();
 						var track = TrackQueue.Dequeue();
 						track.RestartSound();
@@ -207,7 +210,6 @@ namespace TSS
 		[ClientRpc]
 		public void PlayIntro()
 		{
-			Log.Info( "PLAYING INTRO SOUND" );
 			if ( !IntroPanel.Instance.IntroStarted )
 			{
 				Sound.FromScreen( "Intro" );

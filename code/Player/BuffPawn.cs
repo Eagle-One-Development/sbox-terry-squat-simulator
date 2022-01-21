@@ -59,7 +59,6 @@ partial class BuffPawn : Player
 	public override void StartTouch( Entity other )
 	{
 		base.StartTouch( other );
-		Log.Info( other.Tags.List.First() );
 		if ( other.Tags.List.First() == "ending" )
 		{
 			//StartEnding();
@@ -142,7 +141,6 @@ partial class BuffPawn : Player
 					{
 						StartCredits();
 						CreditsStarted = true;
-						Log.Info( "BEGIN THE CREDITS" );
 					}
 					
 				}
@@ -166,7 +164,6 @@ partial class BuffPawn : Player
 	[ClientRpc]
 	public void CreatePortal()
 	{
-		Log.Info( "Portal Particle created" );
 		var port = All.OfType<EndPortal>().FirstOrDefault();
 		PortalPartic = Particles.Create( "particles/void/stars_pull.vpcf", port.Position );
 	}

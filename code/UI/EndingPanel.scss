@@ -2,7 +2,7 @@
     position: absolute;
     width: 100%;
     height: 100%;
-    
+
 
     .transitions {
         position: absolute;
@@ -12,10 +12,18 @@
 
     .credits {
         font-size: 100px;
-        left:0%;
-        position:absolute;
-
+        left: 0%;
+        position: absolute;
         font-family: VCR_OSD_MONO;
         color: #fff;
+
+        .subcredits {
+            font-size: 100px;
+            left: 0%;
+            position: absolute;
+            font-family: VCR_OSD_MONO;
+            color: #fff;
+            top:100%;
+        }
     }
 }

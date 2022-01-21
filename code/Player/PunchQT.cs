@@ -1,5 +1,6 @@
 ﻿using Sandbox;
 using TSS.UI;
+using System.Linq;
 
 namespace TSS
 {
@@ -17,13 +18,17 @@ namespace TSS
 		[Net]
 		public TSSPlayer Player { get; set; }
 
+		[Net, Predicted]
+		public TimeSince TimeSinceSpawned { get; set; }
+
 		public PunchQTPanel Panel;
 
 		public override void Spawn()
 		{
 			base.Spawn();
-			MyTime =  ((60f/140f) * 1f);
+			MyTime =  ((60f/140f) * 2f);
 			Transmit = TransmitType.Always;
+			TimeSinceSpawned = 0f;
 		}
 
 		public new void Delete()
@@ -35,8 +40,9 @@ namespace TSS
 		public override void ClientSpawn()
 		{
 			base.ClientSpawn();
+			TimeSinceSpawned = 0f;
 
-			Panel = new PunchQTPanel( this, new Vector2( Rand.Float( -200f, 200f ), Rand.Float( -200f, 200f ) ) );
+			Panel = new PunchQTPanel( this, new Vector2( Rand.Float( -20f, 20f ), Rand.Float( -20f, 20f ) ) );
 			switch ( Type )
 			{
 				case 0:
@@ -52,7 +58,56 @@ namespace TSS
 					Panel.Key.Text = Input.GetKeyWithBinding( "+iv_right" ).ToUpper();
 					break;
 			}
-			MyTime = ((60f / 140f) * 1f);
+			MyTime = ((60f / 140f) * 2f);
+		}
+
+		[Event.BuildInput]
+		public void BuildPunchInput( InputBuilder input )
+		{
+			bool pressed = false;
+			if ( Type == 0 )
+			{
+				pressed = Input.Pressed( InputButton.Forward );
+			}
+			if ( Type == 1 )
+			{
+				pressed = Input.Pressed( InputButton.Back );
+			}
+			if ( Type == 2 )
+			{
+				pressed = Input.Pressed( InputButton.Left );
+			}
+			if ( Type == 3 )
+			{
+				pressed = Input.Pressed( InputButton.Right );
+			}
+
+
+
+			if ( TimeSinceSpawned > MyTime - 0.15f && TimeSinceSpawned < MyTime + 0.15f )
+			{
+				if ( pressed )
+				{
+					ConsoleSystem.Run( "Punch" );
+
+					if ( IsClient )
+					{
+						Panel.Finished = true;
+					}
+
+					ConsoleSystem.Run( "delete_punch", this.NetworkIdent );
+				}
+			}
+		}
+
+		[ServerCmd("delete_punch")]
+		public static void DeletePunch(int i)
+		{
+			var ent = Entity.All.Where( x => x.NetworkIdent == i ).Any();
+			if ( ent )
+			{
+				Entity.All.Where( x => x.NetworkIdent == i ).First().Delete();
+			}
 		}
 
 		[Event.Tick]
@@ -72,45 +127,9 @@ namespace TSS
 				Panel?.Delete();
 			}
 
-			bool pressed = false;
-			if ( Type == 0 )
-			{
-				pressed = Input.Pressed( InputButton.Forward );
-			}
-			if ( Type == 1 )
-			{
-				pressed = Input.Pressed( InputButton.Back );
-			}
-			if ( Type == 2 )
-			{
-				pressed = Input.Pressed( InputButton.Left );
-			}
-			if ( Type == 3 )
-			{
-				pressed = Input.Pressed( InputButton.Right );
-			}
+			
 
-			MyTime -= Time.Delta;
-
-			if ( MyTime > -0.05f && MyTime < 0.15f )
-			{
-				if ( pressed )
-				{
-					ConsoleSystem.Run( "Punch" );
-
-					if ( IsClient )
-					{
-						Panel.Finished = true;
-					}
-
-					if ( IsServer )
-					{
-						Delete();
-					}
-				}
-			}
-
-			if ( MyTime > 0.15f )
+			if ( TimeSinceSpawned < MyTime - 0.15f )
 			{
 				if ( Input.Pressed( InputButton.Forward ) || Input.Pressed( InputButton.Back ) || Input.Pressed( InputButton.Right ) || Input.Pressed( InputButton.Left ) )
 				{
@@ -122,12 +141,13 @@ namespace TSS
 					if ( IsServer )
 					{
 						Delete();
+
 					}
 					return;
 				}
 			}
 
-			if ( MyTime < -0.1f )
+			if ( TimeSinceSpawned > MyTime+0.15f )
 			{
 				if ( IsClient )
 				{

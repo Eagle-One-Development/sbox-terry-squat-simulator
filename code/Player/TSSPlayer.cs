@@ -239,7 +239,6 @@ namespace TSS
 		public override void StartTouch( Entity other )
 		{
 			base.StartTouch( other );
-			Log.Info( other );
 		}
 
 		public override void OnKilled()

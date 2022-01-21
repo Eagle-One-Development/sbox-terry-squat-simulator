@@ -74,7 +74,6 @@ namespace TSS
 					JoshWilson = null;
 					TimeSinceStart = 0;
 					Active = true;
-					Log.Info( "WHAT THE FUCK MAN" );
 				}
 				else
 				{

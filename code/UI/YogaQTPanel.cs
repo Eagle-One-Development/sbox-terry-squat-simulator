@@ -79,12 +79,10 @@ namespace TSS.UI
 		public override void Tick()
 		{
 			base.Tick();
-			PanelTransform pt = new PanelTransform();
-			pt.AddTranslateX( Length.Pixels( (Screen.Width / 2) + Pos.x ) );
-			pt.AddTranslateY( Length.Pixels( (Screen.Height / 2) + Pos.y ) );
 
-			Style.Left = Length.Pixels( (Screen.Width / 2) + Pos.x );
-			Style.Top = Length.Pixels( (Screen.Height / 2) + Pos.y );
+
+			Style.Left = Length.Percent( 50f + Pos.x );
+			Style.Top = Length.Percent( 50f + Pos.y );
 			Style.Dirty();
 
 			for ( int i = 0; i < Letters.Count; i++ )

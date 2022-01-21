@@ -15,6 +15,7 @@ namespace TSS.UI
 		public bool Finished;
 		public bool Failed;
 		public TimeSince TimeSinceSpawned;
+		public TimeSince TimeSinceEnded;
 
 		public PunchQTPanel( PunchQT p, Vector2 p2 )
 		{
@@ -35,11 +36,8 @@ namespace TSS.UI
 		{
 			base.Tick();
 
-			PanelTransform pt = new();
-
-			pt.AddTranslateX( Length.Pixels( (Screen.Width / 2) + Pos.x ) );
-			pt.AddTranslateY( Length.Pixels( (Screen.Height / 2) + Pos.y ) );
-			float growth = (1f - MathF.Pow( (TimeSinceSpawned / 0.9f).Clamp( 0, 1f ), 3.0f ));
+			float val = (MyQT.TimeSinceSpawned - (MyQT.MyTime + 0.15f)) / 0.5f;
+			float growth = val.Clamp( 0f, 1f );
 
 			if ( Local.Pawn is TSSPlayer pl )
 			{
@@ -53,12 +51,12 @@ namespace TSS.UI
 
 			if ( Finished )
 			{
-				Back.Style.Opacity = growth;
+				Back.Style.Opacity = 1f - growth;
 				Key.Style.Opacity = 0f;
-				Style.Opacity = 2 * growth;
+				Style.Opacity = 1f - growth;
 				Measure.Style.Opacity = 0f;
 				Back.Style.BackgroundColor = (Failed) ? Color.Red : Color.Green;
-
+				Style.BorderColor = (Failed) ? Color.Red : Color.Green;
 			}
 			else
 			{
@@ -67,19 +65,23 @@ namespace TSS.UI
 
 			Key.Style.Dirty();
 
-			if ( TimeSinceSpawned > 1f )
+			if ( TimeSinceSpawned > MyQT.MyTime + 0.5f)
 			{
 				Delete(true);
 			}
 
-			Style.Opacity = 1f;
-			Style.Transform = pt;
+			if ( !Finished )
+			{
+				Style.Opacity = 1f;
+			}
+			Style.Left = Length.Percent( 50f + Pos.x );
+			Style.Top = Length.Percent( 50f + Pos.y );
 			Style.Dirty();
 
-			growth = MathX.LerpTo( 0f, 1f, (MyQT.MyTime / 1f).Clamp( 0, 1f ) );
+			growth = (MyQT.TimeSinceSpawned / (MyQT.MyTime + 0.15f)).Clamp( 0, 1f );
 
-			Measure.Style.Width = Length.Fraction( 1.1f * (1 - growth) );
-			Measure.Style.Height = Length.Fraction( 1.1f * (1 - growth) );
+			Measure.Style.Width = Length.Fraction( 1.1f * growth);
+			Measure.Style.Height = Length.Fraction( 1.1f * growth);
 			Measure.Style.Dirty();
 
 		}

@@ -128,7 +128,6 @@ namespace TSS
 					}
 					else
 					{
-						Log.Info( "HMMM" );
 						TSSGame.Current.AddHudMessage( msg.Message, msg.DisplayName, msg.Color );
 					}
 

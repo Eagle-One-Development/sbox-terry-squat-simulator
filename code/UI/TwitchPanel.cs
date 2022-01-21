@@ -34,7 +34,6 @@ namespace TSS.UI
 		{
 			var _pan = AddChild<TwitchChatEntry>("twichchat");
 			_pan.Message = msg;
-			Log.Info( "CALLED?!" );
 
 		}
 

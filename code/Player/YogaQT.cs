@@ -41,7 +41,7 @@ namespace TSS
 
 			currentCombo = combos[pose];
 
-			Panel = new YogaQTPanel( this, new Vector2( Rand.Float( -200f, 200f ), Rand.Float( -200f, 200f ) ), currentCombo );
+			Panel = new YogaQTPanel( this, new Vector2( Rand.Float( -20f, 20f ), Rand.Float( -20f, 20f) ), currentCombo );
 			Player = Entity.All.OfType<TSSPlayer>().First();
 			TimeSinceSpawned = 0;
 		}

@@ -80,7 +80,7 @@ namespace TSS
 			}
 		}
 
-		[Event( "OtherBeat" )]
+		[Event( "FourthBeat" )]
 		public void PunchBeat()
 		{
 			if ( Entity.EndingInitiated )
