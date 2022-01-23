@@ -98,9 +98,9 @@ namespace TSS
 		/// </summary>
 		public void Punch()
 		{
-			Entity.ExercisePoints += 3;
+			Entity.ExercisePoints += 7;
 			Entity.TargetExerciseSpeed += 0.1f;
-			Entity.CreatePoint( 3 );
+			Entity.CreatePoint( 7 );
 			Entity.Scale = 1.2f;
 			Entity.CounterBump( 0.5f );
 			Entity.TimeSinceExerciseStopped = 0;

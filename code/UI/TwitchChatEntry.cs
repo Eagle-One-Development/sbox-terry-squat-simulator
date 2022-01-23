@@ -48,7 +48,7 @@ public class TwitchChatEntry : Panel
 
 		Name.Text = Message.DisplayName;
 		Msg.Text = Message.Message;
-		Msg.Style.FontColor = Color.Parse( Message.Color );
+		Name.Style.FontColor = Color.Parse( Message.Color );
 
 
 	}

@@ -80,8 +80,8 @@ namespace TSS.UI
 
 			growth = (MyQT.TimeSinceSpawned / (MyQT.MyTime + 0.15f)).Clamp( 0, 1f );
 
-			Measure.Style.Width = Length.Fraction( 1.1f * growth);
-			Measure.Style.Height = Length.Fraction( 1.1f * growth);
+			Measure.Style.Width = Length.Fraction( 1f * growth);
+			Measure.Style.Height = Length.Fraction( 1f * growth);
 			Measure.Style.Dirty();
 
 		}

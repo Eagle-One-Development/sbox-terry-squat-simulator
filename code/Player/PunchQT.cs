@@ -82,6 +82,19 @@ namespace TSS
 				pressed = Input.Pressed( InputButton.Right );
 			}
 
+			if ( TimeSinceSpawned < MyTime - 0.15f )
+			{
+				if ( Input.Pressed( InputButton.Forward ) || Input.Pressed( InputButton.Back ) || Input.Pressed( InputButton.Right ) || Input.Pressed( InputButton.Left ) )
+				{
+					Panel.Finished = true;
+					Panel.Failed = true;
+
+
+					ConsoleSystem.Run( "delete_punch", this.NetworkIdent );
+					return;
+				}
+			}
+
 
 
 			if ( TimeSinceSpawned > MyTime - 0.15f && TimeSinceSpawned < MyTime + 0.15f )
@@ -129,23 +142,7 @@ namespace TSS
 
 			
 
-			if ( TimeSinceSpawned < MyTime - 0.15f )
-			{
-				if ( Input.Pressed( InputButton.Forward ) || Input.Pressed( InputButton.Back ) || Input.Pressed( InputButton.Right ) || Input.Pressed( InputButton.Left ) )
-				{
-					if ( IsClient )
-					{
-						Panel.Finished = true;
-						Panel.Failed = true;
-					}
-					if ( IsServer )
-					{
-						Delete();
-
-					}
-					return;
-				}
-			}
+			
 
 			if ( TimeSinceSpawned > MyTime+0.15f )
 			{

@@ -41,8 +41,8 @@ namespace TSS
 		[Event.Streamer.ChatMessage]
 		public static void OnStreamMessage( StreamChatMessage message )
 		{
-			if ( !Host.IsClient )
-				return;
+
+			Log.Info( Host.IsClient );
 
 			var msg = new GenericMessage()
 			{
@@ -51,8 +51,8 @@ namespace TSS
 				Username = message.Username,
 				Color = message.Color
 			};
-			
-			ProcessMessage( msg );
+
+			ConsoleSystem.Run( "twitch_simulate", message.Message, message.DisplayName, message.Color );
 		}
 
 		[ClientRpc]
@@ -74,7 +74,7 @@ namespace TSS
 		/// A mock function to simulate twitch messages.
 		/// </summary>
 		[ServerCmd( "twitch_simulate" )]
-		public static void Say( string message )
+		public static void Say( string message , string name, string c)
 		{
 			Assert.NotNull( ConsoleSystem.Caller );
 
@@ -83,9 +83,9 @@ namespace TSS
 
 			var msg = new GenericMessage() {
 				Message = message,
-				DisplayName = ConsoleSystem.Caller.Name,
-				Username = ConsoleSystem.Caller.Name,
-				Color = Color.Random.ToString()
+				DisplayName = name,
+				Username = name,
+				Color = c
 			};
 
 			
@@ -114,7 +114,6 @@ namespace TSS
 			{
 				await GameTask.Delay( 100 );
 				bool buff = Entity.All.OfType<BuffPawn>().Any();
-
 				if ( Queue.TryDequeue( out var msg ) && ((!pawn.EndingInitiated && pawn.IntroPlayed && pawn.TimeSinceIntro > 25f && pawn.ExercisePoints > 50f) || buff) )
 				{
 					var CommandList = TSSGame.Current.TwitchCommands;
@@ -129,13 +128,7 @@ namespace TSS
 					else
 					{
 						TSSGame.Current.AddHudMessage( msg.Message, msg.DisplayName, msg.Color );
-					}
-
-
-
-					
-
-					
+					}			
 				}
 			}
 		}

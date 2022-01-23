@@ -116,6 +116,7 @@ namespace Twitch.Commands
 
 		public override void Evaluation( GenericMessage msg )
 		{
+			Log.Info( "CHER" );
 			if ( TimeSinceCheered > 0.5f )
 			{
 				Sound.FromScreen( $"cheering_0{Rand.Int( 1, 3 )}" );
