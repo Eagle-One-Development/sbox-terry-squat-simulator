@@ -29,7 +29,7 @@ namespace TSS.UI
 
 			if ( Local.Pawn is TSSPlayer p )
 			{
-				if ( p.Camera is TSSCamera c )
+				if ( p.CameraMode is TSSCamera c )
 				{
 					Rotation = Rotation.LookAt( (Position - c.Position) * -1f, Vector3.Up );
 				}

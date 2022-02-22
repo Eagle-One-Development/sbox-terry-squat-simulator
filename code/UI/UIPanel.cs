@@ -21,7 +21,7 @@ namespace TSS.UI
 			base.Tick();
 			if ( Local.Pawn is TSSPlayer p )
 			{
-				if ( p.Camera is DevCamera )
+				if ( p.CameraMode is DevCamera )
 				{
 					SetClass( "inactive", true );
 				}

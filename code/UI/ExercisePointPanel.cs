@@ -105,7 +105,7 @@ namespace TSS.UI
 
 			if ( Local.Pawn is TSSPlayer player )
 			{
-				var cam = player.Camera as TSSCamera;
+				var cam = player.CameraMode as TSSCamera;
 				Rotation = Rotation.LookAt( (cam.Position - Position) );
 			}
 
