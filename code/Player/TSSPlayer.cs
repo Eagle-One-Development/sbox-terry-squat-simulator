@@ -273,11 +273,7 @@ namespace TSS
 			}
 
 			var squat = Components.GetAll<SquatComponenet>().First();
-			//Delete the barbell
-			if ( squat.Barbell.IsValid() )
-			{
-				squat.Barbell.EnableDrawing = false;
-			}
+
 
 			//Determine if we need to move to the ending or not
 			HandleEnding();

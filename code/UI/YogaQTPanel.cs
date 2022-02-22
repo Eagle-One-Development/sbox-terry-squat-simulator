@@ -93,7 +93,7 @@ namespace TSS.UI
 
 				if ( i < MyQT.index )
 				{
-					Scales[i] = Scales[i].LerpTo( 1f, Time.Delta * 8f );
+					Scales[i] = Scales[i].LerpTo( 0.7f, Time.Delta * 8f );
 					letter.Style.FontColor = Color.White;
 					letter.Style.BackgroundTint = Color.White;
 					if ( Local.Pawn is TSSPlayer pl2 )
@@ -109,7 +109,7 @@ namespace TSS.UI
 				{
 					if ( MyQT.TimeSinceSpawned > (i * 0.05f) )
 					{
-						Scales[i] = Scales[i].LerpTo( 0.7f, Time.Delta * 8f );
+						Scales[i] = Scales[i].LerpTo( 0.4f, Time.Delta * 8f );
 						letter.Style.FontColor = Color.Gray * 1.5f;
 						letter.Style.BackgroundTint = Color.Gray * 1.5f;
 					}
