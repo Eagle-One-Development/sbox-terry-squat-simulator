@@ -50,7 +50,7 @@ namespace Sandbox
 					.Radius( 8 )
 					.Run();
 
-				Position = tr.EndPos;
+				Position = tr.EndPosition;
 			}
 			else
 			{

@@ -469,7 +469,7 @@ namespace TSS
 
 			Position = center + pawn.Rotation.Up * CamDistance + new Vector3( 32*MathF.Sin(Time.Now/3), 32*MathF.Cos( Time.Now/3 ), 0);
 			var hitPos = Trace.Ray( pawn.Position + Vector3.Up * 10f, Position ).Ignore(pawn).WithoutTags("wall");
-			Position = hitPos.Run().EndPos;
+			Position = hitPos.Run().EndPosition;
 
 			Rotation = Rotation.LookAt( (center - Position), Vector3.Up );
 
