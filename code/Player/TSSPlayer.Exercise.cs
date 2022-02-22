@@ -207,15 +207,15 @@ namespace TSS
 			co.a = alph;
 			RenderColor = co;
 
-			foreach ( ModelEntity m in Children.OfType<ModelEntity>().ToList() )
-			{
-
-				if ( m.GetModelName() != SodaCan.GetModelName() )
-				{
-					m.EnableDrawing = this.EnableDrawing;
-					m.RenderColor = co;
-				}
-			}
+			//foreach ( ModelEntity m in Children.OfType<ModelEntity>().ToList() )
+			//{
+			//
+			//	if ( m.GetModelName() != SodaCan.GetModelName() )
+			//	{
+			//		m.EnableDrawing = this.EnableDrawing;
+			//		m.RenderColor = co;
+			//	}
+			//}
 		}
 
 		/// <summary>

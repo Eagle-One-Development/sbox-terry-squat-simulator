@@ -6719,27 +6719,6 @@
 					},
 					{
 						_class = "AnimFile"
-						name = "HandPoses"
-						activity_name = ""
-						activity_weight = 1
-						weight_list_name = ""
-						fade_in_time = 0.2
-						fade_out_time = 0.2
-						looping = false
-						delta = false
-						worldSpace = false
-						hidden = false
-						anim_markup_ordered = false
-						disable_compression = false
-						source_filename = "models/citizen/animations/Citizen@HandPoses.fbx"
-						start_frame = -1
-						end_frame = -1
-						framerate = 5.0
-						take = 0
-						reverse = false
-					},
-					{
-						_class = "AnimFile"
 						name = "IdlePose_01"
 						activity_name = ""
 						activity_weight = 1
@@ -7730,7 +7709,10 @@
 								_class = "PhysicsShapeCapsule"
 								parent_bone = "pelvis"
 								surface_prop = "flesh"
-								collision_prop = "default"
+								collision_group = ""
+								collision_interact_as = ""
+								collision_interact_with = ""
+								collision_interact_exclude = ""
 								radius = 5.0
 								point0 = [ 1.0, 0.0, -2.5 ]
 								point1 = [ 1.0, 0.0, 2.5 ]
@@ -7739,7 +7721,10 @@
 								_class = "PhysicsShapeCapsule"
 								parent_bone = "spine_0"
 								surface_prop = "flesh"
-								collision_prop = "default"
+								collision_group = ""
+								collision_interact_as = ""
+								collision_interact_with = ""
+								collision_interact_exclude = ""
 								radius = 7.0
 								point0 = [ 0.0, 0.0, 0.0 ]
 								point1 = [ 4.0, 0.0, 0.0 ]
@@ -7749,7 +7734,10 @@
 								disabled = true
 								parent_bone = "spine_1"
 								surface_prop = "flesh"
-								collision_prop = "default"
+								collision_group = ""
+								collision_interact_as = ""
+								collision_interact_with = ""
+								collision_interact_exclude = ""
 								radius = 7.0
 								center = [ -0.5, 0.0, 0.0 ]
 							},
@@ -7757,7 +7745,10 @@
 								_class = "PhysicsShapeCapsule"
 								parent_bone = "spine_2"
 								surface_prop = "flesh"
-								collision_prop = "default"
+								collision_group = ""
+								collision_interact_as = ""
+								collision_interact_with = ""
+								collision_interact_exclude = ""
 								radius = 7.0
 								point0 = [ 1.0, 0.0, 0.0 ]
 								point1 = [ -2.0, 0.0, 0.0 ]
@@ -7767,7 +7758,10 @@
 								disabled = true
 								parent_bone = "neck_0"
 								surface_prop = "flesh"
-								collision_prop = "default"
+								collision_group = ""
+								collision_interact_as = ""
+								collision_interact_with = ""
+								collision_interact_exclude = ""
 								radius = 2.0
 								point0 = [ 1.0, 0.0, -4.0 ]
 								point1 = [ 1.0, 0.0, 4.0 ]
@@ -7776,7 +7770,10 @@
 								_class = "PhysicsShapeCapsule"
 								parent_bone = "head"
 								surface_prop = "flesh"
-								collision_prop = "default"
+								collision_group = ""
+								collision_interact_as = ""
+								collision_interact_with = ""
+								collision_interact_exclude = ""
 								radius = 6.5
 								point0 = [ 3.0, 1.0, 0.0 ]
 								point1 = [ 9.0, 0.25, 0.0 ]
@@ -7793,7 +7790,10 @@
 								disabled = true
 								parent_bone = "clavicle_L"
 								surface_prop = "flesh"
-								collision_prop = "default"
+								collision_group = ""
+								collision_interact_as = ""
+								collision_interact_with = ""
+								collision_interact_exclude = ""
 								radius = 1.55458
 								point0 = [ 0.0, 0.0, 0.0 ]
 								point1 = [ 6.21832, 0.0, 0.0 ]
@@ -7802,7 +7802,10 @@
 								_class = "PhysicsShapeCapsule"
 								parent_bone = "arm_upper_L"
 								surface_prop = "flesh"
-								collision_prop = "default"
+								collision_group = ""
+								collision_interact_as = ""
+								collision_interact_with = ""
+								collision_interact_exclude = ""
 								radius = 2.4
 								point0 = [ 0.0, 0.0, 0.0 ]
 								point1 = [ 10.0, 0.0, 0.0 ]
@@ -7811,7 +7814,10 @@
 								_class = "PhysicsShapeCapsule"
 								parent_bone = "arm_lower_L"
 								surface_prop = "flesh"
-								collision_prop = "default"
+								collision_group = ""
+								collision_interact_as = ""
+								collision_interact_with = ""
+								collision_interact_exclude = ""
 								radius = 2.0
 								point0 = [ 0.0, 0.0, 0.0 ]
 								point1 = [ 7.5, -0.2, 0.2 ]
@@ -7820,7 +7826,10 @@
 								_class = "PhysicsShapeCapsule"
 								parent_bone = "hand_L"
 								surface_prop = "flesh"
-								collision_prop = "default"
+								collision_group = ""
+								collision_interact_as = ""
+								collision_interact_with = ""
+								collision_interact_exclude = ""
 								radius = 3.0
 								point0 = [ 2.0, 0.0, 0.4 ]
 								point1 = [ 7.0, 0.0, 2.5 ]
@@ -7830,7 +7839,10 @@
 								disabled = true
 								parent_bone = "clavicle_R"
 								surface_prop = "flesh"
-								collision_prop = "default"
+								collision_group = ""
+								collision_interact_as = ""
+								collision_interact_with = ""
+								collision_interact_exclude = ""
 								radius = 1.554579
 								point0 = [ 0.0, 0.0, 0.0 ]
 								point1 = [ 6.21831, 0.0, 0.0 ]
@@ -7839,7 +7851,10 @@
 								_class = "PhysicsShapeCapsule"
 								parent_bone = "arm_upper_R"
 								surface_prop = "flesh"
-								collision_prop = "default"
+								collision_group = ""
+								collision_interact_as = ""
+								collision_interact_with = ""
+								collision_interact_exclude = ""
 								radius = 2.4
 								point0 = [ 0.0, 0.0, 0.0 ]
 								point1 = [ 10.0, 0.0, 0.0 ]
@@ -7848,7 +7863,10 @@
 								_class = "PhysicsShapeCapsule"
 								parent_bone = "arm_lower_R"
 								surface_prop = "flesh"
-								collision_prop = "default"
+								collision_group = ""
+								collision_interact_as = ""
+								collision_interact_with = ""
+								collision_interact_exclude = ""
 								radius = 2.0
 								point0 = [ 0.0, 0.0, 0.0 ]
 								point1 = [ 7.5, -0.2, -0.2 ]
@@ -7857,7 +7875,10 @@
 								_class = "PhysicsShapeCapsule"
 								parent_bone = "hand_R"
 								surface_prop = "flesh"
-								collision_prop = "default"
+								collision_group = ""
+								collision_interact_as = ""
+								collision_interact_with = ""
+								collision_interact_exclude = ""
 								radius = 3.0
 								point0 = [ 2.0, 0.0, -0.4 ]
 								point1 = [ 7.0, 0.0, -2.5 ]
@@ -7873,7 +7894,10 @@
 								_class = "PhysicsShapeCapsule"
 								parent_bone = "leg_upper_L"
 								surface_prop = "flesh"
-								collision_prop = "default"
+								collision_group = ""
+								collision_interact_as = ""
+								collision_interact_with = ""
+								collision_interact_exclude = ""
 								radius = 3.0
 								point0 = [ 3.0, 0.0, 0.0 ]
 								point1 = [ 14.0, 0.0, 0.0 ]
@@ -7882,7 +7906,10 @@
 								_class = "PhysicsShapeCapsule"
 								parent_bone = "leg_lower_L"
 								surface_prop = "flesh"
-								collision_prop = "default"
+								collision_group = ""
+								collision_interact_as = ""
+								collision_interact_with = ""
+								collision_interact_exclude = ""
 								radius = 2.5
 								point0 = [ 0.0, 0.0, 0.0 ]
 								point1 = [ 12.5155, 0.0, 0.0 ]
@@ -7891,7 +7918,10 @@
 								_class = "PhysicsShapeCapsule"
 								parent_bone = "ankle_L"
 								surface_prop = "flesh"
-								collision_prop = "default"
+								collision_group = ""
+								collision_interact_as = ""
+								collision_interact_with = ""
+								collision_interact_exclude = ""
 								radius = 2.5
 								point0 = [ 1.5, -1.5, 0.0 ]
 								point1 = [ 4.5, 0.5, 0.0 ]
@@ -7900,7 +7930,10 @@
 								_class = "PhysicsShapeCapsule"
 								parent_bone = "leg_upper_R"
 								surface_prop = "flesh"
-								collision_prop = "default"
+								collision_group = ""
+								collision_interact_as = ""
+								collision_interact_with = ""
+								collision_interact_exclude = ""
 								radius = 3.0
 								point0 = [ 3.0, 0.0, 0.0 ]
 								point1 = [ 14.0, 0.0, 0.0 ]
@@ -7909,7 +7942,10 @@
 								_class = "PhysicsShapeCapsule"
 								parent_bone = "leg_lower_R"
 								surface_prop = "flesh"
-								collision_prop = "default"
+								collision_group = ""
+								collision_interact_as = ""
+								collision_interact_with = ""
+								collision_interact_exclude = ""
 								radius = 2.5
 								point0 = [ 0.0, 0.0, 0.0 ]
 								point1 = [ 12.5155, 0.0, 0.0 ]
@@ -7918,7 +7954,10 @@
 								_class = "PhysicsShapeCapsule"
 								parent_bone = "ankle_R"
 								surface_prop = "flesh"
-								collision_prop = "default"
+								collision_group = ""
+								collision_interact_as = ""
+								collision_interact_with = ""
+								collision_interact_exclude = ""
 								radius = 2.5
 								point0 = [ 1.5, -1.5, 0.0 ]
 								point1 = [ 4.5, 0.5, 0.0 ]
