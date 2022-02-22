@@ -106,7 +106,7 @@ public partial class Food : ModelEntity {
 	public override void ClientSpawn()
 	{
 		base.ClientSpawn();
-		FoodModel = new SceneObject(null, Model.Load( GetFoodModel()), Transform);
+		FoodModel = new SceneObject(Map.Scene, Model.Load( GetFoodModel()), Transform);
 	}
 
 	[ClientRpc]
