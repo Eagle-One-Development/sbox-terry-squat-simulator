@@ -16,7 +16,7 @@ public enum CameraState
 
 namespace TSS
 {
-	public partial class TSSCamera : Camera
+	public partial class TSSCamera : CameraMode
 	{
 		public float IntroCamHeight;
 		public float CamDistance;
@@ -48,18 +48,6 @@ namespace TSS
 		public bool RunTutorialComplete;
 
 		public bool Active;
-
-		Material _myPostProcessingMaterial;
-		[Event( "render.postprocess" )]
-		public void DoPostProcess()
-		{
-			if ( _myPostProcessingMaterial != null )
-			{
-				Render.CopyFrameBuffer( false );
-				Render.Material = _myPostProcessingMaterial;
-				Render.DrawScreenQuad();
-			}
-		}
 
 
 		public override void Activated()
@@ -130,14 +118,14 @@ namespace TSS
 					break;
 			}
 
-			if ( pawn.GetAnimBool( "Drink" ) && pawn.TimeSinceSoda > 0.05f )
+			if ( pawn.GetAnimParameterBool( "Drink" ) && pawn.TimeSinceSoda > 0.05f )
 			{
 				var transform = pawn.GetBoneTransform( "Camera" );
 				Position = transform.Position;
 				Rotation = transform.Rotation * Rotation.From( 90, 0, -90 );
 			}
 
-			if ( pawn.GetAnimBool( "Ending" ) && pawn.TimeSinceEnding > 0.02f )
+			if ( pawn.GetAnimParameterBool( "Ending" ) && pawn.TimeSinceEnding > 0.02f )
 			{
 				var transform = pawn.GetBoneTransform( "Camera" );
 				Position = transform.Position;

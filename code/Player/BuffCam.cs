@@ -1,7 +1,7 @@
 ﻿
 namespace Sandbox
 {
-	public class BuffCam : Camera
+	public class BuffCam : CameraMode
 	{
 		[ConVar.Replicated]
 		public static bool thirdperson_orbit { get; set; } = false;

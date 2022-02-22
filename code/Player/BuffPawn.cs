@@ -33,9 +33,9 @@ partial class BuffPawn : Player
 		//
 		// Use ThirdPersonCamera (you can make your own Camera for 100% control)
 		//
-		Camera = new BuffCam();
+		CameraMode = new BuffCam();
 
-		(Camera as BuffCam).ZNear = 0.001f;
+		(CameraMode as BuffCam).ZNear = 0.001f;
 
 		EnableAllCollisions = true;
 		EnableDrawing = true;
@@ -120,9 +120,9 @@ partial class BuffPawn : Player
 		// simulate those too.
 		//
 		SimulateActiveChild( cl, ActiveChild );
-		(Camera as BuffCam).ZNear = 0.2f;
+		(CameraMode as BuffCam).ZNear = 0.2f;
 
-		SetAnimBool( "b_noclip", InSpace );
+		SetAnimParameter( "b_noclip", InSpace );
 
 		if ( !InSpace )
 		{

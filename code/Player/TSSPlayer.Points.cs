@@ -55,7 +55,7 @@ namespace TSS
 					var p = new ExercisePointPanel( i, ExercisePoints );
 					Vector3 pos = Position + Vector3.Up * 48f;
 
-					Vector3 dir = ((Camera as TSSCamera).Position - pos).Normal;
+					Vector3 dir = ((CameraMode as TSSCamera).Position - pos).Normal;
 					Rotation dirRand = Rotation.From( Rand.Float( -45f, 45f ), Rand.Float( -45f, 45f ), Rand.Float( -45f, 45f ) );
 					p.Position = pos + (dir * dirRand) * 28f;
 

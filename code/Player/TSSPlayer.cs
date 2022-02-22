@@ -191,8 +191,8 @@ namespace TSS
 			}
 
 			Animator = new TSSPlayerAnimator();
-			Camera = new TSSCamera();
-			(Camera as TSSCamera).SkipIntro = SkipIntro;
+			CameraMode = new TSSCamera();
+			(CameraMode as TSSCamera).SkipIntro = SkipIntro;
 
 			//Set the initial exercise to squat
 			ChangeExercise( Exercise.Squat );
@@ -295,7 +295,7 @@ namespace TSS
 			HandleEffectsAndAnims();
 
 			//Get a reference to the camera
-			TSSCamera cam = (Camera as TSSCamera);
+			TSSCamera cam = (CameraMode as TSSCamera);
 
 			//Simulate our current exercise
 			Components.GetAll<ExerciseComponent>().Where( x => x.ExerciseType == CurrentExercise ).First().Simulate(cl);
@@ -340,7 +340,7 @@ namespace TSS
 		public void StartEndingClient()
 		{
 			ClearAnimation();
-			SetAnimBool( "Ending", true );
+			SetAnimParameter( "Ending", true );
 			Sound.FromScreen( "ending" );
 			SickoMode?.SetPosition( 3, 0 );
 		}
@@ -410,7 +410,7 @@ namespace TSS
 		[ClientRpc]
 		public void InitiateSoda()
 		{
-			SetAnimBool( "Drink", true );
+			SetAnimParameter( "Drink", true );
 		}
 
 		/// <summary>
@@ -420,7 +420,7 @@ namespace TSS
 		[ClientRpc]
 		public void StopSoda()
 		{
-			SetAnimBool( "Drink", false );
+			SetAnimParameter( "Drink", false );
 		}
 
 
@@ -553,7 +553,7 @@ namespace TSS
 			//Basically, if we have more than 50 exercise points make Terry make an angry/determined facial pose.
 			if ( ExercisePoints > 50 )
 			{
-				SetAnimBool( "Angry", TimeSinceExerciseStopped < 4f );
+				SetAnimParameter( "Angry", TimeSinceExerciseStopped < 4f );
 			}
 		}
 		#endregion

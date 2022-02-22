@@ -32,7 +32,7 @@ namespace TSS.UI
 		/// <summary>
 		/// A reference to our terry object
 		/// </summary>
-		public AnimSceneObject Terry;
+		public SceneModel Terry;
 
 		/// <summary>
 		/// The time since the intro started
@@ -42,7 +42,7 @@ namespace TSS.UI
 		/// <summary>
 		/// A reference to the spotlight
 		/// </summary>
-		public SpotLight Spot;
+		public SceneSpotLight Spot;
 
 		public TerryRenderScene()
 		{
@@ -63,21 +63,19 @@ namespace TSS.UI
 		{
 
 			scene?.Delete();
-			using ( SceneWorld.SetCurrent( new SceneWorld() ) )
-			{
-				
-				Terry = new AnimSceneObject( Model.Load( "models/terry/terry.vmdl" ), Transform.Zero );
-				Terry.SetAnimBool( "Crying", true );
-				
-				Spot = new SpotLight((Vector3.Up * 100f) + Vector3.Forward * 20f,Color.White);
-				Spot.Rotation = Rotation.LookAt( Terry.Position - Spot.Position );
-				Spot.Falloff = 0f;
-				
-				scene = Add.ScenePanel( SceneWorld.Current, CamPos, Rotation.From( CamAngles ), 45 );
-				scene.Style.Width = Length.Fraction( 1f );
-				scene.Style.Height = Length.Fraction(1f);
-				scene.Style.Opacity = 1f;
-			}
+
+			var world = new SceneWorld();
+			Terry = new SceneModel(world, Model.Load( "models/terry/terry.vmdl" ), Transform.Zero );
+			Terry.SetAnimParameter( "Crying", true );
+
+			Spot = new SceneSpotLight(world, (Vector3.Up * 100f) + Vector3.Forward * 20f, Color.White );
+			Spot.Rotation = Rotation.LookAt( Terry.Position - Spot.Position );
+			Spot.Falloff = 0f;
+
+			scene = Add.ScenePanel( world, CamPos, Rotation.From( CamAngles ), 45 );
+			scene.Style.Width = Length.Fraction( 1f );
+			scene.Style.Height = Length.Fraction( 1f );
+			scene.Style.Opacity = 1f;
 		}
 
 		public override void OnHotloaded()

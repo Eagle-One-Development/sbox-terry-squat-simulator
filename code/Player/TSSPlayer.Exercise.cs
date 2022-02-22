@@ -225,7 +225,7 @@ namespace TSS
 		public void CreateNearEndParticle()
 		{
 			//Get the camera
-			var localCam = (Camera as TSSCamera);
+			var localCam = (CameraMode as TSSCamera);
 			//Get a position roughlt up the middle of the player
 			var pos = ExercisePosition + Vector3.Up * 45f;
 			//Get a vector representing the direction from the pos to the local cameras position
@@ -246,7 +246,7 @@ namespace TSS
 			{
 				if ( SickoMode != null )
 				{
-					var localCam = (Camera as TSSCamera);
+					var localCam = (CameraMode as TSSCamera);
 					var pos = ExercisePosition + Vector3.Up * 45f;
 					var dir = (pos - localCam.Position).Normal;
 					SickoModePositionTar = pos + dir * 200f;
@@ -275,11 +275,11 @@ namespace TSS
 		/// </summary>
 		public void ClearAnimation()
 		{
-			SetAnimInt( "squat", -1 );
-			SetAnimInt( "punch", -1 );
-			SetAnimInt( "YogaPoses", 0 );
-			SetAnimBool( "b_grounded", CurrentExercise != Exercise.Yoga );
-			SetAnimFloat( "move_x", 0 );
+			SetAnimParameter( "squat", -1 );
+			SetAnimParameter( "punch", -1 );
+			SetAnimParameter( "YogaPoses", 0 );
+			SetAnimParameter( "b_grounded", CurrentExercise != Exercise.Yoga );
+			SetAnimParameter( "move_x", 0 );
 		}
 
 		/// <summary>
@@ -345,9 +345,9 @@ namespace TSS
 		public async void CounterBump( float f )
 		{
 			await GameTask.DelaySeconds( 0.1f );
-			if ( (Camera as TSSCamera).SCounter != null )
+			if ( (CameraMode as TSSCamera).SCounter != null )
 			{
-				var c = (Camera as TSSCamera).SCounter;
+				var c = (CameraMode as TSSCamera).SCounter;
 				c.TextScale += f * CurrentExerciseSpeed;
 			}
 		}
@@ -357,7 +357,7 @@ namespace TSS
 		/// </summary>
 		public void HandleCounter()
 		{
-			TSSCamera cam = (Camera as TSSCamera);
+			TSSCamera cam = (CameraMode as TSSCamera);
 			if ( cam.SCounter != null )
 			{
 				var c = cam.SCounter;

@@ -15,7 +15,7 @@ namespace TSS.UI
 
 		public Panel back;
 		public Panel timer;
-		public List<Label> Letters;
+		public List<Image> Letters;
 		public List<float> Scales;
 
 		public TimeSince TimeSinceSpawned;
@@ -30,14 +30,15 @@ namespace TSS.UI
 
 
 
-			Letters = new List<Label>();
+			Letters = new List<Image>();
 			Scales = new List<float>();
 
 			for ( int i = 0; i < combo.Length; i++ )
 			{
 				var pan = Add.Panel( "keyPanel" );
 
-				var lab = pan.Add.Label( GetKey( combo[i] ), "label" );
+				var lab = pan.Add.Image(null, "label" );
+				lab.Texture = GetKey( combo[i] );
 				Letters.Add( lab );
 				Scales.Add( 0f );
 			}
@@ -52,20 +53,20 @@ namespace TSS.UI
 			Finished = false;
 		}
 
-		public string GetKey( char c )
+		public Texture GetKey( char c )
 		{
 			switch ( c )
 			{
 				case '0':
-					return Input.GetKeyWithBinding( "+iv_forward" ).ToUpper();
+					return Input.UsingController ? Input.GetGlyph( InputButton.Use, InputGlyphSize.Medium ) : Input.GetGlyph( InputButton.Forward, InputGlyphSize.Medium );
 				case '1':
-					return Input.GetKeyWithBinding( "+iv_back" ).ToUpper();
+					return Input.UsingController ? Input.GetGlyph( InputButton.Jump, InputGlyphSize.Medium ) : Input.GetGlyph( InputButton.Back, InputGlyphSize.Medium );
 				case '3':
-					return Input.GetKeyWithBinding( "+iv_left" ).ToUpper();
+					return Input.UsingController ? Input.GetGlyph( InputButton.Reload, InputGlyphSize.Medium ) : Input.GetGlyph( InputButton.Left, InputGlyphSize.Medium );
 				case '2':
-					return Input.GetKeyWithBinding( "+iv_right" ).ToUpper();
+					return Input.UsingController ? Input.GetGlyph( InputButton.Duck, InputGlyphSize.Medium ) : Input.GetGlyph( InputButton.Right, InputGlyphSize.Medium );
 			}
-			return "";
+			return null;
 		}
 
 		public float Out( float k )
@@ -94,11 +95,13 @@ namespace TSS.UI
 				{
 					Scales[i] = Scales[i].LerpTo( 1f, Time.Delta * 8f );
 					letter.Style.FontColor = Color.White;
+					letter.Style.BackgroundTint = Color.White;
 					if ( Local.Pawn is TSSPlayer pl2 )
 					{
 						if ( pl2.CanGoToHeaven )
 						{
 							letter.Style.FontColor = Color.Black;
+							letter.Style.BackgroundTint = Color.Black;
 						}
 					}
 				}
@@ -108,6 +111,7 @@ namespace TSS.UI
 					{
 						Scales[i] = Scales[i].LerpTo( 0.7f, Time.Delta * 8f );
 						letter.Style.FontColor = Color.Gray * 1.5f;
+						letter.Style.BackgroundTint = Color.Gray * 1.5f;
 					}
 					else
 					{
@@ -130,6 +134,7 @@ namespace TSS.UI
 				{
 					l.Parent.Style.Opacity = 1.1f - (TimeSinceFinished / 0.5f);
 					l.Style.FontColor = Color.Red;
+					l.Style.BackgroundTint = Color.Red;
 				}
 
 				if ( TimeSinceFinished > 0.5f )
@@ -149,6 +154,7 @@ namespace TSS.UI
 					{
 						l.Parent.Style.Opacity = 1.1f - (TimeSinceFinished / 0.5f);
 						l.Style.FontColor = Color.White;
+						l.Style.BackgroundTint = Color.White;
 					}
 				}
 

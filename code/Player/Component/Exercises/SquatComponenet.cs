@@ -33,7 +33,7 @@ namespace TSS
 		public override void Simulate( Client client )
 		{
 			base.Simulate( client );
-			var cam = Entity.Camera as TSSCamera;
+			var cam = Entity.CameraMode as TSSCamera;
 			SimulateSquatting( cam );
 
 		}
@@ -69,7 +69,7 @@ namespace TSS
 			}
 
 			//Set the anim parameter on S&Box.
-			Entity.SetAnimInt( "squat", Squat );
+			Entity.SetAnimParameter( "squat", Squat );
 
 			if ( Entity.TimeSinceExerciseStopped < 3f && Squat != -1 && !cam.IntroComplete )
 			{

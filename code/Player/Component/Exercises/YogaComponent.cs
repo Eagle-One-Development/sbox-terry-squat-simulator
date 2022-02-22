@@ -38,7 +38,7 @@ namespace TSS
 		public override void Simulate( Client client )
 		{
 			base.Simulate( client );
-			var cam = Entity.Camera as TSSCamera;
+			var cam = Entity.CameraMode as TSSCamera;
 			SimulateYoga( cam );
 		}
 
@@ -53,8 +53,8 @@ namespace TSS
 		/// <param name="cam"></param>
 		public void SimulateYoga( TSSCamera cam )
 		{
-			Entity.SetAnimInt( "YogaPoses", CurrentYogaPosition );
-			Entity.SetAnimBool( "b_grounded", CurrentYogaPosition == 0 );
+			Entity.SetAnimParameter( "YogaPoses", CurrentYogaPosition );
+			Entity.SetAnimParameter( "b_grounded", CurrentYogaPosition == 0 );
 
 			if ( cam == null )
 			{

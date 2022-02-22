@@ -42,7 +42,7 @@ namespace TSS
 		public override void Simulate( Client client )
 		{
 			base.Simulate( client );
-			var cam = Entity.Camera as TSSCamera;
+			var cam = Entity.CameraMode as TSSCamera;
 			SimulateRunning( cam );
 		}
 
@@ -58,7 +58,7 @@ namespace TSS
 		/// <param name="cam"></param>
 		public void SimulateRunning( TSSCamera cam )
 		{
-			Entity.SetAnimFloat( "move_x", MathX.LerpTo( 0, 350f, (Entity.CurrentExerciseSpeed * 4f).Clamp( 0, 1f ) ) );
+			Entity.SetAnimParameter( "move_x", MathX.LerpTo( 0, 350f, (Entity.CurrentExerciseSpeed * 4f).Clamp( 0, 1f ) ) );
 
 			//We're going to set our position to the RunPosition + some offset
 			Entity.Position = Entity.ExercisePosition + Entity.Rotation.Forward * -RunPositionOffset;

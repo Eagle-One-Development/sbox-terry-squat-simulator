@@ -52,7 +52,7 @@ namespace TSS
 		public override void Simulate( Client client )
 		{
 			base.Simulate( client );
-			var cam = Entity.Camera as TSSCamera;
+			var cam = Entity.CameraMode as TSSCamera;
 			SimulatePunching( cam );
 		}
 
@@ -71,7 +71,7 @@ namespace TSS
 				return;
 			}
 
-			Entity.SetAnimInt( "punch", Squat );
+			Entity.SetAnimParameter( "punch", Squat );
 
 			if ( TimeSincePunch > TimeToNextPunch )
 			{

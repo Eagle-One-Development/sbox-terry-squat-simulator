@@ -130,6 +130,14 @@ namespace TSS
 				{
 					return true;
 				}
+
+				if ( input.UsingController )
+				{
+					if ( input.Pressed( InputButton.Reload ) || input.Pressed( InputButton.Duck) || input.Pressed( InputButton.Jump ) )
+					{
+						return true;
+					}
+				}
 			}
 
 			if ( type == '1' )
@@ -137,6 +145,14 @@ namespace TSS
 				if ( input.Pressed( InputButton.Right ) || input.Pressed( InputButton.Left ) || input.Pressed( InputButton.Forward ) )
 				{
 					return true;
+				}
+
+				if ( input.UsingController )
+				{
+					if ( input.Pressed( InputButton.Reload ) || input.Pressed( InputButton.Duck ) || input.Pressed( InputButton.Use ) )
+					{
+						return true;
+					}
 				}
 			}
 
@@ -146,6 +162,14 @@ namespace TSS
 				{
 					return true;
 				}
+
+				if ( input.UsingController )
+				{
+					if ( input.Pressed( InputButton.Reload ) || input.Pressed( InputButton.Use ) || input.Pressed( InputButton.Jump ) )
+					{
+						return true;
+					}
+				}
 			}
 
 			if ( type == '3' )
@@ -153,6 +177,14 @@ namespace TSS
 				if ( input.Pressed( InputButton.Back ) || input.Pressed( InputButton.Right ) || input.Pressed( InputButton.Forward ) )
 				{
 					return true;
+				}
+
+				if ( input.UsingController )
+				{
+					if ( input.Pressed( InputButton.Use ) || input.Pressed( InputButton.Duck ) || input.Pressed( InputButton.Jump ) )
+					{
+						return true;
+					}
 				}
 			}
 
@@ -164,13 +196,13 @@ namespace TSS
 			switch ( c )
 			{
 				case '0':
-					return input.Pressed( InputButton.Forward );
+					return input.UsingController ? input.Pressed(InputButton.Use) : input.Pressed( InputButton.Forward );
 				case '1':
-					return input.Pressed( InputButton.Back );
+					return input.UsingController ? input.Pressed( InputButton.Jump ) : input.Pressed( InputButton.Back ); ;
 				case '2':
-					return input.Pressed( InputButton.Right );
+					return input.UsingController ? input.Pressed( InputButton.Duck ) : input.Pressed( InputButton.Right ); ;
 				case '3':
-					return input.Pressed( InputButton.Left );
+					return input.UsingController ? input.Pressed( InputButton.Reload ) : input.Pressed( InputButton.Left ); ;
 			}
 			return false;
 		}

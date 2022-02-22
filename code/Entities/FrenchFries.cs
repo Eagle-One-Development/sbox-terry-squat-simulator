@@ -22,7 +22,7 @@ public partial class FrenchFries : Food {
 
 	public override Vector3 GetInitialPosition()
 	{
-		return Player.EyePos + new Angles( 0, Rand.Float( 0, 360 ), 0 ).Direction * 256f;
+		return Player.EyePosition + new Angles( 0, Rand.Float( 0, 360 ), 0 ).Direction * 256f;
 	}
 
 	public override int GetClickPoints()

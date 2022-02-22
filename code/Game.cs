@@ -21,6 +21,11 @@ namespace TSS
 			}
 		}
 
+		public override void MoveToSpawnpoint( Entity pawn )
+		{
+			//Do nothing
+		}
+
 		public override void ClientJoined( Client client )
 		{
 			base.ClientJoined( client );
