@@ -32,7 +32,7 @@ namespace TSS
 				SetAnimParameter( "voice", Client.TimeSinceLastVoice < 0.5f ? Client.VoiceLevel : 0.0f );
 			}
 
-			Vector3 aimPos = Pawn.EyePos + Input.Rotation.Forward * 200;
+			Vector3 aimPos = Pawn.EyePosition + Input.Rotation.Forward * 200;
 			Vector3 lookPos = aimPos;
 
 			//
@@ -52,16 +52,11 @@ namespace TSS
 
 			SetAnimParameter( "duck", duck );
 
-			if ( Pawn.ActiveChild is BaseCarriable carry )
-			{
-				carry.SimulateAnimator( this );
-			}
-			else
-			{
-				SetAnimParameter( "holdtype", 0 );
-				SetAnimParameter( "aimat_weight", 0.5f ); // old
-				SetAnimParameter( "aim_body_weight", 0.5f );
-			}
+
+			SetAnimParameter( "holdtype", 0 );
+			SetAnimParameter( "aimat_weight", 0.5f ); // old
+			SetAnimParameter( "aim_body_weight", 0.5f );
+
 
 		}
 
@@ -70,7 +65,7 @@ namespace TSS
 			//
 			// Our ideal player model rotation is the way we're facing
 			//
-			var allowYawDiff = Pawn.ActiveChild == null ? 90 : 50;
+			var allowYawDiff = 90;
 
 			float turnSpeed = 0.01f;
 			if ( HasTag( "ducked" ) ) turnSpeed = 0.1f;
