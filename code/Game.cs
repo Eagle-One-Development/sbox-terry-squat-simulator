@@ -6,8 +6,9 @@ namespace TSS
 {
 	public partial class TSSGame : Game
 	{
-		public TSSGame() {
-			if (IsServer)
+		public TSSGame()
+		{
+			if ( IsServer )
 			{
 				_ = new TSSHud();
 				DequeueLoop();
@@ -31,7 +32,7 @@ namespace TSS
 			base.ClientJoined( client );
 
 			// Kick anyone who isn't host.
-			if (!client.IsListenServerHost)
+			if ( !client.IsListenServerHost )
 			{
 				client.Kick();
 			}
