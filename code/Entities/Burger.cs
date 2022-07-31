@@ -5,7 +5,6 @@ using TSS;
 using TSS.UI;
 
 [Library("food_burger")]
-[Hammer.Skip]
 public partial class Burger : Food
 {
 	public override string Description => "tries to clog some arteries.";

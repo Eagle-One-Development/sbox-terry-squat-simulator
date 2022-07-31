@@ -19,10 +19,10 @@ public enum SpawnType
 	NatureExercise
 }
 
-[Hammer.EditorModel( "models/dev/playerstart_tint.vmdl" )]
+[EditorModel( "models/dev/playerstart_tint.vmdl" )]
 [Display( Name = "Player Spawn", Description = "Spawn point for the player" ), Category( "Terry Squat Simulator" )]
 [Library( "tss_player_spawn" )]
-public class TSSSpawn : AnimEntity
+public class TSSSpawn : AnimatedEntity
 {
 	[Property( "spawn_type", "Spawn Type" )] public SpawnType SpawnType { get; set; }
 

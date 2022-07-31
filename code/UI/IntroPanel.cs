@@ -41,7 +41,7 @@ namespace TSS.UI
 				TimeSinceIntroStarted = 0f;
 			}
 
-			if ( Input.Pressed( InputButton.Attack1 ) )
+			if ( Input.Pressed( InputButton.PrimaryAttack ) )
 			{
 				Click.Delete( true );
 			}

@@ -77,7 +77,7 @@ partial class BuffPawn : Player
 		Controller = new WalkController();
 	}
 
-	[ServerCmd( "nature" )]
+	[ConCmd.Server( "nature" )]
 	public static void GoToNature()
 	{
 		var ent = All.OfType<TSSSpawn>().ToList().Find( x => x.SpawnType == SpawnType.Nature );
@@ -87,7 +87,7 @@ partial class BuffPawn : Player
 		TSSGame.Current.StartNature();
 	}
 
-	[ServerCmd( "credits" )]
+	[ConCmd.Server( "credits" )]
 	public static void ChangePawn()
 	{
 		var pl = new TSSPlayer();

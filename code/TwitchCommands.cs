@@ -55,7 +55,7 @@ namespace Twitch.Commands
 		{
 			if(TimeSinceEaten > 3f )
 			{
-				var f = Library.Create<Entity>( FoodItem );
+				var f = TypeLibrary.Create<Entity>( FoodItem );
 				TimeSinceEaten = 0f;
 				TSSGame.Current.AddHudMessage( (f as Food).Description , msg.DisplayName, msg.Color );
 			}

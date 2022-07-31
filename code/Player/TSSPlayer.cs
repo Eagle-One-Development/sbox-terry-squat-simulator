@@ -259,7 +259,7 @@ namespace TSS
 			base.Simulate( cl );
 
 			//This will play the intro once you press the left click
-			if ( !IntroPlayed && Input.Pressed( InputButton.Attack1 ) && TimeSinceRagdolled > 12f && !SkipIntro )
+			if ( !IntroPlayed && Input.Pressed( InputButton.PrimaryAttack ) && TimeSinceRagdolled > 12f && !SkipIntro )
 			{
 				TimeSinceIntro = 0f;
 				IntroPlayed = true;
@@ -384,7 +384,7 @@ namespace TSS
 		/// </summary>
 		public void DetectClick()
 		{
-			if ( Input.Pressed( InputButton.Attack1 ) )
+			if ( Input.Pressed( InputButton.PrimaryAttack ) )
 			{
 				TraceResult clickTrace = Trace.Ray( Input.Cursor, 1000f ).HitLayer( CollisionLayer.All, true ).WithoutTags("wall").Run();
 

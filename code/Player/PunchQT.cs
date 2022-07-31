@@ -113,7 +113,7 @@ namespace TSS
 			}
 		}
 
-		[ServerCmd("delete_punch")]
+		[ConCmd.Server( "delete_punch")]
 		public static void DeletePunch(int i)
 		{
 			var ent = Entity.All.Where( x => x.NetworkIdent == i ).Any();

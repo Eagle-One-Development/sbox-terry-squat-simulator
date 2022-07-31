@@ -5,13 +5,13 @@ namespace TSS
 {
 	public partial class TSSGame : Game
 	{
-		[ServerCmd]
+		[ConCmd.Server]
 		public static void CreateFood()
 		{
 
 		}
 
-		[ServerCmd( "set_ep" )]
+		[ConCmd.Server( "set_ep" )]
 		public static void SetPoints( int p )
 		{
 			if ( ConsoleSystem.Caller.Pawn is TSSPlayer player )
@@ -20,7 +20,7 @@ namespace TSS
 			}
 		}
 
-		[ServerCmd( "punch" )]
+		[ConCmd.Server( "punch" )]
 		public static void Punch()
 		{
 			if ( ConsoleSystem.Caller.Pawn is TSSPlayer player )

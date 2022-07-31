@@ -14,7 +14,7 @@ namespace TSS
 		/// This is the command used to send the player to the white void once they've reached their 'heaven threshold'. This basically transitions
 		/// us to the start of the "ending" of the game.
 		/// </summary>
-		[ServerCmd( "heaven" )]
+		[ConCmd.Server( "heaven" )]
 		public static void GoToHeaven()
 		{
 			if ( ConsoleSystem.Caller.Pawn is TSSPlayer player )
@@ -41,7 +41,7 @@ namespace TSS
 
 		}
 
-		[ServerCmd("queue_random_track")]
+		[ConCmd.Server( "queue_random_track")]
 		public static void QueueRandomTrack()
 		{
 			int i = Rand.Int( 0, 3 );
@@ -51,7 +51,7 @@ namespace TSS
 		/// <summary>
 		/// Command for creating the punch QT event
 		/// </summary>
-		[ServerCmd( "create_punch" )]
+		[ConCmd.Server( "create_punch" )]
 		public static void CreatePunchQT()
 		{
 			if ( ConsoleSystem.Caller.Pawn is TSSPlayer player )
@@ -69,7 +69,7 @@ namespace TSS
 		/// Sets the pose on both the server and client, updating the yoga pose terry is using during the yoga exercise
 		/// </summary>
 		/// <param name="i"></param>
-		[ServerCmd( "yoga_pose" )]
+		[ConCmd.Server( "yoga_pose" )]
 		public static void SetPose( int i )
 		{
 			if ( ConsoleSystem.Caller.Pawn is TSSPlayer player )

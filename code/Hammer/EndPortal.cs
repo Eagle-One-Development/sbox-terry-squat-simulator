@@ -7,10 +7,10 @@ using System.Text;
 using System.Threading.Tasks;
 using Sandbox;
 
-[Hammer.EditorModel( "models/terry_buff/terry_buff.vmdl" )]
+[EditorModel( "models/terry_buff/terry_buff.vmdl" )]
 [Display( Name = "End Portal", Description = "Spawn point for the player" ), Category( "Terry Squat Simulator" )]
 [Library( "tss_end_portal" )]
-public class EndPortal : AnimEntity
+public class EndPortal : AnimatedEntity
 {
 	public override void Spawn()
 	{

@@ -73,7 +73,7 @@ namespace TSS
 		/// <summary>
 		/// A mock function to simulate twitch messages.
 		/// </summary>
-		[ServerCmd( "twitch_simulate" )]
+		[ConCmd.Server( "twitch_simulate" )]
 		public static void Say( string message , string name, string c)
 		{
 			Assert.NotNull( ConsoleSystem.Caller );
