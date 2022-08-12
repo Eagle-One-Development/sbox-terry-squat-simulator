@@ -9,7 +9,8 @@ namespace TSS
 	/// <summary>
 	/// A class we are going to use to manage our music layers
 	/// </summary>
-	public class MusicLayer{
+	public class MusicLayer
+	{
 
 		/// <summary>
 		/// Reference to our sound
@@ -34,7 +35,7 @@ namespace TSS
 		/// </summary>
 		private string soundName;
 
-		public MusicLayer(string name)
+		public MusicLayer( string name )
 		{
 			volume = 0f;
 			targetVolume = 0;
@@ -42,7 +43,7 @@ namespace TSS
 			soundName = name;
 			MySound = Sound.FromScreen( name );
 			MySound.SetVolume( volume );
-			
+
 		}
 
 		/// <summary>
@@ -50,19 +51,19 @@ namespace TSS
 		/// </summary>
 		/// <param name="v">The target volume</param>
 		/// <param name="speed">How long in seconds you want to fade to the given value</param>
-		public void FadeTo(float v, float speed )
+		public void FadeTo( float v, float speed )
 		{
 			targetVolume = v;
 			//This is basically gonna do some really basic math since we use Time.Delta. Basically, take the difference between the current volume and the target volume and divide it by the number of
 			//"seconds", or speed. What this results in is the number of steps to increase the volume by "per frame".
-			fadeSpeed = (MathF.Abs(v - volume)/speed);
+			fadeSpeed = (MathF.Abs( v - volume ) / speed);
 		}
 
 		/// <summary>
 		/// Sets the volume directly regardless of fading
 		/// </summary>
 		/// <param name="v"></param>
-		public void SetVolume(float v )
+		public void SetVolume( float v )
 		{
 			volume = v;
 			targetVolume = v;
@@ -96,13 +97,13 @@ namespace TSS
 		/// </summary>
 		public void Simulate()
 		{
-			volume = Approach(volume,targetVolume,fadeSpeed * Time.Delta);
+			volume = Approach( volume, targetVolume, fadeSpeed * Time.Delta );
 			MySound.SetVolume( volume );
 		}
 
-		private float Approach(float current, float target, float delta )
+		private float Approach( float current, float target, float delta )
 		{
-			if(current < target )
+			if ( current < target )
 			{
 				return MathF.Min( current + delta, target );
 			}
@@ -157,12 +158,12 @@ namespace TSS
 			if ( TimeSinceLastBeat > WHOLE_NOTE_DURATION )
 			{
 				TimeSinceLastBeat = 0;
-				
+
 			}
 
 			SongPosInBeats = (RealTimeSinceSongStart) / SecondsPerBeat;
 
-			if(Beats < SongPosInBeats )
+			if ( Beats < SongPosInBeats )
 			{
 				Beats++;
 
@@ -176,22 +177,22 @@ namespace TSS
 					Event.Run( "FourthBeat" );
 				}
 
-				if ( (Beats - 1)% 32 == 0 )
+				if ( (Beats - 1) % 32 == 0 )
 				{
-					if(TrackQueue.Count != 0 )
+					if ( TrackQueue.Count != 0 )
 					{
 						Silence();
 						var track = TrackQueue.Dequeue();
 						track.RestartSound();
 						track.SetVolume( 1f );
-						
+
 					}
 				}
 			}
 		}
 
 		[ClientRpc]
-		public void QueueTrack(string s)
+		public void QueueTrack( string s )
 		{
 
 			var track = new MusicLayer( s );
@@ -216,7 +217,7 @@ namespace TSS
 				IntroPanel.Instance.IntroStarted = true;
 			}
 		}
-		
+
 		[ClientRpc]
 		public void PlayRantInstrumental()
 		{
@@ -262,11 +263,11 @@ namespace TSS
 			for ( int i = 0; i < 7; i++ )
 			{
 				string str = $"intro{i}";
-
-				Music.Add( Sound.FromScreen( str ) );
+				Sound snd = Sound.FromScreen( str );
+				Music.Add( snd );
 				volumes[i] = 0;
 				tarVolumes[i] = 0f;
-				Music[i].SetVolume( 0f );
+				snd.SetVolume( 0f );
 			}
 			RealTimeSinceSongStart = 0f;
 			SecondsPerBeat = 60f / 140f;
@@ -276,9 +277,9 @@ namespace TSS
 		}
 
 		[ClientRpc]
-		public void SetTarVolume( int v , float volume = 1f)
+		public void SetTarVolume( int v, float volume = 1f )
 		{
-			if(tarVolumes == null ) { return; }
+			if ( tarVolumes == null ) { return; }
 			tarVolumes[v] = volume;
 		}
 
@@ -294,7 +295,7 @@ namespace TSS
 		}
 
 		[ClientRpc]
-		public void SetVolume(int v, float volume = 1f )
+		public void SetVolume( int v, float volume = 1f )
 		{
 			if ( tarVolumes == null ) { return; }
 			tarVolumes[v] = volume;
@@ -305,7 +306,7 @@ namespace TSS
 		public void SetSingleVolume( int v, float volume = 1f )
 		{
 			if ( tarVolumes == null ) { return; }
-			for(int i = 0; i < tarVolumes.Count(); i++ )
+			for ( int i = 0; i < tarVolumes.Count(); i++ )
 			{
 				volumes[i] = 0f;
 				tarVolumes[i] = 0f;
@@ -318,7 +319,7 @@ namespace TSS
 		[ClientRpc]
 		public void Silence()
 		{
-			for(int i = 0; i < tarVolumes.Length; i++ )
+			for ( int i = 0; i < tarVolumes.Length; i++ )
 			{
 				tarVolumes[i] = 0f;
 				volumes[i] = 0f;
@@ -328,8 +329,8 @@ namespace TSS
 
 			for ( int i = 0; i < Tracks.Count; i++ )
 			{
-
-				Tracks[i].SetVolume(0f);
+				Log.Info( $"Silencing track {i}" );
+				Tracks[i].SetVolume( 0f );
 
 			}
 		}
@@ -348,9 +349,12 @@ namespace TSS
 				Music[i].SetVolume( volumes[i] );
 			}
 
+
+			Log.Info( $"Rant Instrumental:{RantInstrumental} Nature Sounds:{NatureSounds} Volumes:{volumes}" );
+
 			RantInstrumental?.Simulate();
 			NatureSounds?.Simulate();
-			for(int i = 0; i < Tracks.Count; i++ )
+			for ( int i = 0; i < Tracks.Count; i++ )
 			{
 				Tracks[i].Simulate();
 			}
