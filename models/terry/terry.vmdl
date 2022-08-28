@@ -7107,8 +7107,8 @@
 						_class = "Attachment"
 						name = "dumbbell"
 						parent_bone = "spine_1"
-						relative_origin = [ 30.985741, -0.005342, 0.013364 ]
-						relative_angles = [ 0.001896, -0.009891, 0.0 ]
+						relative_origin = [ 78.795891, -0.026227, 0.013567 ]
+						relative_angles = [ 0.015042, -0.024937, -0.000501 ]
 						weight = 1.0
 						ignore_rotation = false
 					},

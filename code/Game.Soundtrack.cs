@@ -344,13 +344,12 @@ namespace TSS
 				return;
 			}
 
+			Log.Info( $"Music Count:{Music.Count}" );
+
 			for ( int i = 0; i < Music.Count; i++ )
 			{
 				Music[i].SetVolume( volumes[i] );
 			}
-
-
-			Log.Info( $"Rant Instrumental:{RantInstrumental} Nature Sounds:{NatureSounds} Volumes:{volumes}" );
 
 			RantInstrumental?.Simulate();
 			NatureSounds?.Simulate();

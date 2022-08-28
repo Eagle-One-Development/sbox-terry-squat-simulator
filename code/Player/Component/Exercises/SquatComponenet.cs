@@ -1,11 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Sandbox;
-using TSS;
-using TSS.UI;
+﻿using Sandbox;
+using System;
 
 
 namespace TSS
@@ -49,13 +43,23 @@ namespace TSS
 		/// </summary>
 		public void StartSquatting()
 		{
-			Barbell?.Delete();
-			Barbell = new ModelEntity( "models/dumbbll/dumbbell.vmdl" );
-			Barbell.Position = (Vector3)(Entity.GetAttachment( "dumbbell" )?.Position);
-			Barbell.SetParent( Entity, "head" );
-			Barbell.Rotation = Entity.Rotation * Rotation.From( 0, 0, 90 );
+			CreateBarbellClient();
 			Squat = 0;
 		}
+
+
+		public void CreateBarbellClient()
+		{
+			var _boneTransform = Entity.GetBoneTransform( "spine_1", true );
+			Barbell?.Delete();
+			Barbell = new ModelEntity( "models/dumbbll/dumbbell.vmdl" );
+			Barbell.Position = (Vector3)(_boneTransform.Position);
+			;
+			Barbell.SetParent( Entity, "spine_1" );
+			Barbell.Rotation = _boneTransform.Rotation * Rotation.From( 0, 90, 0 );
+		}
+
+
 
 		/// <summary>
 		/// The Squatting exercise
@@ -68,6 +72,9 @@ namespace TSS
 				return;
 			}
 
+
+
+
 			//Set the anim parameter on S&Box.
 			Entity.SetAnimParameter( "squat", Squat );
 
@@ -78,7 +85,7 @@ namespace TSS
 				cam.Progress += Time.Delta * 0.025f * (1 - f);
 			}
 
-			if ( Entity. TimeSinceExerciseStopped < 3f && Squat != -1 && cam.IntroComplete )
+			if ( Entity.TimeSinceExerciseStopped < 3f && Squat != -1 && cam.IntroComplete )
 			{
 				cam.Progress += Time.Delta * 0.35f;
 			}
