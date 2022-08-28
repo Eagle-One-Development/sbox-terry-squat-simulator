@@ -54,7 +54,7 @@ namespace TSS
 			Barbell?.Delete();
 			Barbell = new ModelEntity( "models/dumbbll/dumbbell.vmdl" );
 			Barbell.Position = (Vector3)(_boneTransform.Position);
-			;
+			Barbell.Position += Vector3.Up * 30f;
 			Barbell.SetParent( Entity, "spine_1" );
 			Barbell.Rotation = _boneTransform.Rotation * Rotation.From( 0, 90, 0 );
 		}
