@@ -222,7 +222,8 @@ namespace TSS
 		public void PlayRantInstrumental()
 		{
 			RantInstrumental = new MusicLayer( "rant_instrumental" );
-			RantInstrumental.FadeTo( 1f, 10f );
+			RantInstrumental.FadeTo( 1f, 5f );
+			Log.Info( "PLAYING RANT INSTRUMENTAL" );
 			Silence();
 			PlayRant();
 		}
