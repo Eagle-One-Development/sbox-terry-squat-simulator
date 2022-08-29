@@ -1,12 +1,11 @@
 ﻿using Sandbox;
 using System;
 using System.Linq;
-using System.Threading.Tasks;
-using System.Collections.Generic;
 
 namespace TSS
 {
-	public enum SquatState { 
+	public enum SquatState
+	{
 		UP,
 		DOWN
 	}
@@ -79,7 +78,7 @@ namespace TSS
 			Components.Create<PunchComponent>();
 			Components.Create<YogaComponent>();
 
-			foreach (var e in Components.GetAll<ExerciseComponent>() )
+			foreach ( var e in Components.GetAll<ExerciseComponent>() )
 			{
 				e.Initialize();
 			}
@@ -116,11 +115,8 @@ namespace TSS
 			ModelEntity ent = new();
 			ent.Position = Position;
 			ent.Rotation = Rotation;
-			ent.MoveType = MoveType.Physics;
+
 			ent.UsePhysicsCollision = true;
-			ent.SetInteractsAs( CollisionLayer.Debris );
-			ent.SetInteractsWith( CollisionLayer.WORLD_GEOMETRY );
-			ent.SetInteractsExclude( CollisionLayer.Player | CollisionLayer.Debris );
 
 			ent.Model = this.Model;
 
@@ -133,13 +129,14 @@ namespace TSS
 				_ = new ModelEntity( "models/clothes/fitness/sweatband_head.vmdl", ent );
 				_ = new ModelEntity( "models/clothes/fitness/hair_head.vmdl", ent );
 				_ = new ModelEntity( "models/clothes/fitness/hair_body.vmdl", ent );
-				
+
 			}
 
 			ent.CopyBonesFrom( this );
 			ent.TakeDecalsFrom( this );
 			ent.SetRagdollVelocityFrom( this );
 			ent.DeleteAsync( 5.0f );
+			ent.PhysicsEnabled = true;
 
 			ent.PhysicsGroup.AddVelocity( force );
 
@@ -162,7 +159,7 @@ namespace TSS
 		/// <summary>
 		/// Causes Terry to ragdoll
 		/// </summary>
-		public void KillTerry(Vector3 force)
+		public void KillTerry( Vector3 force )
 		{
 			BecomeRagdollOnClient( To.Single( Client ), force, 0 );
 			CurrentExerciseSpeed = 1f;
@@ -320,7 +317,8 @@ namespace TSS
 				//Adding this here so we don't sweat when we're ragdolles
 				float mult = 1f;
 
-				if(TimeSinceRagdolled < 3f  ){
+				if ( TimeSinceRagdolled < 3f )
+				{
 					mult = 0f;
 				}
 
@@ -337,7 +335,7 @@ namespace TSS
 			//Clear the animation parameters every frame to avoid conflicts
 			ClearAnimation();
 		}
-		
+
 		/// <summary>
 		/// Sets the scale of the counter for extra juice when getting points
 		/// </summary>
@@ -392,7 +390,7 @@ namespace TSS
 			TargetExerciseSpeed = TargetExerciseSpeed.Clamp( 0, 1 );
 			CurrentExerciseSpeed = CurrentExerciseSpeed.Clamp( 0, 1 );
 			var mult = MathX.LerpInverse( TimeSinceExerciseStopped, 0, 1 );
-			
+
 
 			TargetExerciseSpeed = TargetExerciseSpeed.LerpTo( 0f, Time.Delta * 0.25f * (mult * 4f) );
 			CurrentExerciseSpeed = CurrentExerciseSpeed.LerpTo( TargetExerciseSpeed, Time.Delta * 2f );
@@ -423,10 +421,10 @@ namespace TSS
 					case Exercise.Run:
 						break;
 				}
-			
+
 			}
 
-			foreach(var e in Components.GetAll<ExerciseComponent>() )
+			foreach ( var e in Components.GetAll<ExerciseComponent>() )
 			{
 				e.Cleanup();
 			}
@@ -459,7 +457,7 @@ namespace TSS
 			//Basically if our exercise points are greater than the threshold, we move the player to the heaven void. This is done so we can switch exercises in this void
 			//and not have them jump back to the gym
 			//TODO: Do this better, or at least replace can go to heaven with an exercise event
-			if ( ExercisePoints > HeavenThreshold && CanGoToHeaven && !SkipIntro)
+			if ( ExercisePoints > HeavenThreshold && CanGoToHeaven && !SkipIntro )
 			{
 				ent = All.OfType<TSSSpawn>().ToList().Find( x => x.SpawnType == SpawnType.Heaven );
 				TSSGame.Current.QueueTrack( "queue4" );
@@ -477,7 +475,7 @@ namespace TSS
 				Position = ent.Transform.Position;
 				Rotation = ent.Transform.Rotation;
 			}
-			
+
 			//Set the current exercise to this
 			CurrentExercise = exercise;
 
@@ -491,10 +489,10 @@ namespace TSS
 		/// <summary>
 		/// Moves the player to a random exercise
 		/// </summary>
-		[Event("rand_exercise")]
+		[Event( "rand_exercise" )]
 		public void RandomExercise()
 		{
-			if(TimeSinceIntro < 23.16f )
+			if ( TimeSinceIntro < 23.16f )
 			{
 				return;
 			}
@@ -506,14 +504,14 @@ namespace TSS
 		#endregion
 
 		#region Animation
-		
+
 		#endregion
 
 
-		
-		
 
-		
+
+
+
 
 
 
