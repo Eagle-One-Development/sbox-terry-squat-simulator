@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Sandbox;
-using TSS;
-using TSS.UI;
+﻿using Sandbox;
 
 
 namespace TSS
@@ -74,12 +67,12 @@ namespace TSS
 			{
 				RunPositionOffset += Time.Delta * (1f - treadSpeed) * 50f;
 			}
-			RunPositionOffset = RunPositionOffset.Clamp( -10f, 45f );
+			RunPositionOffset = RunPositionOffset.Clamp( 20f, 45f );
 
 
 			if ( RunPositionOffset >= 45f )
 			{
-				Entity.BecomeRagdollOnClient(To.Single(Entity.Client), (Entity.Rotation.Forward * -1f + Vector3.Up).Normal * 250f, 0 );
+				Entity.BecomeRagdollOnClient( To.Single( Entity.Client ), (Entity.Rotation.Forward * -1f + Vector3.Up).Normal * 250f, 0 );
 				RunPositionOffset = 0f;
 				Entity.CurrentExerciseSpeed = 1f;
 				Entity.TimeSinceExerciseStopped = 0f;
