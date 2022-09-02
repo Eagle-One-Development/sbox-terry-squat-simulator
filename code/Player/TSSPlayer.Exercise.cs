@@ -39,6 +39,12 @@ namespace TSS
 		public TimeSince TimeSinceExerciseStopped { get; set; }
 
 		/// <summary>
+		/// The time since we last stopped exercising. Used for handling stuff like the slow down of the camera and other effects when you stop or fail the mini-game
+		/// </summary>
+		[Net]
+		public TimeSince TimeSinceExerciseStarted { get; set; }
+
+		/// <summary>
 		/// A variable representing how long it's been since we've pressed the up key
 		/// TODO: this system could be replaced with a "TimeSinceAnyKeyPressed", there's no reason to have two of these
 		/// </summary>
@@ -406,6 +412,8 @@ namespace TSS
 			Entity ent = null;
 
 			CurrentExerciseComponent = Components.GetAll<ExerciseComponent>().Where( x => x.ExerciseType == exercise ).First();
+
+			TimeSinceExerciseStarted = 0f;
 
 			//Perform various pieces of code to clean up the previous exercise
 			//TODO: Probably can be its own function

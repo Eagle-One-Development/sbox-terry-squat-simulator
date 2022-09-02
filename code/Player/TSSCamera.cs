@@ -1,6 +1,6 @@
-﻿using System;
+﻿using Sandbox;
+using System;
 using System.Linq;
-using Sandbox;
 using TSS.UI;
 
 public enum CameraState
@@ -10,7 +10,8 @@ public enum CameraState
 	Topdown,
 	Beat,
 	Ground,
-	Intro
+	Intro,
+	Ending
 };
 
 
@@ -48,6 +49,8 @@ namespace TSS
 		public bool RunTutorialComplete;
 
 		public bool Active;
+
+		private float EndingBump;
 
 
 		public override void Activated()
@@ -93,7 +96,7 @@ namespace TSS
 			//If we're in the final portion of the game, set the camera state to static
 			if ( pawn.CanGoToHeaven )
 			{
-				CamState = CameraState.Static;
+				CamState = CameraState.Ending;
 			}
 
 			switch ( CamState )
@@ -115,6 +118,9 @@ namespace TSS
 					break;
 				case CameraState.Beat:
 					Beat();
+					break;
+				case CameraState.Ending:
+					Ending();
 					break;
 			}
 
@@ -158,7 +164,7 @@ namespace TSS
 			#region Run Tutorial Prompt
 			//Spawn a tutorial prompt for running
 
-			if ( !RunTutorial && pawn.CurrentExercise == Exercise.Run)
+			if ( !RunTutorial && pawn.CurrentExercise == Exercise.Run )
 			{
 				Down?.Delete();
 				Up?.Delete();
@@ -166,14 +172,14 @@ namespace TSS
 				Up = null;
 				Up ??= new CreditPanel( Input.GetKeyWithBinding( "+iv_right" ).ToUpper(), 200, 200 );
 				Down ??= new CreditPanel( Input.GetKeyWithBinding( "+iv_left" ).ToUpper(), 200, 200 );
-				
-			
+
+
 				RunTutorial = true;
 			}
 
 
 			//Basically fade these out after a few seconds.
-			if ( RunTutorial && !RunTutorialComplete)
+			if ( RunTutorial && !RunTutorialComplete )
 			{
 				float runTutAlph = 0f;
 
@@ -234,7 +240,7 @@ namespace TSS
 
 			if ( Progress < 0.25f )
 			{
-				
+
 				JoshWilson ??= new CreditPanel( "Josh Wilson", 3200, 3200 );
 				JoshWilson.Position = pawn.ExercisePosition + Vector3.Up * 10f + pawn.Rotation.Forward * -20f;
 				JoshWilson.Rotation = Rotation.From( 0, 90, 0 );
@@ -271,7 +277,7 @@ namespace TSS
 				yawTar = 30f;
 			}
 
-			if (Progress >= 0.25f)
+			if ( Progress >= 0.25f )
 			{
 				JoshWilson?.Delete();
 				JoshWilson = null;
@@ -391,7 +397,7 @@ namespace TSS
 				Progress = 0f;
 				TimeSinceState = 0f;
 
-				if ( TSS != null)
+				if ( TSS != null )
 				{
 					TSS.Opacity = 1f;
 					TSS?.Delete();
@@ -461,14 +467,37 @@ namespace TSS
 
 		}
 
+		[Event( "OtherBeat" )]
+		public void EndBump()
+		{
+			EndingBump = 20f;
+		}
+
+		public void Ending()
+		{
+			EndingBump = EndingBump.LerpTo( 0f, Time.Delta );
+			CamDistance = 100f + EndingBump;
+			var pawn = Local.Pawn as TSSPlayer;
+			var center = GetCenter();
+
+			Position = center + pawn.Rotation.Forward * CamDistance + Vector3.Up * GetSceneCameraHeight();
+			Rotation = Rotation.LookAt( (center - Position), Vector3.Up ) * Rotation.FromAxis( pawn.Rotation.Right, 35f * MathF.Sin( Time.Now ) );
+
+			if ( TimeSinceState > 5f )
+			{
+				NextCameraScene();
+			}
+
+		}
+
 		public void Topdown()
 		{
 			CamDistance = 100f;
 			var pawn = Local.Pawn as TSSPlayer;
 			var center = GetCenter();
 
-			Position = center + pawn.Rotation.Up * CamDistance + new Vector3( 32*MathF.Sin(Time.Now/3), 32*MathF.Cos( Time.Now/3 ), 0);
-			var hitPos = Trace.Ray( pawn.Position + Vector3.Up * 10f, Position ).Ignore(pawn).WithoutTags("wall");
+			Position = center + pawn.Rotation.Up * CamDistance + new Vector3( 32 * MathF.Sin( Time.Now / 3 ), 32 * MathF.Cos( Time.Now / 3 ), 0 );
+			var hitPos = Trace.Ray( pawn.Position + Vector3.Up * 10f, Position ).Ignore( pawn ).WithoutTags( "wall" );
 			Position = hitPos.Run().EndPosition;
 
 			Rotation = Rotation.LookAt( (center - Position), Vector3.Up );
@@ -488,9 +517,9 @@ namespace TSS
 
 			var beatMultiplier = 2f;
 
-			if (pawn.CurrentExercise == Exercise.Punch)
+			if ( pawn.CurrentExercise == Exercise.Punch )
 			{
-				beatMultiplier = 1/4f;
+				beatMultiplier = 1 / 4f;
 			}
 
 			var beatFreq = MathF.PI / 4 * TSSGame.Current.BeatNonce * beatMultiplier;
@@ -531,10 +560,10 @@ namespace TSS
 			var pawn = Local.Pawn as TSSPlayer;
 
 
-			if (CamState == CameraState.Ground)
+			if ( CamState == CameraState.Ground )
 			{
 				return 15f;
-			}  
+			}
 			else if ( pawn.CurrentExercise == Exercise.Run )
 			{
 				return 45f;

@@ -59,6 +59,19 @@ namespace TSS
 			Barbell.Rotation = _boneTransform.Rotation * Rotation.From( 0, 90, 0 );
 		}
 
+		public void SetBarbellPosition()
+		{
+			if(Barbell == null){
+				return;
+			}
+			var _boneTransform = Entity.GetBoneTransform( "spine_1", true );
+			Barbell.SetParent( Entity, null );
+			Barbell.Position = (Vector3)(_boneTransform.Position);
+			Barbell.Position += Vector3.Up * 30f;
+			Barbell.SetParent( Entity, "spine_1" );
+			Barbell.Rotation = _boneTransform.Rotation * Rotation.From( 0, 90, 0 );
+		}
+
 
 
 		/// <summary>
@@ -72,8 +85,10 @@ namespace TSS
 				return;
 			}
 
-
-
+			if ( Entity.TimeSinceExerciseStarted < 0.2f )
+			{
+				SetBarbellPosition();
+			}
 
 			//Set the anim parameter on S&Box.
 			Entity.SetAnimParameter( "squat", Squat );
